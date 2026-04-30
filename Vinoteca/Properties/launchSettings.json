@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "Vinoteca (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "Vinoteca (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}
