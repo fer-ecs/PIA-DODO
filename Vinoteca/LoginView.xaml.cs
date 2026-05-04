@@ -1,15 +1,22 @@
+using System;
 using System.Linq;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Vinoteca.Services;
+using System.Text.RegularExpressions;
 
 namespace Vinoteca.Views
 {
 	public sealed partial class LoginView : Page
 	{
+		private int intentosFallidos = 0;
+		private int maxIntentos = 3;
+		private DateTime? ultimoIntento;
+
 		public LoginView()
 		{
 			this.InitializeComponent();
+			txtCorreo.Focus(FocusState.Programmatic);
 		}
 
 		private void BtnLogin_Click(object sender, RoutedEventArgs e)
@@ -18,37 +25,109 @@ namespace Vinoteca.Views
 			txtError.Visibility = Visibility.Collapsed;
 
 			string correo = txtCorreo.Text.Trim();
-			string password = txtPassword.Password;
+			string password = txtPassword.Password.Trim();
 
-			if (string.IsNullOrEmpty(correo) || string.IsNullOrEmpty(password))
+			// Validar intentos fallidos
+			if (intentosFallidos >= maxIntentos)
 			{
-				MostrarError("Por favor llena ambos campos.");
+				if (ultimoIntento.HasValue && DateTime.Now.Subtract(ultimoIntento.Value).TotalMinutes < 5)
+				{
+					MostrarError("Demasiados intentos. Espere 5 minutos.");
+					return;
+				}
+				else
+				{
+					intentosFallidos = 0;
+				}
+			}
+
+			// Validar campos vacíos
+			if (string.IsNullOrEmpty(correo))
+			{
+				MostrarError("El correo es obligatorio.");
+				return;
+			}
+
+			if (string.IsNullOrEmpty(password))
+			{
+				MostrarError("La contraseña es obligatoria.");
+				return;
+			}
+
+			// Validar formato de correo
+			string patternEmail = @"^[^@\s]+@[^@\s]+\.[^@\s]+$";
+			if (!Regex.IsMatch(correo, patternEmail))
+			{
+				MostrarError("Ingresa un formato válido para el correo electrónico.");
+				return;
+			}
+
+			// Validar que no contengan espacios
+			if (correo.Contains(" ") || password.Contains(" "))
+			{
+				MostrarError("El correo y la contraseña no deben contener espacios.");
+				return;
+			}
+
+			// Validar longitud mínima de contraseña
+			if (password.Length < 6)
+			{
+				MostrarError("La contraseña debe contener al menos 6 caracteres.");
+				return;
+			}
+
+			// Validar contraseña fuerte
+			if (!EsContraseñaFuerte(password))
+			{
+				MostrarError("Contraseña débil. Use mayúsculas, números y caracteres especiales.");
 				return;
 			}
 
 			// Validar contra el JSON
 			var usuarios = DataService.ObtenerUsuarios();
-			var usuarioValido = usuarios.FirstOrDefault(u => u.Correo == correo && u.Contrasena == password && u.Activo);
+			var usuario = usuarios.FirstOrDefault(u => u.Correo == correo);
 
-			if (usuarioValido != null)
+			// Validar si el usuario existe y las credenciales son correctas
+			if (usuario == null || usuario.Contrasena != password)
 			{
-				// Guardar en sesión
-				SessionService.IniciarSesion(usuarioValido);
+				intentosFallidos++;
+				ultimoIntento = DateTime.Now;
+				MostrarError($"Credenciales incorrectas. Intento {intentosFallidos}/{maxIntentos}");
+				return;
+			}
 
-				// Redirección por rol
-				if (usuarioValido.EsAdmin)
-				{
-					this.Frame.Navigate(typeof(AdminMenuView));
-				}
-				else
-				{
-					this.Frame.Navigate(typeof(UsuarioMenuView));
-				}
+			// Validar que el usuario esté activo
+			if (!usuario.Activo)
+			{
+				MostrarError("Esta cuenta ha sido desactivada. Contacte al administrador.");
+				return;
+			}
+
+			// Login exitoso - resetear intentos
+			intentosFallidos = 0;
+			SessionService.IniciarSesion(usuario);
+
+			// Redirección por rol
+			if (usuario.EsAdmin)
+			{
+				this.Frame.Navigate(typeof(AdminMenuView));
 			}
 			else
 			{
-				MostrarError("Credenciales incorrectas o usuario inactivo.");
+				this.Frame.Navigate(typeof(UsuarioMenuView));
 			}
+		}
+
+		private bool EsContraseñaFuerte(string password)
+		{
+			// Debe cumplir:
+			// - Al menos 6 caracteres
+			// - Una mayúscula
+			// - Una minúscula
+			// - Un número
+			// - Un carácter especial
+			string patron = @"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$";
+			return Regex.IsMatch(password, patron);
 		}
 
 		private void MostrarError(string mensaje)

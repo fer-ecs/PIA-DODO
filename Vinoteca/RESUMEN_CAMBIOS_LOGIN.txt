@@ -1,0 +1,278 @@
+╔════════════════════════════════════════════════════════════════════════════╗
+║                    RESUMEN DE CAMBIOS IMPLEMENTADOS                         ║
+║                          LOGIN CON VALIDACIONES                             ║
+╚════════════════════════════════════════════════════════════════════════════╝
+
+📁 ARCHIVOS MODIFICADOS:
+═════════════════════════════════════════════════════════════════════════════
+
+1️⃣  LoginView.xaml.cs (PRINCIPAL)
+    Ubicación: Vinoteca\LoginView.xaml.cs
+
+    ✅ CAMBIOS:
+
+    a) Importaciones agregadas:
+       - using System;
+       - using System.Text.RegularExpressions;
+       - Eliminada: using System.Runtime.CompilerServices;
+
+    b) Variables de control de intentos (clase LoginView):
+       - private int intentosFallidos = 0;
+       - private int maxIntentos = 3;
+       - private DateTime? ultimoIntento;
+
+    c) Constructor mejorado:
+       - txtCorreo.Focus(FocusState.Programmatic);  // Focus automático
+
+    d) Método BtnLogin_Click() completamente refactorizado:
+
+       ORDEN DE VALIDACIONES:
+       ┌─────────────────────────────────────────────────┐
+       │ 1. Validar intentos fallidos (bloqueo 5 min)   │
+       │ 2. Validar correo no vacío                      │
+       │ 3. Validar contraseña no vacía                  │
+       │ 4. Validar formato de correo (regex)            │
+       │ 5. Validar sin espacios en blanco               │
+       │ 6. Validar longitud mínima (6 caracteres)       │
+       │ 7. Validar contraseña fuerte                    │
+       │ 8. Buscar usuario en BD                         │
+       │ 9. Validar credenciales                         │
+       │10. Validar usuario activo                       │
+       │11. Login exitoso y redirección                  │
+       └─────────────────────────────────────────────────┘
+
+    e) Nuevo método: EsContraseñaFuerte(string password)
+       - Valida requisitos de seguridad
+       - Patrón regex: mayúscula + minúscula + número + carácter especial
+       - Mínimo 6 caracteres
+
+═════════════════════════════════════════════════════════════════════════════
+
+2️⃣  DataService.cs (USUARIO POR DEFECTO)
+    Ubicación: Vinoteca\Services\DataService.cs
+
+    ✅ CAMBIOS:
+
+    - Contraseña por defecto ACTUALIZADA:
+      De:   "admin123"      ❌ No cumple validaciones
+      A:    "Admin@123"     ✅ Cumple todas las validaciones
+
+    Ahora el admin por defecto es:
+    ┌──────────────────────────────┐
+    │ Correo:      admin@vinoteca.com
+    │ Contraseña:  Admin@123
+    └──────────────────────────────┘
+
+═════════════════════════════════════════════════════════════════════════════
+
+3️⃣  LOGIN_CREDENTIALS.txt (NUEVO)
+    Ubicación: Vinoteca\LOGIN_CREDENTIALS.txt
+
+    📝 PROPÓSITO:
+    - Documento de referencia con credenciales
+    - Ejemplos de contraseñas válidas e inválidas
+    - Guía rápida de validaciones
+
+═════════════════════════════════════════════════════════════════════════════
+
+📋 VALIDACIONES IMPLEMENTADAS:
+═════════════════════════════════════════════════════════════════════════════
+
+✅ VALIDACIÓN 1: CAMPOS VACÍOS
+   ├─ Verificar correo no vacío
+   └─ Verificar contraseña no vacía
+   Ubicación: LoginView.xaml.cs líneas 44-55
+
+✅ VALIDACIÓN 2: FORMATO DE CORREO
+   ├─ Patrón regex: ^[^@\s]+@[^@\s]+\.[^@\s]+$
+   └─ Verifica presencia de @ y dominio válido
+   Ubicación: LoginView.xaml.cs líneas 57-63
+
+✅ VALIDACIÓN 3: SIN ESPACIOS EN BLANCO
+   ├─ Verificar que correo no contenga espacios
+   └─ Verificar que contraseña no contenga espacios
+   Ubicación: LoginView.xaml.cs líneas 65-70
+
+✅ VALIDACIÓN 4: LONGITUD MÍNIMA DE CONTRASEÑA
+   ├─ Mínimo 6 caracteres
+   └─ Previene contraseñas muy cortas
+   Ubicación: LoginView.xaml.cs líneas 72-77
+
+✅ VALIDACIÓN 5: FORTALEZA DE CONTRASEÑA
+   ├─ Mayúscula requerida
+   ├─ Minúscula requerida
+   ├─ Número requerido
+   ├─ Carácter especial requerido (@$!%*?&)
+   └─ Mínimo 6 caracteres
+   Ubicación: LoginView.xaml.cs líneas 79-84, 121-131
+
+✅ VALIDACIÓN 6: BÚSQUEDA EN BASE DE DATOS
+   ├─ Busca por correo en usuarios.json
+   └─ Valida que el usuario exista
+   Ubicación: LoginView.xaml.cs líneas 86-97
+
+✅ VALIDACIÓN 7: VERIFICACIÓN DE CREDENCIALES
+   ├─ Compara correo y contraseña
+   └─ Incrementa contador de intentos fallidos
+   Ubicación: LoginView.xaml.cs líneas 90-97
+
+✅ VALIDACIÓN 8: USUARIO ACTIVO
+   ├─ Verifica que usuario.Activo = true
+   └─ Muestra mensaje específico si está desactivado
+   Ubicación: LoginView.xaml.cs líneas 99-104
+
+✅ VALIDACIÓN 9: LÍMITE DE INTENTOS FALLIDOS
+   ├─ Máximo 3 intentos fallidos
+   ├─ Bloquea por 5 minutos después de 3 fallos
+   ├─ Resettea después de login exitoso
+   └─ Resettea después de 5 minutos de espera
+   Ubicación: LoginView.xaml.cs líneas 30-42, 93-95, 107
+
+═════════════════════════════════════════════════════════════════════════════
+
+🔄 FLUJO DE LOGIN CON VALIDACIONES:
+═════════════════════════════════════════════════════════════════════════════
+
+1. Usuario ingresa correo y contraseña
+         ↓
+2. Click en botón "Ingresar"
+         ↓
+3. ¿Demasiados intentos fallidos?
+   └─ Sí → Esperar 5 minutos
+   └─ No → Continuar
+         ↓
+4. ¿Correo vacío?
+   └─ Sí → Error: "El correo es obligatorio"
+   └─ No → Continuar
+         ↓
+5. ¿Contraseña vacía?
+   └─ Sí → Error: "La contraseña es obligatoria"
+   └─ No → Continuar
+         ↓
+6. ¿Formato de correo válido?
+   └─ No → Error: "Ingresa un formato válido"
+   └─ Sí → Continuar
+         ↓
+7. ¿Contiene espacios?
+   └─ Sí → Error: "No deben contener espacios"
+   └─ No → Continuar
+         ↓
+8. ¿Contraseña >= 6 caracteres?
+   └─ No → Error: "Mínimo 6 caracteres"
+   └─ Sí → Continuar
+         ↓
+9. ¿Contraseña es fuerte?
+   └─ No → Error: "Use mayúsculas, números, caracteres especiales"
+   └─ Sí → Continuar
+         ↓
+10. ¿Usuario existe en BD?
+    └─ No → Intentos++, Error: "Credenciales incorrectas"
+    └─ Sí → Continuar
+        ↓
+11. ¿Contraseña correcta?
+    └─ No → Intentos++, Error: "Credenciales incorrectas"
+    └─ Sí → Continuar
+        ↓
+12. ¿Usuario está activo?
+    └─ No → Error: "Cuenta desactivada"
+    └─ Sí → Continuar
+        ↓
+13. ✅ LOGIN EXITOSO
+    └─ Intentos = 0 (reset)
+    └─ Guardar en SessionService
+    └─ Redireccionar según rol (Admin o Usuario)
+
+═════════════════════════════════════════════════════════════════════════════
+
+💡 CARACTERÍSTICAS ADICIONALES:
+═════════════════════════════════════════════════════════════════════════════
+
+✨ Focus automático en campo de correo
+   └─ Mejor UX: Usuario puede escribir inmediatamente
+
+✨ Mensajes de error específicos
+   └─ Cada validación tiene su propio mensaje
+
+✨ Contador de intentos visible
+   └─ El usuario ve: "Intento 1/3"
+
+✨ Bloqueo de seguridad temporal
+   └─ 5 minutos después de 3 fallos
+
+✨ Trim automático de espacios
+   └─ Entrada: "  admin@vinoteca.com  "
+   └─ Procesado: "admin@vinoteca.com"
+
+═════════════════════════════════════════════════════════════════════════════
+
+⚙️  REQUISITOS DE CONTRASEÑA FUERTE:
+═════════════════════════════════════════════════════════════════════════════
+
+┌─────────────────────────────────────────────────┐
+│ Requisito              │ Ejemplo               │
+├─────────────────────────────────────────────────┤
+│ Mínimo 6 caracteres    │ ✓ Admin@1             │
+│ Una mayúscula (A-Z)    │ ✓ Admin@123           │
+│ Una minúscula (a-z)    │ ✓ admin@123           │
+│ Un número (0-9)        │ ✓ admin@123           │
+│ Un especial (@$!%*?&)  │ ✓ admin@123           │
+└─────────────────────────────────────────────────┘
+
+Patrón regex usado:
+^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$
+
+═════════════════════════════════════════════════════════════════════════════
+
+🧪 CÓMO PROBAR:
+═════════════════════════════════════════════════════════════════════════════
+
+1. Ejecutar la aplicación
+
+2. Prueba correo vacío:
+   └─ Campo correo: (vacío)
+   └─ Resultado: Error "El correo es obligatorio"
+
+3. Prueba contraseña vacía:
+   └─ Campo correo: admin@vinoteca.com
+   └─ Campo contraseña: (vacío)
+   └─ Resultado: Error "La contraseña es obligatoria"
+
+4. Prueba formato incorrecto:
+   └─ Campo correo: admin.com (sin @)
+   └─ Resultado: Error "Ingresa un formato válido"
+
+5. Prueba contraseña débil:
+   └─ Campo correo: admin@vinoteca.com
+   └─ Campo contraseña: admin123
+   └─ Resultado: Error "Use mayúsculas, números, caracteres especiales"
+
+6. Prueba login exitoso:
+   └─ Campo correo: admin@vinoteca.com
+   └─ Campo contraseña: Admin@123
+   └─ Resultado: ✅ Login exitoso, redirige a AdminMenuView
+
+7. Prueba intentos fallidos:
+   └─ Ingresa 3 veces credenciales incorrectas
+   └─ Cuarto intento: Error "Demasiados intentos. Espere 5 minutos"
+
+═════════════════════════════════════════════════════════════════════════════
+
+📌 NOTAS IMPORTANTES:
+═════════════════════════════════════════════════════════════════════════════
+
+⚠️  La contraseña se guarda en texto plano en el JSON (no hasheada)
+    - Para producción, implementar hashing SHA256 o bcrypt
+
+⚠️  El bloqueo de 5 minutos se almacena en memoria (no persiste)
+    - Se resettea si se cierra la aplicación
+
+⚠️  La sesión se guarda en memoria (no persiste entre reinicios)
+    - Para persistencia, implementar cookies o base de datos
+
+💡 Próximas mejoras sugeridas:
+    1. Implementar hash de contraseña (SHA256/bcrypt)
+    2. Agregar 2FA (autenticación de dos factores)
+    3. Registrar intentos fallidos en BD
+    4. Enviar emails de alertas de seguridad
+
+═════════════════════════════════════════════════════════════════════════════

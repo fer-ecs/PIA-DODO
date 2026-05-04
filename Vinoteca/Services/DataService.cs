@@ -37,7 +37,7 @@ namespace Vinoteca.Services
 							Id = Guid.NewGuid().ToString(),
 							Nombre = "Administrador",
 							Correo = "admin@vinoteca.com",
-							Contrasena = "admin123",
+							Contrasena = "Admin@123",
 							EsAdmin = true,
 							Activo = true
 						}
