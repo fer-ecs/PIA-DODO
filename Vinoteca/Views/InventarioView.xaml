@@ -1,0 +1,96 @@
+<Page
+    x:Class="Vinoteca.Views.InventarioView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+	<Grid Padding="24">
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="350"/>
+			<!-- Formulario -->
+			<ColumnDefinition Width="24"/>
+			<!-- Espaciador -->
+			<ColumnDefinition Width="*"/>
+			<!-- Tabla -->
+		</Grid.ColumnDefinitions>
+
+		<!-- FORMULARIO (IZQUIERDA) -->
+		<ScrollViewer Grid.Column="0">
+			<StackPanel Spacing="12">
+				<TextBlock Text="Gestión de Producto" Style="{ThemeResource TitleTextBlockStyle}"/>
+
+				<TextBox x:Name="txtNombre" Header="Nombre del Vino" PlaceholderText="Ej. Casillero del Diablo"/>
+				<TextBox x:Name="txtMarca" Header="Marca" PlaceholderText="Ej. Concha y Toro"/>
+
+				<ComboBox x:Name="cmbCategoria" Header="Categoría" HorizontalAlignment="Stretch">
+					<ComboBoxItem Content="Tinto"/>
+					<ComboBoxItem Content="Blanco"/>
+					<ComboBoxItem Content="Rosado"/>
+					<ComboBoxItem Content="Espumoso"/>
+				</ComboBox>
+
+				<Grid ColumnSpacing="8">
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="*"/>
+						<ColumnDefinition Width="*"/>
+					</Grid.ColumnDefinitions>
+					<NumberBox x:Name="numPrecioVenta" Header="Precio Venta" Value="0" SpinButtonPlacementMode="Compact" Grid.Column="0"/>
+					<NumberBox x:Name="numStock" Header="Stock" Value="0" SpinButtonPlacementMode="Compact" Grid.Column="1"/>
+				</Grid>
+
+				<TextBox x:Name="txtImagen" Header="URL Imagen" PlaceholderText="https://..."/>
+
+				<StackPanel Orientation="Horizontal" Spacing="8" Margin="0,12,0,0">
+					<Button x:Name="btnGuardar" Content="Guardar" Style="{ThemeResource AccentButtonStyle}" Click="btnGuardar_Click"/>
+					<Button x:Name="btnLimpiar" Content="Limpiar" Click="btnLimpiar_Click"/>
+					<Button x:Name="btnEliminar" Content="Eliminar" Foreground="Red" Click="btnEliminar_Click"/>
+				</StackPanel>
+			</StackPanel>
+		</ScrollViewer>
+
+		<!-- TABLA (DERECHA) -->
+		<Grid Grid.Column="2">
+			<Grid.RowDefinitions>
+				<RowDefinition Height="Auto"/>
+				<RowDefinition Height="*"/>
+			</Grid.RowDefinitions>
+
+			<TextBox x:Name="txtBuscar" Header="Buscar Producto" PlaceholderText="Escribe nombre o marca..." Margin="0,0,0,16" TextChanged="txtBuscar_TextChanged"/>
+
+			<ListView x:Name="lvProductos" Grid.Row="1" SelectionChanged="lvProductos_SelectionChanged" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1" CornerRadius="8">
+				<ListView.HeaderTemplate>
+					<DataTemplate>
+						<Grid Padding="12,8" Background="{ThemeResource CardBackgroundFillColorSecondaryBrush}">
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="2*"/>
+								<ColumnDefinition Width="*"/>
+								<ColumnDefinition Width="*"/>
+								<ColumnDefinition Width="*"/>
+							</Grid.ColumnDefinitions>
+							<TextBlock Text="Nombre" FontWeight="Bold" Grid.Column="0"/>
+							<TextBlock Text="Categoría" FontWeight="Bold" Grid.Column="1"/>
+							<TextBlock Text="Precio" FontWeight="Bold" Grid.Column="2"/>
+							<TextBlock Text="Stock" FontWeight="Bold" Grid.Column="3"/>
+						</Grid>
+					</DataTemplate>
+				</ListView.HeaderTemplate>
+				<ListView.ItemTemplate>
+					<DataTemplate>
+						<Grid Padding="0,4">
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="2*"/>
+								<ColumnDefinition Width="*"/>
+								<ColumnDefinition Width="*"/>
+								<ColumnDefinition Width="*"/>
+							</Grid.ColumnDefinitions>
+							<TextBlock Text="{Binding Nombre}" Grid.Column="0"/>
+							<TextBlock Text="{Binding Categoria}" Grid.Column="1"/>
+							<TextBlock Text="{Binding PrecioVenta}" Grid.Column="2"/>
+							<TextBlock Text="{Binding Stock}" Grid.Column="3"/>
+						</Grid>
+					</DataTemplate>
+				</ListView.ItemTemplate>
+			</ListView>
+		</Grid>
+	</Grid>
+</Page>

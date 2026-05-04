@@ -1,0 +1,76 @@
+<Page
+    x:Class="Vinoteca.Views.UsuarioMenuView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+	<Grid>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="260"/>
+			<!-- Sidebar -->
+			<ColumnDefinition Width="*"/>
+			<!-- Contenido -->
+		</Grid.ColumnDefinitions>
+
+		<!-- SIDEBAR -->
+		<Border Grid.Column="0" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="0,0,1,0">
+			<Grid>
+				<Grid.RowDefinitions>
+					<RowDefinition Height="Auto"/>
+					<!-- Logo -->
+					<RowDefinition Height="*"/>
+					<!-- Navegación -->
+					<RowDefinition Height="Auto"/>
+					<!-- Usuario + cerrar sesión -->
+				</Grid.RowDefinitions>
+
+				<!-- Logo -->
+				<StackPanel Grid.Row="0" Padding="24,32,24,24" Spacing="4">
+					<TextBlock Text="Vinoteca" Style="{ThemeResource TitleTextBlockStyle}"/>
+					<TextBlock Text="Tienda" Style="{ThemeResource CaptionTextBlockStyle}" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+				</StackPanel>
+
+				<!-- Navegación -->
+				<StackPanel Grid.Row="1" Padding="12,0" Spacing="4">
+					<Button x:Name="btnNavTienda" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" CornerRadius="8" Padding="12,10" Click="btnNavTienda_Click">
+						<StackPanel Orientation="Horizontal" Spacing="12">
+							<SymbolIcon Symbol="Shop"/>
+							<TextBlock Text="Tienda" VerticalAlignment="Center"/>
+						</StackPanel>
+					</Button>
+
+					<Button x:Name="btnNavCarrito" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" CornerRadius="8" Padding="12,10" Click="btnNavCarrito_Click">
+						<StackPanel Orientation="Horizontal" Spacing="12">
+							<FontIcon Glyph="&#xE7BF;"/>
+							<TextBlock Text="Carrito" VerticalAlignment="Center"/>
+							<Border x:Name="bdgCarritoMenu" Background="{ThemeResource AccentFillColorDefaultBrush}" CornerRadius="10" MinWidth="20" Padding="4,0" Visibility="Collapsed">
+								<TextBlock x:Name="txtContadorCarritoMenu" Text="0" Foreground="White" FontSize="12" HorizontalAlignment="Center"/>
+							</Border>
+						</StackPanel>
+					</Button>
+				</StackPanel>
+
+				<!-- Usuario activo + cerrar sesión -->
+				<Border Grid.Row="2" Padding="16" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="0,1,0,0">
+					<Grid>
+						<Grid.RowDefinitions>
+							<RowDefinition Height="Auto"/>
+							<RowDefinition Height="8"/>
+							<RowDefinition Height="Auto"/>
+						</Grid.RowDefinitions>
+
+						<StackPanel Grid.Row="0" Spacing="2">
+							<TextBlock x:Name="txtNombreUsuarioActivo" Text="Usuario" Style="{ThemeResource BodyStrongTextBlockStyle}"/>
+							<TextBlock x:Name="txtCorreoUsuarioActivo" Text="usuario@vinoteca.com" Style="{ThemeResource CaptionTextBlockStyle}" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+						</StackPanel>
+
+						<Button Grid.Row="2" x:Name="btnCerrarSesionUsuario" Content="Cerrar Sesión" HorizontalAlignment="Stretch" CornerRadius="6" Click="btnCerrarSesionUsuario_Click"/>
+					</Grid>
+				</Border>
+			</Grid>
+		</Border>
+
+		<!-- CONTENIDO CENTRAL -->
+		<Frame Grid.Column="1" x:Name="UsuarioContentFrame"/>
+	</Grid>
+</Page>
