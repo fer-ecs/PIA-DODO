@@ -138,5 +138,10 @@ namespace Vinoteca.Views
 			txtError.Visibility = Visibility.Visible;
 		}
 
+		private void BtnIrRegistro_Click(object sender, RoutedEventArgs e)
+		{
+			Frame.Navigate(typeof(RegisterView));
+		}
+
 	}
 }

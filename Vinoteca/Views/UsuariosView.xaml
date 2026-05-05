@@ -6,14 +6,15 @@
 
 	<Grid Background="{StaticResource WineBackgroundBrush}" Padding="12" ColumnSpacing="20">
 		<Grid.ColumnDefinitions>
-			<ColumnDefinition Width="380"/>
+			<ColumnDefinition Width="390"/>
 			<ColumnDefinition Width="*"/>
 		</Grid.ColumnDefinitions>
 
 		<Border Grid.Column="0" Style="{StaticResource WineCardStyle}" Padding="22">
 			<StackPanel Spacing="12">
 				<TextBlock Text="Gestion de usuarios" FontSize="28" FontWeight="SemiBold" Foreground="{StaticResource WineTextBrush}"/>
-				<TextBlock Text="Crea cuentas para operacion interna y define si cada una trabaja como administrador o usuario." TextWrapping="Wrap" Foreground="{StaticResource WineMutedBrush}"/>
+				<TextBlock x:Name="txtModoFormulario" Text="Nuevo usuario" Foreground="{StaticResource WineHeroBrush}" FontWeight="SemiBold"/>
+				<TextBlock Text="Administra cuentas del negocio y clientes registrados desde un mismo panel." TextWrapping="Wrap" Foreground="{StaticResource WineMutedBrush}"/>
 
 				<TextBox x:Name="txtNombre"
                      Style="{StaticResource WineTextBoxStyle}"
@@ -39,23 +40,33 @@
                          MaxLength="20"
                          PlaceholderText="********"/>
 
-				<CheckBox x:Name="chkEsAdmin" Content="Crear como administrador"/>
+				<CheckBox x:Name="chkEsAdmin" Content="Asignar rol de administrador"/>
 
 				<TextBlock x:Name="txtMensaje"
                        Visibility="Collapsed"
                        TextWrapping="Wrap"/>
 
-				<Button Content="Crear usuario"
-                    Style="{StaticResource WinePrimaryButtonStyle}"
-                    Click="btnCrearUsuario_Click"/>
+				<StackPanel Orientation="Horizontal" Spacing="8">
+					<Button x:Name="btnGuardarUsuario" Content="Guardar usuario" Style="{StaticResource WinePrimaryButtonStyle}" Click="btnGuardarUsuario_Click"/>
+					<Button x:Name="btnLimpiarUsuario" Content="Limpiar" Style="{StaticResource WineSecondaryButtonStyle}" Click="btnLimpiarUsuario_Click"/>
+					<Button x:Name="btnEliminarUsuario" Content="Eliminar" Style="{StaticResource WineDangerButtonStyle}" Click="btnEliminarUsuario_Click"/>
+				</StackPanel>
 			</StackPanel>
 		</Border>
 
 		<Border Grid.Column="1" Style="{StaticResource WineCardStyle}" Padding="22">
-			<StackPanel Spacing="12">
-				<TextBlock Text="Equipo registrado" FontSize="24" FontWeight="SemiBold" Foreground="{StaticResource WineTextBrush}"/>
+			<Grid>
+				<Grid.RowDefinitions>
+					<RowDefinition Height="Auto"/>
+					<RowDefinition Height="*"/>
+				</Grid.RowDefinitions>
 
-				<ListView x:Name="lvUsuarios" SelectionMode="None" Background="Transparent">
+				<StackPanel Margin="0,0,0,12">
+					<TextBlock Text="Cuentas registradas" FontSize="24" FontWeight="SemiBold" Foreground="{StaticResource WineTextBrush}"/>
+					<TextBlock Text="Selecciona una cuenta para editarla o usa las acciones rapidas de rol y estado." Foreground="{StaticResource WineMutedBrush}" Margin="0,4,0,0"/>
+				</StackPanel>
+
+				<ListView x:Name="lvUsuarios" Grid.Row="1" SelectionMode="Single" SelectionChanged="lvUsuarios_SelectionChanged" Background="Transparent">
 					<ListView.ItemTemplate>
 						<DataTemplate>
 							<Border Margin="0,0,0,10" Padding="16" CornerRadius="16" Background="#FFF8F2" BorderBrush="{StaticResource WineBorderBrush}" BorderThickness="1">
@@ -81,7 +92,7 @@
 						</DataTemplate>
 					</ListView.ItemTemplate>
 				</ListView>
-			</StackPanel>
+			</Grid>
 		</Border>
 	</Grid>
 </Page>

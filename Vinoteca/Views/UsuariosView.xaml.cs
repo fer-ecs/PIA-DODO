@@ -15,6 +15,8 @@ namespace Vinoteca.Views
 	{
 		private const string CorreoAdminPrincipal = "admin@vinoteca.com";
 
+		private Usuario? usuarioSeleccionado;
+
 		public ObservableCollection<UsuarioItemViewModel> Usuarios { get; } = new();
 
 		public UsuariosView()
@@ -30,6 +32,7 @@ namespace Vinoteca.Views
 			}
 
 			CargarUsuarios();
+			ActualizarModoFormulario();
 		}
 
 		private void BloquearAccesoNoAdmin()
@@ -39,6 +42,9 @@ namespace Vinoteca.Views
 			txtPassword.IsEnabled = false;
 			txtConfirmarPassword.IsEnabled = false;
 			chkEsAdmin.IsEnabled = false;
+			btnGuardarUsuario.IsEnabled = false;
+			btnLimpiarUsuario.IsEnabled = false;
+			btnEliminarUsuario.IsEnabled = false;
 			lvUsuarios.IsEnabled = false;
 			MostrarError("Solo un administrador puede gestionar usuarios");
 		}
@@ -53,11 +59,28 @@ namespace Vinoteca.Views
 			}
 		}
 
-		private void btnCrearUsuario_Click(object sender, RoutedEventArgs e)
+		private void lvUsuarios_SelectionChanged(object sender, SelectionChangedEventArgs e)
+		{
+			if (lvUsuarios.SelectedItem is not UsuarioItemViewModel item)
+			{
+				return;
+			}
+
+			usuarioSeleccionado = item.Usuario;
+			txtNombre.Text = item.Usuario.Nombre ?? string.Empty;
+			txtCorreo.Text = item.Usuario.Correo ?? string.Empty;
+			txtPassword.Password = item.Usuario.Contrasena ?? string.Empty;
+			txtConfirmarPassword.Password = item.Usuario.Contrasena ?? string.Empty;
+			chkEsAdmin.IsChecked = item.Usuario.EsAdmin;
+			ActualizarModoFormulario();
+			OcultarMensaje();
+		}
+
+		private void btnGuardarUsuario_Click(object sender, RoutedEventArgs e)
 		{
 			if (!SessionService.EsAdminActivo)
 			{
-				MostrarError("Solo un administrador puede crear usuarios");
+				MostrarError("Solo un administrador puede guardar usuarios");
 				return;
 			}
 
@@ -68,144 +91,195 @@ namespace Vinoteca.Views
 			string password = txtPassword.Password;
 			string confirmarPassword = txtConfirmarPassword.Password;
 
+			if (!ValidarFormulario(nombre, correo, password, confirmarPassword))
+			{
+				return;
+			}
+
+			bool esNuevoUsuario = usuarioSeleccionado == null;
+			var usuario = usuarioSeleccionado ?? new Usuario { Id = Guid.NewGuid().ToString() };
+
+			if (ExisteCorreoDuplicado(correo, usuario.Id))
+			{
+				MostrarError("Ya existe una cuenta registrada con ese correo");
+				return;
+			}
+
+			if (!esNuevoUsuario && EsAdminPrincipal(usuario) && chkEsAdmin.IsChecked != true)
+			{
+				MostrarError("El administrador principal debe conservar su rol");
+				return;
+			}
+
+			usuario.Nombre = nombre.Trim();
+			usuario.Correo = correo.Trim();
+			usuario.Contrasena = password;
+			usuario.EsAdmin = chkEsAdmin.IsChecked == true;
+			usuario.Activo = usuarioSeleccionado?.Activo ?? true;
+
+			if (esNuevoUsuario)
+			{
+				if (!DataService.GuardarUsuario(usuario))
+				{
+					MostrarError("No se pudo crear el usuario");
+					return;
+				}
+
+				MostrarExito("Usuario creado correctamente");
+			}
+			else
+			{
+				DataService.ActualizarUsuario(usuario);
+				MostrarExito("Usuario actualizado correctamente");
+			}
+
+			LimpiarFormulario();
+			CargarUsuarios();
+		}
+
+		private bool ValidarFormulario(string nombre, string correo, string password, string confirmarPassword)
+		{
 			if (string.IsNullOrWhiteSpace(nombre))
 			{
 				MostrarError("El nombre es obligatorio");
-				return;
+				return false;
 			}
 
 			if (nombre != nombre.Trim())
 			{
 				MostrarError("El nombre no debe tener espacios al inicio o al final");
-				return;
+				return false;
 			}
 
-			if (nombre.Length < 3)
+			if (nombre.Length < 3 || nombre.Length > 50)
 			{
-				MostrarError("El nombre debe tener al menos 3 caracteres");
-				return;
-			}
-
-			if (nombre.Length > 50)
-			{
-				MostrarError("El nombre no debe exceder 50 caracteres");
-				return;
+				MostrarError("El nombre debe tener entre 3 y 50 caracteres");
+				return false;
 			}
 
 			if (nombre.Contains("  "))
 			{
 				MostrarError("El nombre no debe contener espacios dobles");
-				return;
+				return false;
 			}
 
 			if (nombre.Any(char.IsDigit))
 			{
 				MostrarError("El nombre no debe contener numeros");
-				return;
+				return false;
 			}
 
 			if (string.IsNullOrWhiteSpace(correo))
 			{
 				MostrarError("El correo es obligatorio");
-				return;
+				return false;
 			}
 
 			if (correo != correo.Trim())
 			{
 				MostrarError("El correo no debe tener espacios al inicio o al final");
-				return;
+				return false;
 			}
 
-			if (correo.Length > 80)
+			if (correo.Length > 80 || correo.Any(char.IsWhiteSpace))
 			{
-				MostrarError("El correo no debe exceder 80 caracteres");
-				return;
-			}
-
-			if (correo.Any(char.IsWhiteSpace))
-			{
-				MostrarError("El correo no debe contener espacios");
-				return;
+				MostrarError("Ingresa un correo valido sin espacios y de maximo 80 caracteres");
+				return false;
 			}
 
 			string patternEmail = @"^[^@\s]+@[^@\s]+\.[^@\s]+$";
 			if (!Regex.IsMatch(correo, patternEmail, RegexOptions.IgnoreCase))
 			{
 				MostrarError("Ingresa un correo valido");
-				return;
+				return false;
 			}
 
-			if (string.IsNullOrWhiteSpace(password))
+			if (string.IsNullOrWhiteSpace(password) || string.IsNullOrWhiteSpace(confirmarPassword))
 			{
-				MostrarError("La contrasena es obligatoria");
-				return;
-			}
-
-			if (string.IsNullOrWhiteSpace(confirmarPassword))
-			{
-				MostrarError("Debes confirmar la contrasena");
-				return;
+				MostrarError("Debes escribir y confirmar la contrasena");
+				return false;
 			}
 
 			if (password != password.Trim() || confirmarPassword != confirmarPassword.Trim())
 			{
 				MostrarError("Las contrasenas no deben tener espacios al inicio o al final");
-				return;
+				return false;
 			}
 
 			if (password.Any(char.IsWhiteSpace) || confirmarPassword.Any(char.IsWhiteSpace))
 			{
 				MostrarError("Las contrasenas no deben contener espacios");
-				return;
+				return false;
 			}
 
-			if (password.Length < 8)
+			if (password.Length < 8 || password.Length > 20)
 			{
-				MostrarError("La contrasena debe contener al menos 8 caracteres");
-				return;
-			}
-
-			if (password.Length > 20)
-			{
-				MostrarError("La contrasena no debe exceder 20 caracteres");
-				return;
+				MostrarError("La contrasena debe tener entre 8 y 20 caracteres");
+				return false;
 			}
 
 			if (!EsContrasenaFuerte(password))
 			{
 				MostrarError("La contrasena debe incluir mayuscula, minuscula, numero y caracter especial");
-				return;
+				return false;
 			}
 
 			if (password != confirmarPassword)
 			{
 				MostrarError("Las contrasenas no coinciden");
+				return false;
+			}
+
+			return true;
+		}
+
+		private bool ExisteCorreoDuplicado(string correo, string idActual)
+		{
+			return DataService.ObtenerUsuarios().Any(u =>
+				u.Id != idActual &&
+				!string.IsNullOrWhiteSpace(u.Correo) &&
+				u.Correo.Equals(correo, StringComparison.OrdinalIgnoreCase));
+		}
+
+		private void btnEliminarUsuario_Click(object sender, RoutedEventArgs e)
+		{
+			if (!SessionService.EsAdminActivo)
+			{
+				MostrarError("Solo un administrador puede eliminar usuarios");
 				return;
 			}
 
-			if (DataService.ObtenerUsuarioPorCorreo(correo) != null)
+			if (usuarioSeleccionado == null)
 			{
-				MostrarError("Ya existe una cuenta registrada con ese correo");
+				MostrarError("Selecciona un usuario para eliminar");
 				return;
 			}
 
-			var nuevoUsuario = new Usuario
+			if (EsAdminPrincipal(usuarioSeleccionado))
 			{
-				Id = Guid.NewGuid().ToString(),
-				Nombre = nombre,
-				Correo = correo,
-				Contrasena = password,
-				EsAdmin = chkEsAdmin.IsChecked == true,
-				Activo = true
-			};
-
-			if (!DataService.GuardarUsuario(nuevoUsuario))
-			{
-				MostrarError("No se pudo crear el usuario");
+				MostrarError("El administrador principal no se puede eliminar");
 				return;
 			}
 
-			MostrarExito("Usuario creado correctamente");
+			if (EsUsuarioActual(usuarioSeleccionado))
+			{
+				MostrarError("No puedes eliminar tu propia cuenta");
+				return;
+			}
+
+			if (usuarioSeleccionado.EsAdmin && usuarioSeleccionado.Activo && DataService.ContarAdministradoresActivos() <= 1)
+			{
+				MostrarError("Debe existir al menos un administrador activo");
+				return;
+			}
+
+			if (!DataService.EliminarUsuario(usuarioSeleccionado.Id))
+			{
+				MostrarError("No se pudo eliminar el usuario");
+				return;
+			}
+
+			MostrarExito("Usuario eliminado correctamente");
 			LimpiarFormulario();
 			CargarUsuarios();
 		}
@@ -245,6 +319,12 @@ namespace Vinoteca.Views
 			usuario.Activo = !usuario.Activo;
 			DataService.ActualizarUsuario(usuario);
 			MostrarExito(usuario.Activo ? "Usuario activado correctamente" : "Usuario desactivado correctamente");
+
+			if (usuarioSeleccionado?.Id == usuario.Id)
+			{
+				usuarioSeleccionado = usuario;
+			}
+
 			CargarUsuarios();
 		}
 
@@ -283,6 +363,13 @@ namespace Vinoteca.Views
 			usuario.EsAdmin = !usuario.EsAdmin;
 			DataService.ActualizarUsuario(usuario);
 			MostrarExito(usuario.EsAdmin ? "Rol actualizado a administrador" : "Rol actualizado a usuario");
+
+			if (usuarioSeleccionado?.Id == usuario.Id)
+			{
+				usuarioSeleccionado = usuario;
+				chkEsAdmin.IsChecked = usuario.EsAdmin;
+			}
+
 			CargarUsuarios();
 		}
 
@@ -304,13 +391,30 @@ namespace Vinoteca.Views
 				usuario.Id == SessionService.UsuarioActivo.Id;
 		}
 
+		private void btnLimpiarUsuario_Click(object sender, RoutedEventArgs e)
+		{
+			LimpiarFormulario();
+			OcultarMensaje();
+		}
+
 		private void LimpiarFormulario()
 		{
+			usuarioSeleccionado = null;
 			txtNombre.Text = string.Empty;
 			txtCorreo.Text = string.Empty;
 			txtPassword.Password = string.Empty;
 			txtConfirmarPassword.Password = string.Empty;
 			chkEsAdmin.IsChecked = false;
+			lvUsuarios.SelectedItem = null;
+			ActualizarModoFormulario();
+		}
+
+		private void ActualizarModoFormulario()
+		{
+			bool edicion = usuarioSeleccionado != null;
+			txtModoFormulario.Text = edicion ? "Editar usuario seleccionado" : "Nuevo usuario";
+			btnGuardarUsuario.Content = edicion ? "Guardar cambios" : "Guardar usuario";
+			btnEliminarUsuario.IsEnabled = edicion;
 		}
 
 		private void MostrarError(string mensaje)

@@ -39,23 +39,7 @@ namespace Vinoteca.Services
 
 				if (!File.Exists(usuariosFile))
 				{
-					var usuariosBase = new List<Usuario>
-					{
-						new Usuario
-						{
-							Id = Guid.NewGuid().ToString(),
-							Nombre = "Administrador",
-							Correo = adminCorreo,
-							Contrasena = adminContrasena,
-							EsAdmin = true,
-							Activo = true
-						}
-					};
-					GuardarJson(usuariosFile, usuariosBase);
-				}
-				else
-				{
-					ActualizarUsuarioAdmin();
+					GuardarJson(usuariosFile, CrearUsuariosBase());
 				}
 
 				if (!File.Exists(productosFile))
@@ -67,6 +51,9 @@ namespace Vinoteca.Services
 				{
 					GuardarJson(ventasFile, new List<Venta>());
 				}
+
+				ActualizarUsuarioAdmin();
+				AsegurarDatosMuestra();
 			}
 			catch (Exception ex)
 			{
@@ -97,6 +84,22 @@ namespace Vinoteca.Services
 			File.WriteAllText(ruta, json);
 		}
 
+		private static List<Usuario> CrearUsuariosBase()
+		{
+			return new List<Usuario>
+			{
+				new Usuario
+				{
+					Id = Guid.NewGuid().ToString(),
+					Nombre = "Administrador",
+					Correo = adminCorreo,
+					Contrasena = adminContrasena,
+					EsAdmin = true,
+					Activo = true
+				}
+			};
+		}
+
 		private static void ActualizarUsuarioAdmin()
 		{
 			var usuarios = ObtenerUsuariosSinInicializar();
@@ -106,11 +109,110 @@ namespace Vinoteca.Services
 
 			if (admin == null)
 			{
+				usuarios.Insert(0, CrearUsuariosBase().First());
+				GuardarJson(usuariosFile, usuarios);
 				return;
 			}
 
 			admin.Contrasena = adminContrasena;
+			admin.EsAdmin = true;
+			admin.Activo = true;
 			GuardarJson(usuariosFile, usuarios);
+		}
+
+		private static void AsegurarDatosMuestra()
+		{
+			var usuarios = ObtenerUsuariosSinInicializar();
+			bool usuariosActualizados = false;
+
+			foreach (var usuarioMuestra in CrearUsuariosMuestra())
+			{
+				bool existe = usuarios.Any(u =>
+					!string.IsNullOrWhiteSpace(u.Correo) &&
+					u.Correo.Equals(usuarioMuestra.Correo, StringComparison.OrdinalIgnoreCase));
+
+				if (existe)
+				{
+					continue;
+				}
+
+				usuarios.Add(usuarioMuestra);
+				usuariosActualizados = true;
+			}
+
+			if (usuariosActualizados)
+			{
+				GuardarJson(usuariosFile, usuarios);
+			}
+
+			var productos = ObtenerProductosSinInicializar();
+			bool productosActualizados = false;
+
+			foreach (var productoMuestra in CrearProductosMuestra())
+			{
+				bool existe = productos.Any(p =>
+					!string.IsNullOrWhiteSpace(p.Nombre) &&
+					!string.IsNullOrWhiteSpace(p.Marca) &&
+					p.Nombre.Equals(productoMuestra.Nombre, StringComparison.OrdinalIgnoreCase) &&
+					p.Marca.Equals(productoMuestra.Marca, StringComparison.OrdinalIgnoreCase));
+
+				if (existe)
+				{
+					continue;
+				}
+
+				productos.Add(productoMuestra);
+				productosActualizados = true;
+			}
+
+			if (productosActualizados)
+			{
+				GuardarJson(productosFile, productos);
+			}
+		}
+
+		private static List<Usuario> CrearUsuariosMuestra()
+		{
+			return new List<Usuario>
+			{
+				new Usuario { Id = Guid.NewGuid().ToString(), Nombre = "Ana Lopez", Correo = "ana.lopez@vinoteca.com", Contrasena = "Ana_123*", EsAdmin = true, Activo = true },
+				new Usuario { Id = Guid.NewGuid().ToString(), Nombre = "Carlos Mendez", Correo = "carlos.mendez@vinoteca.com", Contrasena = "Carlos_123*", EsAdmin = true, Activo = true },
+				new Usuario { Id = Guid.NewGuid().ToString(), Nombre = "Laura Perez", Correo = "laura.perez@vinoteca.com", Contrasena = "Laura_123*", EsAdmin = false, Activo = true },
+				new Usuario { Id = Guid.NewGuid().ToString(), Nombre = "Diego Ruiz", Correo = "diego.ruiz@vinoteca.com", Contrasena = "Diego_123*", EsAdmin = false, Activo = true },
+				new Usuario { Id = Guid.NewGuid().ToString(), Nombre = "Sofia Vargas", Correo = "sofia.vargas@vinoteca.com", Contrasena = "Sofia_123*", EsAdmin = false, Activo = true },
+				new Usuario { Id = Guid.NewGuid().ToString(), Nombre = "Miguel Torres", Correo = "miguel.torres@vinoteca.com", Contrasena = "Miguel_123*", EsAdmin = false, Activo = true },
+				new Usuario { Id = Guid.NewGuid().ToString(), Nombre = "Valeria Castro", Correo = "valeria.castro@vinoteca.com", Contrasena = "Valeria_123*", EsAdmin = false, Activo = true },
+				new Usuario { Id = Guid.NewGuid().ToString(), Nombre = "Javier Moreno", Correo = "javier.moreno@vinoteca.com", Contrasena = "Javier_123*", EsAdmin = false, Activo = true },
+				new Usuario { Id = Guid.NewGuid().ToString(), Nombre = "Fernanda Gil", Correo = "fernanda.gil@vinoteca.com", Contrasena = "Fernanda_123*", EsAdmin = false, Activo = true },
+				new Usuario { Id = Guid.NewGuid().ToString(), Nombre = "Ricardo Salas", Correo = "ricardo.salas@vinoteca.com", Contrasena = "Ricardo_123*", EsAdmin = false, Activo = true },
+				new Usuario { Id = Guid.NewGuid().ToString(), Nombre = "Daniela Ortiz", Correo = "daniela.ortiz@vinoteca.com", Contrasena = "Daniela_123*", EsAdmin = false, Activo = true },
+				new Usuario { Id = Guid.NewGuid().ToString(), Nombre = "Eduardo Rios", Correo = "eduardo.rios@vinoteca.com", Contrasena = "Eduardo_123*", EsAdmin = false, Activo = true },
+				new Usuario { Id = Guid.NewGuid().ToString(), Nombre = "Mariana Vega", Correo = "mariana.vega@vinoteca.com", Contrasena = "Mariana_123*", EsAdmin = false, Activo = true },
+				new Usuario { Id = Guid.NewGuid().ToString(), Nombre = "Patricia Leon", Correo = "patricia.leon@vinoteca.com", Contrasena = "Patricia_123*", EsAdmin = false, Activo = true },
+				new Usuario { Id = Guid.NewGuid().ToString(), Nombre = "Hector Nava", Correo = "hector.nava@vinoteca.com", Contrasena = "Hector_123*", EsAdmin = false, Activo = true }
+			};
+		}
+
+		private static List<Producto> CrearProductosMuestra()
+		{
+			return new List<Producto>
+			{
+				new Producto { Nombre = "Cabernet Reserva", Marca = "Concha y Toro", Categoria = "Tinto", PrecioVenta = 289, Stock = 24, ImagenPath = string.Empty, Activo = true },
+				new Producto { Nombre = "Merlot Clasico", Marca = "Casillero del Diablo", Categoria = "Tinto", PrecioVenta = 245, Stock = 18, ImagenPath = string.Empty, Activo = true },
+				new Producto { Nombre = "Malbec Andino", Marca = "Trapiche", Categoria = "Tinto", PrecioVenta = 310, Stock = 20, ImagenPath = string.Empty, Activo = true },
+				new Producto { Nombre = "Syrah Gran Seleccion", Marca = "LA Cetto", Categoria = "Tinto", PrecioVenta = 275, Stock = 14, ImagenPath = string.Empty, Activo = true },
+				new Producto { Nombre = "Tempranillo Roble", Marca = "Freixenet", Categoria = "Tinto", PrecioVenta = 260, Stock = 12, ImagenPath = string.Empty, Activo = true },
+				new Producto { Nombre = "Sauvignon Blanc", Marca = "Santa Rita", Categoria = "Blanco", PrecioVenta = 235, Stock = 19, ImagenPath = string.Empty, Activo = true },
+				new Producto { Nombre = "Chardonnay Reserva", Marca = "Monte Xanic", Categoria = "Blanco", PrecioVenta = 365, Stock = 11, ImagenPath = string.Empty, Activo = true },
+				new Producto { Nombre = "Pinot Grigio", Marca = "Gallo Family", Categoria = "Blanco", PrecioVenta = 225, Stock = 16, ImagenPath = string.Empty, Activo = true },
+				new Producto { Nombre = "Moscato Ligero", Marca = "Barefoot", Categoria = "Blanco", PrecioVenta = 210, Stock = 15, ImagenPath = string.Empty, Activo = true },
+				new Producto { Nombre = "Rose Provence", Marca = "Minuty", Categoria = "Rosado", PrecioVenta = 420, Stock = 10, ImagenPath = string.Empty, Activo = true },
+				new Producto { Nombre = "Rose de Verano", Marca = "Lancers", Categoria = "Rosado", PrecioVenta = 255, Stock = 17, ImagenPath = string.Empty, Activo = true },
+				new Producto { Nombre = "Brut Imperial", Marca = "Moet Chandon", Categoria = "Espumoso", PrecioVenta = 1180, Stock = 8, ImagenPath = string.Empty, Activo = true },
+				new Producto { Nombre = "Prosecco Extra Dry", Marca = "Mionetto", Categoria = "Espumoso", PrecioVenta = 399, Stock = 13, ImagenPath = string.Empty, Activo = true },
+				new Producto { Nombre = "Cava Brut", Marca = "Freixenet", Categoria = "Espumoso", PrecioVenta = 345, Stock = 21, ImagenPath = string.Empty, Activo = true },
+				new Producto { Nombre = "Lambrusco Rosso", Marca = "Riunite", Categoria = "Espumoso", PrecioVenta = 230, Stock = 22, ImagenPath = string.Empty, Activo = true }
+			};
 		}
 
 		private static List<Usuario> ObtenerUsuariosSinInicializar()
@@ -123,6 +225,19 @@ namespace Vinoteca.Services
 			catch
 			{
 				return new List<Usuario>();
+			}
+		}
+
+		private static List<Producto> ObtenerProductosSinInicializar()
+		{
+			try
+			{
+				string json = File.ReadAllText(productosFile);
+				return JsonSerializer.Deserialize<List<Producto>>(json) ?? new List<Producto>();
+			}
+			catch
+			{
+				return new List<Producto>();
 			}
 		}
 
@@ -169,6 +284,20 @@ namespace Vinoteca.Services
 			GuardarJson(usuariosFile, usuarios);
 		}
 
+		public static bool EliminarUsuario(string id)
+		{
+			var usuarios = ObtenerUsuarios();
+			var usuario = usuarios.FirstOrDefault(u => u.Id == id);
+			if (usuario == null)
+			{
+				return false;
+			}
+
+			usuarios.Remove(usuario);
+			GuardarJson(usuariosFile, usuarios);
+			return true;
+		}
+
 		public static int ContarAdministradoresActivos()
 		{
 			return ObtenerUsuarios().Count(u => u.EsAdmin && u.Activo);
@@ -177,15 +306,7 @@ namespace Vinoteca.Services
 		public static List<Producto> ObtenerProductos()
 		{
 			InicializarArchivos();
-			try
-			{
-				string json = File.ReadAllText(productosFile);
-				return JsonSerializer.Deserialize<List<Producto>>(json) ?? new List<Producto>();
-			}
-			catch
-			{
-				return new List<Producto>();
-			}
+			return ObtenerProductosSinInicializar();
 		}
 
 		public static void GuardarProducto(Producto producto)

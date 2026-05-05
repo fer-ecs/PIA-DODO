@@ -66,8 +66,12 @@
                     Style="{StaticResource WinePrimaryButtonStyle}"
                     Click="BtnLogin_Click"/>
 
+				<Button Content="Crear cuenta"
+                    Style="{StaticResource WineSecondaryButtonStyle}"
+                    Click="BtnIrRegistro_Click"/>
+
 				<Border Background="#FFF5EC" CornerRadius="14" Padding="14">
-					<TextBlock Text="Las cuentas de acceso las administra la vinoteca. El cliente comun solo compra e inicia sesion." TextWrapping="Wrap" Foreground="{StaticResource WineMutedBrush}" FontSize="13"/>
+					<TextBlock Text="Si eres cliente puedes crear tu cuenta. Si administras la tienda, usa tus credenciales de operacion." TextWrapping="Wrap" Foreground="{StaticResource WineMutedBrush}" FontSize="13"/>
 				</Border>
 			</StackPanel>
 		</Border>

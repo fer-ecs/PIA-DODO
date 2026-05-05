@@ -12,7 +12,7 @@
 
 			<helpers:StringFormatConverter x:Key="StringFormatConverter"/>
 
-			<SolidColorBrush x:Key="WineBackgroundBrush" Color="#F7F0E8"/>
+			<SolidColorBrush x:Key="WineBackgroundBrush" Color="#5B1F2A"/>
 			<SolidColorBrush x:Key="WinePanelBrush" Color="#FFF9F4"/>
 			<SolidColorBrush x:Key="WineSidebarBrush" Color="#402228"/>
 			<SolidColorBrush x:Key="WineAccentBrush" Color="#8F2D3B"/>
@@ -22,6 +22,35 @@
 			<SolidColorBrush x:Key="WineBorderBrush" Color="#E2D4C7"/>
 			<SolidColorBrush x:Key="WineHeroBrush" Color="#6D2432"/>
 			<SolidColorBrush x:Key="WineHeroSoftBrush" Color="#C58D54"/>
+			<SolidColorBrush x:Key="WineDangerBrush" Color="#9F3B37"/>
+			<SolidColorBrush x:Key="WineSuccessBrush" Color="#4D6B45"/>
+
+			<SolidColorBrush x:Key="AccentButtonBackground" Color="#7A2030"/>
+			<SolidColorBrush x:Key="AccentButtonBackgroundPointerOver" Color="#651928"/>
+			<SolidColorBrush x:Key="AccentButtonBackgroundPressed" Color="#541321"/>
+			<SolidColorBrush x:Key="AccentButtonForeground" Color="#FFF8F3"/>
+			<SolidColorBrush x:Key="AccentButtonForegroundPointerOver" Color="#FFF8F3"/>
+			<SolidColorBrush x:Key="AccentButtonForegroundPressed" Color="#FFF8F3"/>
+			<SolidColorBrush x:Key="AccentButtonBorderBrush" Color="#7A2030"/>
+			<SolidColorBrush x:Key="AccentButtonBorderBrushPointerOver" Color="#651928"/>
+			<SolidColorBrush x:Key="AccentButtonBorderBrushPressed" Color="#541321"/>
+
+			<SolidColorBrush x:Key="ButtonBackground" Color="#F1E3D4"/>
+			<SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="#E4D0BE"/>
+			<SolidColorBrush x:Key="ButtonBackgroundPressed" Color="#DABFA9"/>
+			<SolidColorBrush x:Key="ButtonForeground" Color="#2F1D1F"/>
+			<SolidColorBrush x:Key="ButtonForegroundPointerOver" Color="#2F1D1F"/>
+			<SolidColorBrush x:Key="ButtonForegroundPressed" Color="#2F1D1F"/>
+			<SolidColorBrush x:Key="ButtonBorderBrush" Color="#D1B9A6"/>
+			<SolidColorBrush x:Key="ButtonBorderBrushPointerOver" Color="#C4A68D"/>
+			<SolidColorBrush x:Key="ButtonBorderBrushPressed" Color="#B89273"/>
+
+			<SolidColorBrush x:Key="ListViewItemBackgroundPointerOver" Color="#FFF2E6"/>
+			<SolidColorBrush x:Key="ListViewItemBackgroundSelected" Color="#F4E3D7"/>
+			<SolidColorBrush x:Key="ListViewItemBackgroundSelectedPointerOver" Color="#EFDACA"/>
+			<SolidColorBrush x:Key="ListViewItemForegroundPointerOver" Color="#2F1D1F"/>
+			<SolidColorBrush x:Key="ListViewItemForegroundSelected" Color="#2F1D1F"/>
+			<SolidColorBrush x:Key="ListViewItemForegroundSelectedPointerOver" Color="#2F1D1F"/>
 
 			<Style x:Key="WinePageRootStyle" TargetType="Grid">
 				<Setter Property="Background" Value="{StaticResource WineBackgroundBrush}"/>
@@ -45,6 +74,14 @@
 				<Setter Property="Background" Value="#F1E3D4"/>
 				<Setter Property="Foreground" Value="{StaticResource WineTextBrush}"/>
 				<Setter Property="BorderBrush" Value="{StaticResource WineBorderBrush}"/>
+			</Style>
+
+			<Style x:Key="WineDangerButtonStyle" TargetType="Button">
+				<Setter Property="CornerRadius" Value="12"/>
+				<Setter Property="Padding" Value="16,11"/>
+				<Setter Property="Background" Value="#F0D6D2"/>
+				<Setter Property="Foreground" Value="{StaticResource WineDangerBrush}"/>
+				<Setter Property="BorderBrush" Value="#D8AAA3"/>
 			</Style>
 
 			<Style x:Key="WineSidebarButtonStyle" TargetType="Button">
