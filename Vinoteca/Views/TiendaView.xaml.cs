@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using Vinoteca.Helpers;
 using Vinoteca.Models;
 using Vinoteca.Services;
 
@@ -12,12 +13,13 @@ namespace Vinoteca.Views
 {
 	public sealed partial class TiendaView : Page
 	{
-		public ObservableCollection<Producto> ProductosCatalogo { get; set; }
-		private List<Producto> todosLosProductos;
+		public ObservableCollection<Producto> ProductosCatalogo { get; } = new();
+		private List<Producto> todosLosProductos = new();
 
 		public TiendaView()
 		{
 			this.InitializeComponent();
+			InputRestrictionsHelper.AplicarSinEspaciosNiEnter(this);
 			CargarCatalogo();
 			RefrescarCarritoVisual(); // Para que el carrito aparezca si ya hay algo guardado
 		}
@@ -27,16 +29,21 @@ namespace Vinoteca.Views
 			todosLosProductos = DataService.ObtenerProductos()
 				.Where(p => p.Stock > 0 && p.Activo).ToList();
 
-			ProductosCatalogo = new ObservableCollection<Producto>(todosLosProductos);
+			ProductosCatalogo.Clear();
+			foreach (var producto in todosLosProductos)
+			{
+				ProductosCatalogo.Add(producto);
+			}
+
 			gvTienda.ItemsSource = ProductosCatalogo;
 		}
 
 		private void txtBuscar_TextChanged(object sender, TextChangedEventArgs e)
 		{
-			var busqueda = txtBuscar.Text.ToLower();
+			var busqueda = txtBuscar.Text?.ToLowerInvariant() ?? string.Empty;
 			var filtrados = todosLosProductos.Where(p =>
-				p.Nombre.ToLower().Contains(busqueda) ||
-				p.Marca.ToLower().Contains(busqueda)).ToList();
+				(p.Nombre?.ToLowerInvariant().Contains(busqueda) ?? false) ||
+				(p.Marca?.ToLowerInvariant().Contains(busqueda) ?? false)).ToList();
 
 			ProductosCatalogo.Clear();
 			foreach (var p in filtrados) ProductosCatalogo.Add(p);

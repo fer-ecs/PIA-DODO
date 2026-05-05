@@ -6,30 +6,37 @@
 
 	<Grid>
 		<StackPanel Width="320" HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="16">
-			<TextBlock Text="Inicio de Sesión" 
-                       Style="{ThemeResource TitleTextBlockStyle}" 
-                       HorizontalAlignment="Center" 
+			<TextBlock Text="Inicio de Sesion"
+                       Style="{ThemeResource TitleTextBlockStyle}"
+                       HorizontalAlignment="Center"
                        Margin="0,0,0,16"/>
 
-			<TextBox x:Name="txtCorreo" 
-                     Header="Correo Electrónico" 
+			<TextBox x:Name="txtCorreo"
+                     Header="Correo Electronico"
+                     MaxLength="80"
                      PlaceholderText="admin@vinoteca.com"/>
 
-			<PasswordBox x:Name="txtPassword" 
-                         Header="Contraseña" 
+			<PasswordBox x:Name="txtPassword"
+                         Header="Contrasena"
+                         MaxLength="20"
                          PlaceholderText="••••••••"/>
 
-			<TextBlock x:Name="txtError" 
-                       Foreground="{ThemeResource SystemFillColorCriticalBrush}" 
-                       Visibility="Collapsed" 
+			<TextBlock x:Name="txtError"
+                       Foreground="{ThemeResource SystemFillColorCriticalBrush}"
+                       Visibility="Collapsed"
                        TextWrapping="Wrap"
                        HorizontalAlignment="Center"/>
 
-			<Button Content="Ingresar" 
-                    HorizontalAlignment="Stretch" 
-                    Style="{ThemeResource AccentButtonStyle}" 
+			<Button Content="Ingresar"
+                    HorizontalAlignment="Stretch"
+                    Style="{ThemeResource AccentButtonStyle}"
                     Margin="0,8,0,0"
                     Click="BtnLogin_Click"/>
+
+			<TextBlock Text="Las cuentas las crea el administrador"
+                       TextWrapping="Wrap"
+                       HorizontalAlignment="Center"
+                       Opacity="0.75"/>
 		</StackPanel>
 	</Grid>
 </Page>

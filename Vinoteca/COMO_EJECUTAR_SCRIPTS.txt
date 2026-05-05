@@ -1,0 +1,208 @@
+╔════════════════════════════════════════════════════════════════════════════╗
+║                  SCRIPTS PARA EJECUTAR VINOTECA FÁCILMENTE                  ║
+╚════════════════════════════════════════════════════════════════════════════╝
+
+He creado 2 scripts para que ejecutes la aplicación con un solo click 🎉
+
+═════════════════════════════════════════════════════════════════════════════
+📌 OPCIÓN 1: USAR EL SCRIPT .BAT (Más fácil)
+═════════════════════════════════════════════════════════════════════════════
+
+Archivo: ejecutar.bat
+
+Ubicación: C:\Users\erick\OneDrive\Documents\6to\PAL\PIA-DODO\Vinoteca\
+           ejecutar.bat
+
+¿Cómo usar?
+──────────────────────────────────────────────────────────────────────────────
+1. Abre el Explorador de archivos (Windows Explorer)
+
+2. Navega a: C:\Users\erick\OneDrive\Documents\6to\PAL\PIA-DODO\Vinoteca
+
+3. Busca el archivo: ejecutar.bat
+
+4. DOBLE CLIC en el archivo
+
+5. Se abrirá una ventana negra (cmd) que:
+   ✅ Limpiará compilación anterior
+   ✅ Compilará el proyecto
+   ✅ Ejecutará la aplicación
+   ✅ Esperará a que cierres la app
+
+¿Ventajas?
+──────────────────────────────────────────────────────────────────────────────
+✅ Solo un clic
+✅ No necesitas abrir terminal
+✅ Automatiza todo el proceso
+✅ Funciona en cualquier Windows
+
+═════════════════════════════════════════════════════════════════════════════
+📌 OPCIÓN 2: USAR EL SCRIPT .PS1 (PowerShell - Con colores)
+═════════════════════════════════════════════════════════════════════════════
+
+Archivo: ejecutar.ps1
+
+Ubicación: C:\Users\erick\OneDrive\Documents\6to\PAL\PIA-DODO\Vinoteca\
+           ejecutar.ps1
+
+¿Cómo usar?
+──────────────────────────────────────────────────────────────────────────────
+
+MÉTODO A: Hacer clic derecho
+────────────────────────────
+1. Abre el Explorador de archivos
+2. Navega a: C:\Users\erick\OneDrive\Documents\6to\PAL\PIA-DODO\Vinoteca
+3. Busca: ejecutar.ps1
+4. CLIC DERECHO en el archivo
+5. Selecciona: "Ejecutar con PowerShell"
+6. Si aparece un aviso de seguridad, presiona: S (Sí)
+7. ¡Listo! Se ejecutará la aplicación
+
+MÉTODO B: Desde PowerShell
+────────────────────────────
+1. Abre PowerShell
+2. Copia y pega este comando:
+   C:\Users\erick\OneDrive\Documents\6to\PAL\PIA-DODO\Vinoteca\ejecutar.ps1
+3. Presiona Enter
+4. ¡La aplicación se abrirá!
+
+Si aparece error de permisos:
+──────────────────────────────
+Ejecuta esto primero en PowerShell:
+   Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+
+Luego ejecuta el script nuevamente.
+
+¿Ventajas?
+──────────────────────────────────────────────────────────────────────────────
+✅ Colores en la consola (más fácil de leer)
+✅ Mensajes más claros
+✅ Detecta errores automáticamente
+✅ Mejor experiencia visual
+
+═════════════════════════════════════════════════════════════════════════════
+📌 OPCIÓN 3: EJECUTAR MANUALMENTE DESDE TERMINAL (Si los scripts no funcionan)
+═════════════════════════════════════════════════════════════════════════════
+
+Abre PowerShell y ejecuta:
+
+cd "C:\Users\erick\OneDrive\Documents\6to\PAL\PIA-DODO\Vinoteca"
+dotnet run
+
+═════════════════════════════════════════════════════════════════════════════
+📌 OPCIÓN 4: DOBLE CLIC EN EL EJECUTABLE (Más rápido)
+═════════════════════════════════════════════════════════════════════════════
+
+Ubicación del archivo:
+C:\Users\erick\OneDrive\Documents\6to\PAL\PIA-DODO\Vinoteca\
+bin\Debug\net8.0-windows10.0.19041.0\Vinoteca.exe
+
+¿Cómo usar?
+──────────────────────────────────────────────────────────────────────────────
+1. Abre el Explorador de archivos
+
+2. Navega a la ruta anterior
+
+3. Busca el archivo: Vinoteca.exe
+
+4. DOBLE CLIC
+
+5. ¡La aplicación se abre instantáneamente!
+
+¿Ventajas?
+──────────────────────────────────────────────────────────────────────────────
+✅ El más rápido (no necesita compilar)
+✅ No requiere terminal
+✅ Funciona incluso sin .NET (casi)
+
+NOTA: Solo funciona si ya fue compilado.
+      Si haces cambios en el código, necesitas compilar nuevamente.
+
+═════════════════════════════════════════════════════════════════════════════
+🎯 RECOMENDACIÓN: ¿CUÁL USAR?
+═════════════════════════════════════════════════════════════════════════════
+
+Para primera vez / desarrollo:
+   → Usa ejecutar.bat
+      (Compila automáticamente y luego ejecuta)
+
+Para uso rápido (después de compilar):
+   → Doble clic en Vinoteca.exe
+      (Más rápido, no necesita compilar)
+
+Para ver los detalles de compilación:
+   → Usa ejecutar.ps1
+      (Muestra colores y detalles)
+
+═════════════════════════════════════════════════════════════════════════════
+🔐 CREDENCIALES DE PRUEBA
+═════════════════════════════════════════════════════════════════════════════
+
+Cuando se abra la aplicación:
+
+📧 Correo:      admin@vinoteca.com
+🔐 Contraseña:  Admin@123
+
+Click en "Ingresar" → ✅ Acceso al dashboard
+
+═════════════════════════════════════════════════════════════════════════════
+❓ ¿QUÉ HACEN ESTOS SCRIPTS?
+═════════════════════════════════════════════════════════════════════════════
+
+ejecutar.bat:
+   1. Se navega a la carpeta del proyecto
+   2. Limpia compilación anterior
+   3. Compila el proyecto con: dotnet build -c Debug
+   4. Ejecuta la app con: dotnet run --no-build
+   5. Mantiene la ventana abierta para ver errores
+
+ejecutar.ps1:
+   1. Lo mismo que el .bat
+   2. Pero con mensajes más claros
+   3. Colores para mejor lectura
+   4. Detecta errores de compilación
+
+═════════════════════════════════════════════════════════════════════════════
+⚡ SOLUCIÓN RÁPIDA SI HAY PROBLEMAS
+═════════════════════════════════════════════════════════════════════════════
+
+¿La aplicación no se abre?
+──────────────────────────
+Intenta manualmente en PowerShell:
+   cd "C:\Users\erick\OneDrive\Documents\6to\PAL\PIA-DODO\Vinoteca"
+   dotnet clean
+   dotnet build -c Debug
+   dotnet run
+
+¿Aparece error de permisos?
+──────────────────────────
+En PowerShell (como Administrador):
+   Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+
+¿Aparece "dotnet not found"?
+──────────────────────────
+.NET no está instalado o no está en el PATH
+Descarga desde: https://dotnet.microsoft.com/download/dotnet/8.0
+
+═════════════════════════════════════════════════════════════════════════════
+✅ RESUMEN
+═════════════════════════════════════════════════════════════════════════════
+
+He creado 2 scripts para que ejecutes la app fácilmente:
+
+1. ejecutar.bat
+   └─ Doble clic → Se ejecuta todo automáticamente
+
+2. ejecutar.ps1
+   └─ Doble clic derecho → Ejecutar con PowerShell
+
+Ubicación: C:\Users\erick\OneDrive\Documents\6to\PAL\PIA-DODO\Vinoteca\
+
+La próxima vez que quieras ejecutar VINOTECA, solo:
+   ✅ Abre el Explorador
+   ✅ Navega a la carpeta Vinoteca
+   ✅ Doble clic en ejecutar.bat
+
+¡Listo! 🎉
+
+═════════════════════════════════════════════════════════════════════════════

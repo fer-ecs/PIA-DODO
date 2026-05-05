@@ -9,7 +9,7 @@ namespace Vinoteca.Views
 {
 	public sealed partial class VentasAdminView : Page
 	{
-		public ObservableCollection<CarritoItem> ItemsCarrito { get; set; }
+		public ObservableCollection<CarritoItem> ItemsCarrito { get; } = new();
 
 		public VentasAdminView()
 		{
@@ -20,7 +20,12 @@ namespace Vinoteca.Views
 		private void ActualizarInterfaz()
 		{
 			var carrito = CarritoService.ObtenerCarrito();
-			ItemsCarrito = new ObservableCollection<CarritoItem>(carrito);
+			ItemsCarrito.Clear();
+			foreach (var item in carrito)
+			{
+				ItemsCarrito.Add(item);
+			}
+
 			lvCarrito.ItemsSource = ItemsCarrito;
 			txtTotalCarrito.Text = CarritoService.ObtenerTotal().ToString("C");
 		}

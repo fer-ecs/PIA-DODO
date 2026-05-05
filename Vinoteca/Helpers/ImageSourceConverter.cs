@@ -8,19 +8,18 @@ namespace Vinoteca.Helpers
 	{
 		public object Convert(object value, Type targetType, object parameter, string language)
 		{
-			string path = value as string;
+			var path = value as string;
 
 			if (string.IsNullOrWhiteSpace(path))
-				return null; // Si está vacío, no manda nada y evita el crash
+				return Microsoft.UI.Xaml.DependencyProperty.UnsetValue;
 
 			try
 			{
-				// Si la ruta no empieza con http o ms-appx, asumimos que es una URL o recurso
 				return new BitmapImage(new Uri(path));
 			}
 			catch
 			{
-				return null; // Si la URL está mal formada, devuelve null de forma segura
+				return Microsoft.UI.Xaml.DependencyProperty.UnsetValue;
 			}
 		}
 

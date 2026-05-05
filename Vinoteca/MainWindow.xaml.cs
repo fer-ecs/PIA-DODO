@@ -1,6 +1,6 @@
 using Microsoft.UI.Xaml;
-using Vinoteca.Views;
 using Vinoteca.Services;
+using Vinoteca.Views;
 
 namespace Vinoteca
 {
@@ -8,12 +8,9 @@ namespace Vinoteca
 	{
 		public MainWindow()
 		{
-			this.InitializeComponent();
+			InitializeComponent();
 
-			// Nos aseguramos de que el JSON exista al abrir la app
 			DataService.InicializarArchivos();
-
-			// Navegamos a la pantalla de login al iniciar
 			RootFrame.Navigate(typeof(LoginView));
 		}
 	}

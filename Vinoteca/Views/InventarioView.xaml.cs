@@ -3,6 +3,7 @@ using Microsoft.UI.Xaml.Controls;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using Vinoteca.Helpers;
 using Vinoteca.Models;
 using Vinoteca.Services;
 
@@ -11,20 +12,26 @@ namespace Vinoteca.Views
 	public sealed partial class InventarioView : Page
 	{
 		// ObservableCollection permite que la UI se actualice sola cuando cambia la lista
-		public ObservableCollection<Producto> ProductosMostrados { get; set; }
-		private List<Producto> todosLosProductos;
-		private Producto productoSeleccionado;
+		public ObservableCollection<Producto> ProductosMostrados { get; } = new();
+		private List<Producto> todosLosProductos = new();
+		private Producto? productoSeleccionado;
 
 		public InventarioView()
 		{
 			this.InitializeComponent();
+			InputRestrictionsHelper.AplicarSinEspaciosNiEnter(this);
 			CargarDatos();
 		}
 
 		private void CargarDatos()
 		{
 			todosLosProductos = DataService.ObtenerProductos();
-			ProductosMostrados = new ObservableCollection<Producto>(todosLosProductos);
+			ProductosMostrados.Clear();
+			foreach (var producto in todosLosProductos)
+			{
+				ProductosMostrados.Add(producto);
+			}
+
 			lvProductos.ItemsSource = ProductosMostrados;
 		}
 
@@ -37,7 +44,7 @@ namespace Vinoteca.Views
 			var p = productoSeleccionado ?? new Producto();
 			p.Nombre = txtNombre.Text;
 			p.Marca = txtMarca.Text;
-			p.Categoria = (cmbCategoria.SelectedItem as ComboBoxItem)?.Content.ToString();
+			p.Categoria = (cmbCategoria.SelectedItem as ComboBoxItem)?.Content?.ToString();
 			p.PrecioVenta = numPrecioVenta.Value;
 			p.Stock = (int)numStock.Value;
 			p.ImagenPath = txtImagen.Text;
@@ -102,10 +109,10 @@ namespace Vinoteca.Views
 
 		private void txtBuscar_TextChanged(object sender, TextChangedEventArgs e)
 		{
-			var busqueda = txtBuscar.Text.ToLower();
+			var busqueda = txtBuscar.Text?.ToLowerInvariant() ?? string.Empty;
 			var filtrados = todosLosProductos.Where(p =>
-				p.Nombre.ToLower().Contains(busqueda) ||
-				p.Marca.ToLower().Contains(busqueda)).ToList();
+				(p.Nombre?.ToLowerInvariant().Contains(busqueda) ?? false) ||
+				(p.Marca?.ToLowerInvariant().Contains(busqueda) ?? false)).ToList();
 
 			ProductosMostrados.Clear();
 			foreach (var p in filtrados) ProductosMostrados.Add(p);

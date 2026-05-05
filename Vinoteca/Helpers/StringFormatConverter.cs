@@ -12,11 +12,14 @@ namespace Vinoteca.Helpers
 
 			try
 			{
-				return string.Format(parameter.ToString(), value);
+				var format = parameter.ToString();
+				return string.IsNullOrWhiteSpace(format)
+					? value.ToString() ?? string.Empty
+					: string.Format(format, value);
 			}
 			catch
 			{
-				return value.ToString();
+				return value.ToString() ?? string.Empty;
 			}
 		}
 

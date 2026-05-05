@@ -1,9 +1,10 @@
 using System;
 using System.Linq;
+using System.Text.RegularExpressions;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Vinoteca.Helpers;
 using Vinoteca.Services;
-using System.Text.RegularExpressions;
 
 namespace Vinoteca.Views
 {
@@ -15,79 +16,77 @@ namespace Vinoteca.Views
 
 		public LoginView()
 		{
-			this.InitializeComponent();
+			InitializeComponent();
+			InputRestrictionsHelper.AplicarSinEspaciosNiEnter(this);
 			txtCorreo.Focus(FocusState.Programmatic);
 		}
 
 		private void BtnLogin_Click(object sender, RoutedEventArgs e)
 		{
-			// Ocultar error previo
 			txtError.Visibility = Visibility.Collapsed;
 
-			string correo = txtCorreo.Text.Trim();
-			string password = txtPassword.Password.Trim();
+			string correo = txtCorreo.Text;
+			string password = txtPassword.Password;
 
-			// Validar intentos fallidos
 			if (intentosFallidos >= maxIntentos)
 			{
 				if (ultimoIntento.HasValue && DateTime.Now.Subtract(ultimoIntento.Value).TotalMinutes < 5)
 				{
-					MostrarError("Demasiados intentos. Espere 5 minutos.");
+					MostrarError("Demasiados intentos, espere 5 minutos");
 					return;
 				}
-				else
-				{
-					intentosFallidos = 0;
-				}
+
+				intentosFallidos = 0;
 			}
 
-			// Validar campos vacíos
-			if (string.IsNullOrEmpty(correo))
+			if (string.IsNullOrWhiteSpace(correo))
 			{
-				MostrarError("El correo es obligatorio.");
+				MostrarError("El correo es obligatorio");
 				return;
 			}
 
-			if (string.IsNullOrEmpty(password))
+			if (string.IsNullOrWhiteSpace(password))
 			{
-				MostrarError("La contraseña es obligatoria.");
+				MostrarError("La contrasena es obligatoria");
 				return;
 			}
 
-			// Validar formato de correo
+			if (correo != correo.Trim() || password != password.Trim())
+			{
+				MostrarError("El correo y la contrasena no deben tener espacios al inicio o al final");
+				return;
+			}
+
 			string patternEmail = @"^[^@\s]+@[^@\s]+\.[^@\s]+$";
 			if (!Regex.IsMatch(correo, patternEmail))
 			{
-				MostrarError("Ingresa un formato válido para el correo electrónico.");
+				MostrarError("Ingresa un formato valido para el correo electronico");
 				return;
 			}
 
-			// Validar que no contengan espacios
-			if (correo.Contains(" ") || password.Contains(" "))
+			if (correo.Any(char.IsWhiteSpace) || password.Any(char.IsWhiteSpace))
 			{
-				MostrarError("El correo y la contraseña no deben contener espacios.");
+				MostrarError("El correo y la contrasena no deben contener espacios");
 				return;
 			}
 
-			// Validar longitud mínima de contraseña
 			if (password.Length < 6)
 			{
-				MostrarError("La contraseña debe contener al menos 6 caracteres.");
+				MostrarError("La contrasena debe contener al menos 6 caracteres");
 				return;
 			}
 
-			// Validar contraseña fuerte
-			if (!EsContraseñaFuerte(password))
+			if (!EsContrasenaFuerte(password))
 			{
-				MostrarError("Contraseña débil. Use mayúsculas, números y caracteres especiales.");
+				MostrarError("Contrasena debil, use mayusculas, numeros y caracteres especiales");
 				return;
 			}
 
-			// Validar contra el JSON
 			var usuarios = DataService.ObtenerUsuarios();
-			var usuario = usuarios.FirstOrDefault(u => u.Correo == correo);
+			var usuario = usuarios.FirstOrDefault(u =>
+				!string.IsNullOrWhiteSpace(u.Correo) &&
+				u.Correo.Equals(correo, StringComparison.OrdinalIgnoreCase));
 
-			// Validar si el usuario existe y las credenciales son correctas
 			if (usuario == null || usuario.Contrasena != password)
 			{
 				intentosFallidos++;
@@ -96,37 +95,28 @@ namespace Vinoteca.Views
 				return;
 			}
 
-			// Validar que el usuario esté activo
 			if (!usuario.Activo)
 			{
-				MostrarError("Esta cuenta ha sido desactivada. Contacte al administrador.");
+				MostrarError("Esta cuenta ha sido desactivada, contacte al administrador");
 				return;
 			}
 
-			// Login exitoso - resetear intentos
 			intentosFallidos = 0;
 			SessionService.IniciarSesion(usuario);
 
-			// Redirección por rol
 			if (usuario.EsAdmin)
 			{
-				this.Frame.Navigate(typeof(AdminMenuView));
+				Frame.Navigate(typeof(AdminMenuView));
 			}
 			else
 			{
-				this.Frame.Navigate(typeof(UsuarioMenuView));
+				Frame.Navigate(typeof(UsuarioMenuView));
 			}
 		}
 
-		private bool EsContraseñaFuerte(string password)
+		private bool EsContrasenaFuerte(string password)
 		{
-			// Debe cumplir:
-			// - Al menos 6 caracteres
-			// - Una mayúscula
-			// - Una minúscula
-			// - Un número
-			// - Un carácter especial
-			string patron = @"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$";
+			string patron = @"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z\d\s])[^\s]{6,}$";
 			return Regex.IsMatch(password, patron);
 		}
 
@@ -135,5 +125,6 @@ namespace Vinoteca.Views
 			txtError.Text = mensaje;
 			txtError.Visibility = Visibility.Visible;
 		}
+
 	}
 }

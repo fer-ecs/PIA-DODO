@@ -4,7 +4,74 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-	<Grid>
-		<TextBlock Text="Vista de Usuarios (En construcción)" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{ThemeResource SubtitleTextBlockStyle}"/>
+	<Grid Padding="20" ColumnSpacing="20">
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="360"/>
+			<ColumnDefinition Width="*"/>
+		</Grid.ColumnDefinitions>
+
+		<StackPanel Grid.Column="0" Spacing="12">
+			<TextBlock Text="Gestion de Usuarios" Style="{ThemeResource TitleTextBlockStyle}"/>
+
+			<TextBox x:Name="txtNombre"
+                     Header="Nombre"
+                     MaxLength="50"
+                     PlaceholderText="Nombre del usuario"/>
+
+			<TextBox x:Name="txtCorreo"
+                     Header="Correo"
+                     MaxLength="80"
+                     PlaceholderText="usuario@vinoteca.com"/>
+
+			<PasswordBox x:Name="txtPassword"
+                         Header="Contrasena"
+                         MaxLength="20"
+                         PlaceholderText="••••••••"/>
+
+			<PasswordBox x:Name="txtConfirmarPassword"
+                         Header="Confirmar contrasena"
+                         MaxLength="20"
+                         PlaceholderText="••••••••"/>
+
+			<CheckBox x:Name="chkEsAdmin" Content="Es administrador"/>
+
+			<TextBlock x:Name="txtMensaje"
+                       Visibility="Collapsed"
+                       TextWrapping="Wrap"/>
+
+			<Button Content="Crear usuario"
+                    Style="{ThemeResource AccentButtonStyle}"
+                    Click="btnCrearUsuario_Click"/>
+		</StackPanel>
+
+		<StackPanel Grid.Column="1" Spacing="12">
+			<TextBlock Text="Usuarios registrados" Style="{ThemeResource SubtitleTextBlockStyle}"/>
+
+			<ListView x:Name="lvUsuarios" SelectionMode="None">
+				<ListView.ItemTemplate>
+					<DataTemplate>
+						<Border Margin="0,0,0,8" Padding="12" CornerRadius="8" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
+							<Grid ColumnSpacing="12">
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="*"/>
+									<ColumnDefinition Width="Auto"/>
+								</Grid.ColumnDefinitions>
+
+								<StackPanel>
+									<TextBlock Text="{Binding Nombre}" FontWeight="Bold"/>
+									<TextBlock Text="{Binding Correo}" Opacity="0.75"/>
+									<TextBlock Text="{Binding RolTexto}" Opacity="0.75"/>
+								</StackPanel>
+
+								<StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8">
+									<TextBlock Text="{Binding EstadoTexto}" VerticalAlignment="Center"/>
+									<Button Content="{Binding AccionEstadoTexto}" Tag="{Binding}" Click="btnCambiarEstado_Click"/>
+								</StackPanel>
+							</Grid>
+						</Border>
+					</DataTemplate>
+				</ListView.ItemTemplate>
+			</ListView>
+		</StackPanel>
 	</Grid>
 </Page>
