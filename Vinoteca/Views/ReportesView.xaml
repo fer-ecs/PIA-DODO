@@ -18,36 +18,36 @@
 
 		<StackPanel Grid.Row="0" Margin="0,0,0,20">
 			<TextBlock Text="Historial de Ventas" Style="{ThemeResource TitleTextBlockStyle}"/>
-			<TextBlock x:Name="txtGananciasTotales" Text="Ganancias: $0.00" FontSize="18" Foreground="Green" FontWeight="SemiBold"/>
+			<TextBlock x:Name="txtGananciasTotales" Text="Ganancias totales: $0.00" FontSize="18" Foreground="Green" FontWeight="SemiBold"/>
+			<TextBlock x:Name="txtResumenVentas" Text="Ventas registradas: 0 | Lineas vendidas: 0" Opacity="0.75"/>
+			<TextBlock x:Name="txtEstado" Visibility="Collapsed" Margin="0,8,0,0" TextWrapping="Wrap"/>
 		</StackPanel>
 
-		<ListView x:Name="lvHistorialVentas" Grid.Row="1" SelectionMode="None">
-			<ListView.ItemTemplate>
-				<DataTemplate x:DataType="models:Venta">
-					<Grid Padding="15" Margin="0,5" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" CornerRadius="4">
-						<Grid.ColumnDefinitions>
-							<ColumnDefinition Width="Auto"/>
-							<ColumnDefinition Width="*"/>
-							<ColumnDefinition Width="Auto"/>
-						</Grid.ColumnDefinitions>
+		<Grid Grid.Row="1">
+			<ListView x:Name="lvHistorialVentas" SelectionMode="None">
+				<ListView.ItemTemplate>
+					<DataTemplate x:DataType="models:Venta">
+						<Grid Padding="15" Margin="0,5" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" CornerRadius="4">
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="Auto"/>
+								<ColumnDefinition Width="*"/>
+								<ColumnDefinition Width="Auto"/>
+							</Grid.ColumnDefinitions>
 
-						<StackPanel Grid.Column="0" VerticalAlignment="Center">
-							<TextBlock Text="{x:Bind Fecha}" FontSize="12" Foreground="Gray"/>
-							<!-- Agregado el escape {} aquí -->
-							<TextBlock Text="{x:Bind Id, Converter={StaticResource LocalStringConverter}, ConverterParameter='{}Ticket: {0}'}" FontWeight="Bold"/>
-						</StackPanel>
+							<StackPanel Grid.Column="0" VerticalAlignment="Center">
+								<TextBlock Text="{x:Bind Fecha}" FontSize="12" Foreground="Gray"/>
+								<TextBlock Text="{x:Bind Id, Converter={StaticResource LocalStringConverter}, ConverterParameter='{}Ticket: {0}'}" FontWeight="Bold"/>
+							</StackPanel>
 
-						<!-- EL ERROR ESTABA AQUÍ (Línea 39): Se agregó el escape {} antes de {0} -->
-						<TextBlock Grid.Column="1" 
-                                   Text="{x:Bind Productos.Count, Converter={StaticResource LocalStringConverter}, ConverterParameter='{}{0} productos vendidos'}" 
-                                   HorizontalAlignment="Center" VerticalAlignment="Center"/>
+							<TextBlock Grid.Column="1" Text="{x:Bind Productos.Count, Converter={StaticResource LocalStringConverter}, ConverterParameter='{}{0} producto(s) vendidos'}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
 
-						<TextBlock Grid.Column="2" 
-                                   Text="{x:Bind Total, Converter={StaticResource LocalStringConverter}, ConverterParameter='{}{0:C}'}" 
-                                   FontSize="18" FontWeight="Bold" VerticalAlignment="Center"/>
-					</Grid>
-				</DataTemplate>
-			</ListView.ItemTemplate>
-		</ListView>
+							<TextBlock Grid.Column="2" Text="{x:Bind Total, Converter={StaticResource LocalStringConverter}, ConverterParameter='{}{0:C}'}" FontSize="18" FontWeight="Bold" VerticalAlignment="Center"/>
+						</Grid>
+					</DataTemplate>
+				</ListView.ItemTemplate>
+			</ListView>
+
+			<TextBlock x:Name="txtSinVentas" Text="Todavia no hay ventas registradas" Visibility="Collapsed" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{ThemeResource SubtitleTextBlockStyle}"/>
+		</Grid>
 	</Grid>
 </Page>

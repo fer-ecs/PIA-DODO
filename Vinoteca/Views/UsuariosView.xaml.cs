@@ -13,6 +13,8 @@ namespace Vinoteca.Views
 {
 	public sealed partial class UsuariosView : Page
 	{
+		private const string CorreoAdminPrincipal = "admin@vinoteca.com";
+
 		public ObservableCollection<UsuarioItemViewModel> Usuarios { get; } = new();
 
 		public UsuariosView()
@@ -20,7 +22,25 @@ namespace Vinoteca.Views
 			InitializeComponent();
 			InputRestrictionsHelper.AplicarSinEspaciosNiEnter(this);
 			lvUsuarios.ItemsSource = Usuarios;
+
+			if (!SessionService.EsAdminActivo)
+			{
+				BloquearAccesoNoAdmin();
+				return;
+			}
+
 			CargarUsuarios();
+		}
+
+		private void BloquearAccesoNoAdmin()
+		{
+			txtNombre.IsEnabled = false;
+			txtCorreo.IsEnabled = false;
+			txtPassword.IsEnabled = false;
+			txtConfirmarPassword.IsEnabled = false;
+			chkEsAdmin.IsEnabled = false;
+			lvUsuarios.IsEnabled = false;
+			MostrarError("Solo un administrador puede gestionar usuarios");
 		}
 
 		private void CargarUsuarios()
@@ -35,6 +55,12 @@ namespace Vinoteca.Views
 
 		private void btnCrearUsuario_Click(object sender, RoutedEventArgs e)
 		{
+			if (!SessionService.EsAdminActivo)
+			{
+				MostrarError("Solo un administrador puede crear usuarios");
+				return;
+			}
+
 			OcultarMensaje();
 
 			string nombre = txtNombre.Text;
@@ -45,6 +71,12 @@ namespace Vinoteca.Views
 			if (string.IsNullOrWhiteSpace(nombre))
 			{
 				MostrarError("El nombre es obligatorio");
+				return;
+			}
+
+			if (nombre != nombre.Trim())
+			{
+				MostrarError("El nombre no debe tener espacios al inicio o al final");
 				return;
 			}
 
@@ -60,15 +92,9 @@ namespace Vinoteca.Views
 				return;
 			}
 
-			if (!nombre.Any(char.IsUpper))
+			if (nombre.Contains("  "))
 			{
-				MostrarError("El nombre debe incluir al menos una mayuscula");
-				return;
-			}
-
-			if (!nombre.Any(char.IsLower))
-			{
-				MostrarError("El nombre debe incluir al menos una minuscula");
+				MostrarError("El nombre no debe contener espacios dobles");
 				return;
 			}
 
@@ -84,19 +110,25 @@ namespace Vinoteca.Views
 				return;
 			}
 
+			if (correo != correo.Trim())
+			{
+				MostrarError("El correo no debe tener espacios al inicio o al final");
+				return;
+			}
+
 			if (correo.Length > 80)
 			{
 				MostrarError("El correo no debe exceder 80 caracteres");
 				return;
 			}
 
-			if (!correo.Contains("@") || !correo.EndsWith(".com", StringComparison.OrdinalIgnoreCase))
+			if (correo.Any(char.IsWhiteSpace))
 			{
-				MostrarError("El correo debe incluir @ y terminar en .com");
+				MostrarError("El correo no debe contener espacios");
 				return;
 			}
 
-			string patternEmail = @"^[^@\s]+@[^@\s]+\.com$";
+			string patternEmail = @"^[^@\s]+@[^@\s]+\.[^@\s]+$";
 			if (!Regex.IsMatch(correo, patternEmail, RegexOptions.IgnoreCase))
 			{
 				MostrarError("Ingresa un correo valido");
@@ -106,6 +138,24 @@ namespace Vinoteca.Views
 			if (string.IsNullOrWhiteSpace(password))
 			{
 				MostrarError("La contrasena es obligatoria");
+				return;
+			}
+
+			if (string.IsNullOrWhiteSpace(confirmarPassword))
+			{
+				MostrarError("Debes confirmar la contrasena");
+				return;
+			}
+
+			if (password != password.Trim() || confirmarPassword != confirmarPassword.Trim())
+			{
+				MostrarError("Las contrasenas no deben tener espacios al inicio o al final");
+				return;
+			}
+
+			if (password.Any(char.IsWhiteSpace) || confirmarPassword.Any(char.IsWhiteSpace))
+			{
+				MostrarError("Las contrasenas no deben contener espacios");
 				return;
 			}
 
@@ -121,33 +171,9 @@ namespace Vinoteca.Views
 				return;
 			}
 
-			if (!password.Any(char.IsUpper))
+			if (!EsContrasenaFuerte(password))
 			{
-				MostrarError("La contrasena debe incluir al menos una mayuscula");
-				return;
-			}
-
-			if (!password.Any(char.IsLower))
-			{
-				MostrarError("La contrasena debe incluir al menos una minuscula");
-				return;
-			}
-
-			if (!password.Any(char.IsDigit))
-			{
-				MostrarError("La contrasena debe incluir al menos un numero");
-				return;
-			}
-
-			if (!password.Any(c => !char.IsLetterOrDigit(c)))
-			{
-				MostrarError("La contrasena debe incluir al menos un caracter especial");
-				return;
-			}
-
-			if (string.IsNullOrWhiteSpace(confirmarPassword))
-			{
-				MostrarError("Debes confirmar la contrasena");
+				MostrarError("La contrasena debe incluir mayuscula, minuscula, numero y caracter especial");
 				return;
 			}
 
@@ -186,21 +212,96 @@ namespace Vinoteca.Views
 
 		private void btnCambiarEstado_Click(object sender, RoutedEventArgs e)
 		{
+			if (!SessionService.EsAdminActivo)
+			{
+				MostrarError("Solo un administrador puede cambiar el estado de usuarios");
+				return;
+			}
+
 			if (sender is not Button button || button.Tag is not UsuarioItemViewModel item)
 			{
 				return;
 			}
 
-			if (item.Usuario.Correo != null &&
-				item.Usuario.Correo.Equals("admin@vinoteca.com", StringComparison.OrdinalIgnoreCase))
+			var usuario = item.Usuario;
+			if (EsAdminPrincipal(usuario))
 			{
-				MostrarError("El usuario admin no se puede desactivar");
+				MostrarError("El administrador principal no se puede desactivar");
 				return;
 			}
 
-			item.Usuario.Activo = !item.Usuario.Activo;
-			DataService.ActualizarUsuario(item.Usuario);
+			if (EsUsuarioActual(usuario))
+			{
+				MostrarError("No puedes desactivar tu propia cuenta");
+				return;
+			}
+
+			if (usuario.EsAdmin && usuario.Activo && DataService.ContarAdministradoresActivos() <= 1)
+			{
+				MostrarError("Debe existir al menos un administrador activo");
+				return;
+			}
+
+			usuario.Activo = !usuario.Activo;
+			DataService.ActualizarUsuario(usuario);
+			MostrarExito(usuario.Activo ? "Usuario activado correctamente" : "Usuario desactivado correctamente");
 			CargarUsuarios();
+		}
+
+		private void btnCambiarRol_Click(object sender, RoutedEventArgs e)
+		{
+			if (!SessionService.EsAdminActivo)
+			{
+				MostrarError("Solo un administrador puede gestionar roles");
+				return;
+			}
+
+			if (sender is not Button button || button.Tag is not UsuarioItemViewModel item)
+			{
+				return;
+			}
+
+			var usuario = item.Usuario;
+			if (EsAdminPrincipal(usuario))
+			{
+				MostrarError("El rol del administrador principal no se puede modificar");
+				return;
+			}
+
+			if (EsUsuarioActual(usuario))
+			{
+				MostrarError("No puedes cambiar tu propio rol");
+				return;
+			}
+
+			if (usuario.EsAdmin && DataService.ContarAdministradoresActivos() <= 1)
+			{
+				MostrarError("Debe existir al menos un administrador activo");
+				return;
+			}
+
+			usuario.EsAdmin = !usuario.EsAdmin;
+			DataService.ActualizarUsuario(usuario);
+			MostrarExito(usuario.EsAdmin ? "Rol actualizado a administrador" : "Rol actualizado a usuario");
+			CargarUsuarios();
+		}
+
+		private static bool EsContrasenaFuerte(string password)
+		{
+			string patron = @"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z\d\s])[^\s]{8,20}$";
+			return Regex.IsMatch(password, patron);
+		}
+
+		private bool EsAdminPrincipal(Usuario usuario)
+		{
+			return !string.IsNullOrWhiteSpace(usuario.Correo) &&
+				usuario.Correo.Equals(CorreoAdminPrincipal, StringComparison.OrdinalIgnoreCase);
+		}
+
+		private bool EsUsuarioActual(Usuario usuario)
+		{
+			return SessionService.UsuarioActivo != null &&
+				usuario.Id == SessionService.UsuarioActivo.Id;
 		}
 
 		private void LimpiarFormulario()
@@ -240,6 +341,7 @@ namespace Vinoteca.Views
 		public string RolTexto => Usuario.EsAdmin ? "Rol: Admin" : "Rol: Usuario";
 		public string EstadoTexto => Usuario.Activo ? "Activo" : "Inactivo";
 		public string AccionEstadoTexto => Usuario.Activo ? "Desactivar" : "Activar";
+		public string AccionRolTexto => Usuario.EsAdmin ? "Hacer usuario" : "Hacer admin";
 
 		public UsuarioItemViewModel(Usuario usuario)
 		{

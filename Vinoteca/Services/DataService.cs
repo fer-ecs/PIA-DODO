@@ -169,6 +169,11 @@ namespace Vinoteca.Services
 			GuardarJson(usuariosFile, usuarios);
 		}
 
+		public static int ContarAdministradoresActivos()
+		{
+			return ObtenerUsuarios().Count(u => u.EsAdmin && u.Activo);
+		}
+
 		public static List<Producto> ObtenerProductos()
 		{
 			InicializarArchivos();

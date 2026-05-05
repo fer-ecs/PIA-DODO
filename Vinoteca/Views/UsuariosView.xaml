@@ -2,76 +2,86 @@
     x:Class="Vinoteca.Views.UsuariosView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    Background="{StaticResource WineBackgroundBrush}">
 
-	<Grid Padding="20" ColumnSpacing="20">
+	<Grid Background="{StaticResource WineBackgroundBrush}" Padding="12" ColumnSpacing="20">
 		<Grid.ColumnDefinitions>
-			<ColumnDefinition Width="360"/>
+			<ColumnDefinition Width="380"/>
 			<ColumnDefinition Width="*"/>
 		</Grid.ColumnDefinitions>
 
-		<StackPanel Grid.Column="0" Spacing="12">
-			<TextBlock Text="Gestion de Usuarios" Style="{ThemeResource TitleTextBlockStyle}"/>
+		<Border Grid.Column="0" Style="{StaticResource WineCardStyle}" Padding="22">
+			<StackPanel Spacing="12">
+				<TextBlock Text="Gestion de usuarios" FontSize="28" FontWeight="SemiBold" Foreground="{StaticResource WineTextBrush}"/>
+				<TextBlock Text="Crea cuentas para operacion interna y define si cada una trabaja como administrador o usuario." TextWrapping="Wrap" Foreground="{StaticResource WineMutedBrush}"/>
 
-			<TextBox x:Name="txtNombre"
+				<TextBox x:Name="txtNombre"
+                     Style="{StaticResource WineTextBoxStyle}"
                      Header="Nombre"
                      MaxLength="50"
                      PlaceholderText="Nombre del usuario"/>
 
-			<TextBox x:Name="txtCorreo"
+				<TextBox x:Name="txtCorreo"
+                     Style="{StaticResource WineTextBoxStyle}"
                      Header="Correo"
                      MaxLength="80"
                      PlaceholderText="usuario@vinoteca.com"/>
 
-			<PasswordBox x:Name="txtPassword"
+				<PasswordBox x:Name="txtPassword"
+                         Style="{StaticResource WinePasswordBoxStyle}"
                          Header="Contrasena"
                          MaxLength="20"
-                         PlaceholderText="••••••••"/>
+                         PlaceholderText="********"/>
 
-			<PasswordBox x:Name="txtConfirmarPassword"
+				<PasswordBox x:Name="txtConfirmarPassword"
+                         Style="{StaticResource WinePasswordBoxStyle}"
                          Header="Confirmar contrasena"
                          MaxLength="20"
-                         PlaceholderText="••••••••"/>
+                         PlaceholderText="********"/>
 
-			<CheckBox x:Name="chkEsAdmin" Content="Es administrador"/>
+				<CheckBox x:Name="chkEsAdmin" Content="Crear como administrador"/>
 
-			<TextBlock x:Name="txtMensaje"
+				<TextBlock x:Name="txtMensaje"
                        Visibility="Collapsed"
                        TextWrapping="Wrap"/>
 
-			<Button Content="Crear usuario"
-                    Style="{ThemeResource AccentButtonStyle}"
+				<Button Content="Crear usuario"
+                    Style="{StaticResource WinePrimaryButtonStyle}"
                     Click="btnCrearUsuario_Click"/>
-		</StackPanel>
+			</StackPanel>
+		</Border>
 
-		<StackPanel Grid.Column="1" Spacing="12">
-			<TextBlock Text="Usuarios registrados" Style="{ThemeResource SubtitleTextBlockStyle}"/>
+		<Border Grid.Column="1" Style="{StaticResource WineCardStyle}" Padding="22">
+			<StackPanel Spacing="12">
+				<TextBlock Text="Equipo registrado" FontSize="24" FontWeight="SemiBold" Foreground="{StaticResource WineTextBrush}"/>
 
-			<ListView x:Name="lvUsuarios" SelectionMode="None">
-				<ListView.ItemTemplate>
-					<DataTemplate>
-						<Border Margin="0,0,0,8" Padding="12" CornerRadius="8" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
-							<Grid ColumnSpacing="12">
-								<Grid.ColumnDefinitions>
-									<ColumnDefinition Width="*"/>
-									<ColumnDefinition Width="Auto"/>
-								</Grid.ColumnDefinitions>
+				<ListView x:Name="lvUsuarios" SelectionMode="None" Background="Transparent">
+					<ListView.ItemTemplate>
+						<DataTemplate>
+							<Border Margin="0,0,0,10" Padding="16" CornerRadius="16" Background="#FFF8F2" BorderBrush="{StaticResource WineBorderBrush}" BorderThickness="1">
+								<Grid ColumnSpacing="12">
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition Width="*"/>
+										<ColumnDefinition Width="Auto"/>
+									</Grid.ColumnDefinitions>
 
-								<StackPanel>
-									<TextBlock Text="{Binding Nombre}" FontWeight="Bold"/>
-									<TextBlock Text="{Binding Correo}" Opacity="0.75"/>
-									<TextBlock Text="{Binding RolTexto}" Opacity="0.75"/>
-								</StackPanel>
+									<StackPanel>
+										<TextBlock Text="{Binding Nombre}" FontWeight="SemiBold" Foreground="{StaticResource WineTextBrush}"/>
+										<TextBlock Text="{Binding Correo}" Foreground="{StaticResource WineMutedBrush}"/>
+										<TextBlock Text="{Binding RolTexto}" Foreground="{StaticResource WineMutedBrush}"/>
+									</StackPanel>
 
-								<StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8">
-									<TextBlock Text="{Binding EstadoTexto}" VerticalAlignment="Center"/>
-									<Button Content="{Binding AccionEstadoTexto}" Tag="{Binding}" Click="btnCambiarEstado_Click"/>
-								</StackPanel>
-							</Grid>
-						</Border>
-					</DataTemplate>
-				</ListView.ItemTemplate>
-			</ListView>
-		</StackPanel>
+									<StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+										<TextBlock Text="{Binding EstadoTexto}" VerticalAlignment="Center" Foreground="{StaticResource WineMutedBrush}"/>
+										<Button Content="{Binding AccionRolTexto}" Style="{StaticResource WineSecondaryButtonStyle}" Tag="{Binding}" Click="btnCambiarRol_Click"/>
+										<Button Content="{Binding AccionEstadoTexto}" Style="{StaticResource WineSecondaryButtonStyle}" Tag="{Binding}" Click="btnCambiarEstado_Click"/>
+									</StackPanel>
+								</Grid>
+							</Border>
+						</DataTemplate>
+					</ListView.ItemTemplate>
+				</ListView>
+			</StackPanel>
+		</Border>
 	</Grid>
 </Page>

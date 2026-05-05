@@ -4,77 +4,99 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:models="using:Vinoteca.Models"
     xmlns:helpers="using:Vinoteca.Helpers"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    Background="{StaticResource WineBackgroundBrush}">
 
 	<Page.Resources>
 		<helpers:StringFormatConverter x:Key="LocalStringConverter"/>
 		<helpers:ImageSourceConverter x:Key="LocalImageConverter"/>
 	</Page.Resources>
 
-	<Grid>
+	<Grid Background="{StaticResource WineBackgroundBrush}">
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition Width="*"/>
-			<ColumnDefinition Width="350"/>
+			<ColumnDefinition Width="360"/>
 		</Grid.ColumnDefinitions>
 
-		<Grid Grid.Column="0" Padding="24">
+		<Grid Grid.Column="0" Padding="18,8,18,18">
 			<Grid.RowDefinitions>
 				<RowDefinition Height="Auto"/>
 				<RowDefinition Height="*"/>
 			</Grid.RowDefinitions>
 
-			<StackPanel Grid.Row="0" Margin="0,0,0,20">
-				<TextBlock Text="Catálogo de Vinos" Style="{ThemeResource TitleTextBlockStyle}" Margin="0,0,0,8"/>
-				<TextBox x:Name="txtBuscar" PlaceholderText="Buscar vino..." Width="300" HorizontalAlignment="Left" TextChanged="txtBuscar_TextChanged"/>
-			</StackPanel>
+			<Border Grid.Row="0" Style="{StaticResource WineCardStyle}" Padding="22" Margin="0,0,0,18">
+				<StackPanel Spacing="10">
+					<TextBlock Text="Catalogo de Vinos" FontSize="28" FontWeight="SemiBold" Foreground="{StaticResource WineTextBrush}"/>
+					<TextBlock Text="Botellas pensadas para una compra facil, visual y agradable." Foreground="{StaticResource WineMutedBrush}"/>
+					<TextBox x:Name="txtBuscar" Style="{StaticResource WineTextBoxStyle}" PlaceholderText="Buscar por nombre, marca o categoria" Width="340" MaxLength="50" HorizontalAlignment="Left" TextChanged="txtBuscar_TextChanged"/>
+					<TextBlock x:Name="txtEstado" Visibility="Collapsed" TextWrapping="Wrap"/>
+				</StackPanel>
+			</Border>
 
 			<GridView x:Name="gvTienda" Grid.Row="1" SelectionMode="None">
 				<GridView.ItemTemplate>
 					<DataTemplate x:DataType="models:Producto">
-						<Grid Width="180" Margin="5" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" CornerRadius="8" Padding="10" BorderThickness="1" BorderBrush="{ThemeResource DividerStrokeColorDefaultBrush}">
-							<StackPanel Spacing="5">
-								<Image Source="{x:Bind ImagenPath, Mode=OneWay, Converter={StaticResource LocalImageConverter}}" Height="100" Stretch="UniformToFill"/>
-								<TextBlock Text="{x:Bind Nombre}" FontWeight="Bold" FontSize="14" TextTrimming="CharacterEllipsis"/>
-								<TextBlock Text="{x:Bind PrecioVenta, Converter={StaticResource LocalStringConverter}, ConverterParameter='{}{0:C}'}" Foreground="{ThemeResource SystemControlForegroundAccentBrush}"/>
-								<Button Content="+" HorizontalAlignment="Stretch" Style="{ThemeResource AccentButtonStyle}" Click="btnAgregar_Click" Tag="{x:Bind}"/>
+						<Border Width="210" Margin="6" Style="{StaticResource WineCardStyle}" Padding="10">
+							<StackPanel Spacing="8">
+								<Border CornerRadius="14" Background="#F2E8DE" Padding="6">
+									<Image Source="{x:Bind ImagenPath, Mode=OneWay, Converter={StaticResource LocalImageConverter}}" Height="132" Stretch="UniformToFill"/>
+								</Border>
+								<TextBlock Text="{x:Bind Nombre}" FontWeight="SemiBold" FontSize="15" TextWrapping="WrapWholeWords" MaxLines="2" Foreground="{StaticResource WineTextBrush}"/>
+								<TextBlock Text="{x:Bind Marca}" FontSize="12" Foreground="{StaticResource WineMutedBrush}" TextTrimming="CharacterEllipsis"/>
+								<TextBlock Text="{x:Bind Categoria}" FontSize="12" Foreground="{StaticResource WineMutedBrush}"/>
+								<TextBlock Text="{x:Bind Stock, Converter={StaticResource LocalStringConverter}, ConverterParameter='{}Stock disponible: {0}'}" FontSize="12" Foreground="{StaticResource WineMutedBrush}"/>
+								<TextBlock Text="{x:Bind PrecioVenta, Converter={StaticResource LocalStringConverter}, ConverterParameter='{}{0:C}'}" Foreground="{StaticResource WineHeroBrush}" FontSize="18" FontWeight="Bold"/>
+								<Button Content="Agregar al carrito" HorizontalAlignment="Stretch" Style="{StaticResource WinePrimaryButtonStyle}" Click="btnAgregar_Click" Tag="{x:Bind}"/>
 							</StackPanel>
-						</Grid>
+						</Border>
 					</DataTemplate>
 				</GridView.ItemTemplate>
 			</GridView>
 		</Grid>
 
-		<Grid Grid.Column="1" Background="{ThemeResource CardBackgroundFillColorSecondaryBrush}" Padding="20" BorderBrush="{ThemeResource DividerStrokeColorDefaultBrush}" BorderThickness="1,0,0,0">
-			<Grid.RowDefinitions>
-				<RowDefinition Height="Auto"/>
-				<RowDefinition Height="*"/>
-				<RowDefinition Height="Auto"/>
-			</Grid.RowDefinitions>
+		<Border Grid.Column="1" Style="{StaticResource WineCardStyle}" Margin="0,8,18,18" Padding="22">
+			<Grid>
+				<Grid.RowDefinitions>
+					<RowDefinition Height="Auto"/>
+					<RowDefinition Height="*"/>
+					<RowDefinition Height="Auto"/>
+				</Grid.RowDefinitions>
 
-			<TextBlock Grid.Row="0" Text="Resumen de Venta" FontWeight="Bold" FontSize="18" Margin="0,0,0,15"/>
+				<StackPanel Grid.Row="0" Margin="0,0,0,12">
+					<TextBlock Text="Carrito rapido" FontWeight="SemiBold" FontSize="22" Foreground="{StaticResource WineTextBrush}"/>
+					<TextBlock Text="Resumen de tu seleccion actual." Foreground="{StaticResource WineMutedBrush}"/>
+				</StackPanel>
 
-			<ListView x:Name="lvCarritoRapido" Grid.Row="1" Margin="0,0,0,10">
-				<ListView.ItemTemplate>
-					<DataTemplate x:DataType="models:CarritoItem">
-						<Grid Margin="0,5">
-							<StackPanel>
-								<TextBlock Text="{x:Bind Producto.Nombre}" FontSize="13" FontWeight="SemiBold"/>
-								<!-- CORRECCIÓN AQUÍ: Agregado {} para escapar el parámetro -->
-								<TextBlock Text="{x:Bind Cantidad, Converter={StaticResource LocalStringConverter}, ConverterParameter='{}{0} unidades'}" FontSize="11" Foreground="Gray"/>
-							</StackPanel>
-							<TextBlock Text="{x:Bind Subtotal, Converter={StaticResource LocalStringConverter}, ConverterParameter='{}{0:C}'}" HorizontalAlignment="Right" VerticalAlignment="Center" FontSize="13"/>
-						</Grid>
-					</DataTemplate>
-				</ListView.ItemTemplate>
-			</ListView>
+				<ListView x:Name="lvCarritoRapido" Grid.Row="1" Margin="0,0,0,10" SelectionMode="None">
+					<ListView.ItemTemplate>
+						<DataTemplate x:DataType="models:CarritoItem">
+							<Border Background="#FFF7F0" CornerRadius="14" Padding="12" Margin="0,0,0,10">
+								<Grid>
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition Width="*"/>
+										<ColumnDefinition Width="Auto"/>
+									</Grid.ColumnDefinitions>
 
-			<StackPanel Grid.Row="2" Spacing="10" BorderBrush="{ThemeResource DividerStrokeColorDefaultBrush}" BorderThickness="0,1,0,0" Padding="0,15,0,0">
-				<Grid>
-					<TextBlock Text="Total:" FontSize="18" FontWeight="Bold"/>
-					<TextBlock x:Name="txtTotalRapido" Text="$0.00" FontSize="22" FontWeight="Bold" HorizontalAlignment="Right" Foreground="{ThemeResource SystemControlForegroundAccentBrush}"/>
-				</Grid>
-				<Button Content="Finalizar y Cobrar" Click="btnIrAPagar_Click" HorizontalAlignment="Stretch" Style="{ThemeResource AccentButtonStyle}" Padding="0,10"/>
-			</StackPanel>
-		</Grid>
+									<StackPanel>
+										<TextBlock Text="{x:Bind Producto.Nombre}" FontSize="13" FontWeight="SemiBold" Foreground="{StaticResource WineTextBrush}"/>
+										<TextBlock Text="{x:Bind Cantidad, Converter={StaticResource LocalStringConverter}, ConverterParameter='{}{0} unidades'}" FontSize="11" Foreground="{StaticResource WineMutedBrush}"/>
+									</StackPanel>
+
+									<TextBlock Grid.Column="1" Text="{x:Bind Subtotal, Converter={StaticResource LocalStringConverter}, ConverterParameter='{}{0:C}'}" HorizontalAlignment="Right" VerticalAlignment="Center" FontSize="13" FontWeight="SemiBold" Foreground="{StaticResource WineHeroBrush}"/>
+								</Grid>
+							</Border>
+						</DataTemplate>
+					</ListView.ItemTemplate>
+				</ListView>
+
+				<StackPanel Grid.Row="2" Spacing="10" BorderBrush="{StaticResource WineBorderBrush}" BorderThickness="0,1,0,0" Padding="0,15,0,0">
+					<TextBlock x:Name="txtCantidadRapida" Text="0 articulo(s)" FontSize="12" Foreground="{StaticResource WineMutedBrush}"/>
+					<Grid>
+						<TextBlock Text="Total:" FontSize="18" FontWeight="Bold" Foreground="{StaticResource WineTextBrush}"/>
+						<TextBlock x:Name="txtTotalRapido" Text="$0.00" FontSize="24" FontWeight="Bold" HorizontalAlignment="Right" Foreground="{StaticResource WineHeroBrush}"/>
+					</Grid>
+					<Button Content="Ir al carrito" Click="btnIrAPagar_Click" HorizontalAlignment="Stretch" Style="{StaticResource WinePrimaryButtonStyle}"/>
+				</StackPanel>
+			</Grid>
+		</Border>
 	</Grid>
 </Page>

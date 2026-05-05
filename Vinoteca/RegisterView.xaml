@@ -2,52 +2,75 @@
     x:Class="Vinoteca.Views.RegisterView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    Background="{StaticResource WineBackgroundBrush}">
 
-	<Grid>
-		<StackPanel Width="340" HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="14">
-			<TextBlock Text="Crear Cuenta"
-                       Style="{ThemeResource TitleTextBlockStyle}"
-                       HorizontalAlignment="Center"
-                       Margin="0,0,0,12"/>
+	<Grid Style="{StaticResource WinePageRootStyle}">
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="*"/>
+			<ColumnDefinition Width="500"/>
+		</Grid.ColumnDefinitions>
 
-			<TextBox x:Name="txtNombre"
+		<Grid Grid.Column="0" Padding="56">
+			<StackPanel VerticalAlignment="Center" MaxWidth="520" Spacing="16">
+				<TextBlock Text="Cuentas para el equipo" FontSize="42" FontWeight="SemiBold" Foreground="{StaticResource WineTextBrush}"/>
+				<TextBlock Text="Registra usuarios para apoyar la operacion diaria de la vinoteca con un estilo cercano y ordenado." TextWrapping="WrapWholeWords" FontSize="18" Foreground="{StaticResource WineMutedBrush}"/>
+
+				<Border Style="{StaticResource WineCardStyle}" Padding="20" Margin="0,12,0,0">
+					<StackPanel Spacing="8">
+						<TextBlock Text="Buenas practicas" FontWeight="SemiBold" Foreground="{StaticResource WineTextBrush}"/>
+						<TextBlock Text="Usa nombres claros, correos reales y contrasenas seguras para evitar errores al operar la tienda." TextWrapping="Wrap" Foreground="{StaticResource WineMutedBrush}"/>
+					</StackPanel>
+				</Border>
+			</StackPanel>
+		</Grid>
+
+		<Border Grid.Column="1" Margin="28" Padding="32" Style="{StaticResource WineCardStyle}" VerticalAlignment="Center">
+			<StackPanel Spacing="14">
+				<TextBlock Text="Crear cuenta" FontSize="30" FontWeight="SemiBold" Foreground="{StaticResource WineTextBrush}"/>
+				<TextBlock Text="Alta de usuarios para operacion o compra." Foreground="{StaticResource WineMutedBrush}" Margin="0,0,0,6"/>
+
+				<TextBox x:Name="txtNombre"
                      Header="Nombre completo"
+                     Style="{StaticResource WineTextBoxStyle}"
+                     MaxLength="50"
                      PlaceholderText="Juan Perez"/>
 
-			<TextBox x:Name="txtCorreo"
+				<TextBox x:Name="txtCorreo"
                      Header="Correo electronico"
+                     Style="{StaticResource WineTextBoxStyle}"
+                     MaxLength="80"
                      PlaceholderText="usuario@vinoteca.com"/>
 
-			<PasswordBox x:Name="txtPassword"
+				<PasswordBox x:Name="txtPassword"
                          Header="Contrasena"
-                         PlaceholderText="••••••••"/>
+                         Style="{StaticResource WinePasswordBoxStyle}"
+                         MaxLength="20"
+                         PlaceholderText="********"/>
 
-			<PasswordBox x:Name="txtConfirmarPassword"
+				<PasswordBox x:Name="txtConfirmarPassword"
                          Header="Confirmar contrasena"
-                         PlaceholderText="••••••••"/>
+                         Style="{StaticResource WinePasswordBoxStyle}"
+                         MaxLength="20"
+                         PlaceholderText="********"/>
 
-			<TextBlock x:Name="txtError"
+				<TextBlock x:Name="txtError"
                        Foreground="{ThemeResource SystemFillColorCriticalBrush}"
                        Visibility="Collapsed"
-                       TextWrapping="Wrap"
-                       HorizontalAlignment="Center"/>
+                       TextWrapping="Wrap"/>
 
-			<TextBlock x:Name="txtExito"
+				<TextBlock x:Name="txtExito"
                        Foreground="{ThemeResource SystemFillColorSuccessBrush}"
                        Visibility="Collapsed"
-                       TextWrapping="Wrap"
-                       HorizontalAlignment="Center"/>
+                       TextWrapping="Wrap"/>
 
-			<Button Content="Crear cuenta"
-                    HorizontalAlignment="Stretch"
-                    Style="{ThemeResource AccentButtonStyle}"
-                    Margin="0,6,0,0"
+				<Button Content="Crear cuenta"
+                    Style="{StaticResource WinePrimaryButtonStyle}"
                     Click="BtnRegistrar_Click"/>
 
-			<Button Content="Volver al login"
-                    HorizontalAlignment="Stretch"
+				<Button Content="Volver al login"
+                    Style="{StaticResource WineSecondaryButtonStyle}"
                     Click="BtnVolverLogin_Click"/>
-		</StackPanel>
+			</StackPanel>
+		</Border>
 	</Grid>
 </Page>

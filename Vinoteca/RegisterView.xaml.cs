@@ -57,6 +57,31 @@ namespace Vinoteca.Views
 				return;
 			}
 
+			if (correo != correo.Trim())
+			{
+				MostrarError("El correo no debe tener espacios al inicio o al final");
+				return;
+			}
+
+			if (nombre.Contains("  "))
+			{
+				MostrarError("El nombre no debe contener espacios dobles");
+				return;
+			}
+
+			if (correo.Any(char.IsWhiteSpace))
+			{
+				MostrarError("El correo no debe contener espacios");
+				return;
+			}
+
+			string patternEmail = @"^[^@\s]+@[^@\s]+\.[^@\s]+$";
+			if (!Regex.IsMatch(correo, patternEmail))
+			{
+				MostrarError("Ingresa un formato valido para el correo electronico");
+				return;
+			}
+
 			if (string.IsNullOrWhiteSpace(password))
 			{
 				MostrarError("La contrasena es obligatoria");
@@ -69,28 +94,15 @@ namespace Vinoteca.Views
 				return;
 			}
 
-			if (correo != correo.Trim() || password != password.Trim() || confirmarPassword != confirmarPassword.Trim())
+			if (password != password.Trim() || confirmarPassword != confirmarPassword.Trim())
 			{
-				MostrarError("El correo y las contrasenas no deben tener espacios al inicio o al final");
+				MostrarError("Las contrasenas no deben tener espacios al inicio o al final");
 				return;
 			}
 
-			if (nombre.Contains("  "))
+			if (password.Any(char.IsWhiteSpace) || confirmarPassword.Any(char.IsWhiteSpace))
 			{
-				MostrarError("El nombre no debe contener espacios dobles");
-				return;
-			}
-
-			if (correo.Any(char.IsWhiteSpace) || password.Any(char.IsWhiteSpace) || confirmarPassword.Any(char.IsWhiteSpace))
-			{
-				MostrarError("El correo y las contrasenas no deben contener espacios");
-				return;
-			}
-
-			string patternEmail = @"^[^@\s]+@[^@\s]+\.[^@\s]+$";
-			if (!Regex.IsMatch(correo, patternEmail))
-			{
-				MostrarError("Ingresa un formato valido para el correo electronico");
+				MostrarError("Las contrasenas no deben contener espacios");
 				return;
 			}
 

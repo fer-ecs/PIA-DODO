@@ -2,41 +2,74 @@
     x:Class="Vinoteca.Views.LoginView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    Background="{StaticResource WineBackgroundBrush}">
 
-	<Grid>
-		<StackPanel Width="320" HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="16">
-			<TextBlock Text="Inicio de Sesion"
-                       Style="{ThemeResource TitleTextBlockStyle}"
-                       HorizontalAlignment="Center"
-                       Margin="0,0,0,16"/>
+	<Grid Style="{StaticResource WinePageRootStyle}">
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="*"/>
+			<ColumnDefinition Width="460"/>
+		</Grid.ColumnDefinitions>
 
-			<TextBox x:Name="txtCorreo"
-                     Header="Correo Electronico"
+		<Grid Grid.Column="0" Padding="56">
+			<StackPanel VerticalAlignment="Center" MaxWidth="520" Spacing="16">
+				<Border Width="74" Height="74" CornerRadius="37" Background="{StaticResource WineHeroBrush}" HorizontalAlignment="Left">
+					<TextBlock Text="V" Foreground="White" FontSize="34" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+				</Border>
+
+				<TextBlock Text="Vinoteca" FontSize="46" FontWeight="SemiBold" Foreground="{StaticResource WineTextBrush}"/>
+				<TextBlock Text="Una tienda de vinos sencilla, calida y lista para atender clientes y administrar inventario sin complicaciones." TextWrapping="WrapWholeWords" FontSize="18" Foreground="{StaticResource WineMutedBrush}"/>
+
+				<StackPanel Orientation="Horizontal" Spacing="16" Margin="0,14,0,0">
+					<Border Style="{StaticResource WineCardStyle}" Padding="18,14">
+						<StackPanel>
+							<TextBlock Text="Catalogo activo" FontWeight="SemiBold" Foreground="{StaticResource WineTextBrush}"/>
+							<TextBlock Text="Visual limpio para compra rapida" Foreground="{StaticResource WineMutedBrush}" FontSize="12"/>
+						</StackPanel>
+					</Border>
+					<Border Style="{StaticResource WineCardStyle}" Padding="18,14">
+						<StackPanel>
+							<TextBlock Text="Control de cuentas" FontWeight="SemiBold" Foreground="{StaticResource WineTextBrush}"/>
+							<TextBlock Text="Gestion de usuarios y roles" Foreground="{StaticResource WineMutedBrush}" FontSize="12"/>
+						</StackPanel>
+					</Border>
+				</StackPanel>
+			</StackPanel>
+		</Grid>
+
+		<Border Grid.Column="1" Margin="28" Padding="32" Style="{StaticResource WineCardStyle}" VerticalAlignment="Center">
+			<StackPanel Spacing="16">
+				<Border Background="#F3E0D0" CornerRadius="999" Padding="12,6" HorizontalAlignment="Left">
+					<TextBlock Text="Acceso" Foreground="{StaticResource WineHeroBrush}" FontWeight="SemiBold"/>
+				</Border>
+
+				<TextBlock Text="Bienvenido" FontSize="32" FontWeight="SemiBold" Foreground="{StaticResource WineTextBrush}"/>
+				<TextBlock Text="Ingresa con tu cuenta para administrar la vinoteca o atender compras." TextWrapping="Wrap" Foreground="{StaticResource WineMutedBrush}" Margin="0,0,0,8"/>
+
+				<TextBox x:Name="txtCorreo"
+                     Header="Correo electronico"
+                     Style="{StaticResource WineTextBoxStyle}"
                      MaxLength="80"
                      PlaceholderText="admin@vinoteca.com"/>
 
-			<PasswordBox x:Name="txtPassword"
+				<PasswordBox x:Name="txtPassword"
                          Header="Contrasena"
+                         Style="{StaticResource WinePasswordBoxStyle}"
                          MaxLength="20"
-                         PlaceholderText="••••••••"/>
+                         PlaceholderText="********"/>
 
-			<TextBlock x:Name="txtError"
+				<TextBlock x:Name="txtError"
                        Foreground="{ThemeResource SystemFillColorCriticalBrush}"
                        Visibility="Collapsed"
-                       TextWrapping="Wrap"
-                       HorizontalAlignment="Center"/>
+                       TextWrapping="Wrap"/>
 
-			<Button Content="Ingresar"
-                    HorizontalAlignment="Stretch"
-                    Style="{ThemeResource AccentButtonStyle}"
-                    Margin="0,8,0,0"
+				<Button Content="Ingresar"
+                    Style="{StaticResource WinePrimaryButtonStyle}"
                     Click="BtnLogin_Click"/>
 
-			<TextBlock Text="Las cuentas las crea el administrador"
-                       TextWrapping="Wrap"
-                       HorizontalAlignment="Center"
-                       Opacity="0.75"/>
-		</StackPanel>
+				<Border Background="#FFF5EC" CornerRadius="14" Padding="14">
+					<TextBlock Text="Las cuentas de acceso las administra la vinoteca. El cliente comun solo compra e inicia sesion." TextWrapping="Wrap" Foreground="{StaticResource WineMutedBrush}" FontSize="13"/>
+				</Border>
+			</StackPanel>
+		</Border>
 	</Grid>
 </Page>

@@ -45,15 +45,9 @@ namespace Vinoteca.Views
 				return;
 			}
 
-			if (string.IsNullOrWhiteSpace(password))
+			if (correo != correo.Trim())
 			{
-				MostrarError("La contrasena es obligatoria");
-				return;
-			}
-
-			if (correo != correo.Trim() || password != password.Trim())
-			{
-				MostrarError("El correo y la contrasena no deben tener espacios al inicio o al final");
+				MostrarError("El correo no debe tener espacios al inicio o al final");
 				return;
 			}
 
@@ -64,9 +58,27 @@ namespace Vinoteca.Views
 				return;
 			}
 
-			if (correo.Any(char.IsWhiteSpace) || password.Any(char.IsWhiteSpace))
+			if (string.IsNullOrWhiteSpace(password))
 			{
-				MostrarError("El correo y la contrasena no deben contener espacios");
+				MostrarError("La contrasena es obligatoria");
+				return;
+			}
+
+			if (password != password.Trim())
+			{
+				MostrarError("La contrasena no debe tener espacios al inicio o al final");
+				return;
+			}
+
+			if (correo.Any(char.IsWhiteSpace))
+			{
+				MostrarError("El correo no debe contener espacios");
+				return;
+			}
+
+			if (password.Any(char.IsWhiteSpace))
+			{
+				MostrarError("La contrasena no debe contener espacios");
 				return;
 			}
 

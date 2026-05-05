@@ -8,16 +8,20 @@ namespace Vinoteca.Views
 	{
 		public AdminMenuView()
 		{
-			this.InitializeComponent();
+			InitializeComponent();
 
-			// Cargar datos de la sesión activa
+			if (!SessionService.EsAdminActivo)
+			{
+				Frame?.Navigate(typeof(LoginView));
+				return;
+			}
+
 			if (SessionService.UsuarioActivo != null)
 			{
 				txtNombreAdminActivo.Text = SessionService.UsuarioActivo.Nombre;
 				txtCorreoAdminActivo.Text = SessionService.UsuarioActivo.Correo;
 			}
 
-			// Cambié esto para que inicie por defecto en la Tienda y puedas probarla de inmediato
 			AdminContentFrame.Navigate(typeof(TiendaView));
 		}
 
@@ -49,10 +53,7 @@ namespace Vinoteca.Views
 		private void btnCerrarSesionAdmin_Click(object sender, RoutedEventArgs e)
 		{
 			SessionService.CerrarSesion();
-			if (this.Frame != null)
-			{
-				this.Frame.Navigate(typeof(LoginView));
-			}
+			Frame?.Navigate(typeof(LoginView));
 		}
 	}
 }
