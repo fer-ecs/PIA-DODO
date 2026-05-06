@@ -38,17 +38,32 @@ namespace Vinoteca.Views
 			lvCarrito.ItemsSource = ItemsCarrito;
 			txtTotalCarrito.Text = CarritoService.ObtenerTotal().ToString("C");
 			txtEstado.Visibility = Visibility.Collapsed;
-			txtTitulo.Text = SessionService.EsAdminActivo ? "Panel de venta" : "Confirmacion de compra";
+			txtTitulo.Text = SessionService.PuedeProcesarVentas ? "Panel de venta" : "Confirmacion de compra";
 			txtSubtitulo.Text = $"{CarritoService.ObtenerCantidadTotalArticulos()} articulo(s) listos para procesar";
 			txtVacio.Visibility = carrito.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
 		}
 
-		private void btnVaciar_Click(object sender, RoutedEventArgs e)
+		private async void btnVaciar_Click(object sender, RoutedEventArgs e)
 		{
+			if (CarritoService.ObtenerCarrito().Count == 0)
+			{
+				return;
+			}
+
+			bool confirmarVaciado = await CambiosPendientesService.MostrarConfirmacionAsync(
+				XamlRoot,
+				"Vaciar venta",
+				"Deseas quitar todos los productos de esta venta?",
+				"Vaciar");
+			if (!confirmarVaciado)
+			{
+				return;
+			}
+
 			CarritoService.LimpiarCarrito();
 		}
 
-		private void btnFinalizarVenta_Click(object sender, RoutedEventArgs e)
+		private async void btnFinalizarVenta_Click(object sender, RoutedEventArgs e)
 		{
 			var items = CarritoService.ObtenerCarrito();
 			if (items.Count == 0)
@@ -73,8 +88,22 @@ namespace Vinoteca.Views
 				}
 			}
 
+			bool confirmarVenta = await CambiosPendientesService.MostrarConfirmacionAsync(
+				XamlRoot,
+				"Confirmar venta",
+				"Deseas registrar la venta con los productos actuales?",
+				"Confirmar");
+			if (!confirmarVenta)
+			{
+				return;
+			}
+
 			var nuevaVenta = new Venta
 			{
+				UsuarioId = SessionService.UsuarioActivo?.Id ?? string.Empty,
+				NombreCliente = SessionService.UsuarioActivo?.Nombre ?? "Cliente",
+				CorreoCliente = SessionService.UsuarioActivo?.Correo ?? string.Empty,
+				RolUsuario = SessionService.RolActivo,
 				Productos = new List<CarritoItem>(items),
 				Total = CarritoService.ObtenerTotal()
 			};
@@ -95,13 +124,13 @@ namespace Vinoteca.Views
 
 			CarritoService.LimpiarCarrito();
 
-			if (SessionService.EsAdminActivo)
+			if (SessionService.PuedeProcesarVentas)
 			{
 				Frame.Navigate(typeof(ReportesView));
 				return;
 			}
 
-			Frame.Navigate(typeof(TiendaView));
+			Frame.Navigate(typeof(MisTicketsView));
 		}
 
 		private void MostrarEstado(string mensaje)

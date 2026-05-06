@@ -1,6 +1,8 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
 using System.Linq;
+using Vinoteca.Models;
 using Vinoteca.Services;
 
 namespace Vinoteca.Views
@@ -11,9 +13,9 @@ namespace Vinoteca.Views
 		{
 			InitializeComponent();
 
-			if (!SessionService.EsAdminActivo)
+			if (!SessionService.PuedeVerReportes)
 			{
-				txtEstado.Text = "Solo un administrador puede ver reportes";
+				txtEstado.Text = "Solo administracion y supervision pueden ver reportes";
 				txtEstado.Visibility = Visibility.Visible;
 				lvHistorialVentas.IsEnabled = false;
 				return;
@@ -34,6 +36,19 @@ namespace Vinoteca.Views
 			txtGananciasTotales.Text = $"Ganancias totales: {totalGlobal:C}";
 			txtResumenVentas.Text = $"Ventas registradas: {totalVentas} | Lineas vendidas: {totalProductos}";
 			txtSinVentas.Visibility = ventas.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
+		}
+
+		private void btnExportarPdf_Click(object sender, RoutedEventArgs e)
+		{
+			if (sender is not Button button || button.Tag is not Venta venta)
+			{
+				return;
+			}
+
+			string ruta = TicketPdfService.ExportarVentaPdf(venta);
+			txtEstado.Text = $"Ticket exportado en: {ruta}";
+			txtEstado.Foreground = new SolidColorBrush(Microsoft.UI.Colors.Green);
+			txtEstado.Visibility = Visibility.Visible;
 		}
 	}
 }

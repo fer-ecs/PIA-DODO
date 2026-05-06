@@ -9,8 +9,8 @@ namespace Vinoteca.Services
 {
 	public static class DataService
 	{
-		private const string adminCorreo = "admin@vinoteca.com";
-		private const string adminContrasena = "Admin_123*";
+		private const string AdminCorreo = "admin@vinoteca.com";
+		private const string AdminContrasena = "Admin_123*";
 
 		private static readonly string appFolder = Path.Combine(
 			Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
@@ -52,7 +52,7 @@ namespace Vinoteca.Services
 					GuardarJson(ventasFile, new List<Venta>());
 				}
 
-				ActualizarUsuarioAdmin();
+				ActualizarUsuariosSistema();
 				AsegurarDatosMuestra();
 			}
 			catch (Exception ex)
@@ -92,32 +92,60 @@ namespace Vinoteca.Services
 				{
 					Id = Guid.NewGuid().ToString(),
 					Nombre = "Administrador",
-					Correo = adminCorreo,
-					Contrasena = adminContrasena,
-					EsAdmin = true,
+					Correo = AdminCorreo,
+					Contrasena = AdminContrasena,
+					Rol = RolesSistema.Administrador,
 					Activo = true
 				}
 			};
 		}
 
-		private static void ActualizarUsuarioAdmin()
+		private static void ActualizarUsuariosSistema()
 		{
 			var usuarios = ObtenerUsuariosSinInicializar();
+			bool actualizados = false;
+
+			foreach (var usuario in usuarios)
+			{
+				string rolOriginal = usuario.Rol;
+				if (string.IsNullOrWhiteSpace(rolOriginal))
+				{
+					usuario.Rol = usuario.EsAdmin ? RolesSistema.Administrador : RolesSistema.Cliente;
+					actualizados = true;
+				}
+				else
+				{
+					string rolNormalizado = RolesSistema.Normalizar(rolOriginal);
+					if (rolNormalizado != rolOriginal)
+					{
+						usuario.Rol = rolNormalizado;
+						actualizados = true;
+					}
+				}
+			}
+
 			var admin = usuarios.FirstOrDefault(u =>
 				!string.IsNullOrWhiteSpace(u.Correo) &&
-				u.Correo.Equals(adminCorreo, StringComparison.OrdinalIgnoreCase));
+				u.Correo.Equals(AdminCorreo, StringComparison.OrdinalIgnoreCase));
 
 			if (admin == null)
 			{
 				usuarios.Insert(0, CrearUsuariosBase().First());
-				GuardarJson(usuariosFile, usuarios);
-				return;
+				actualizados = true;
+			}
+			else
+			{
+				admin.Nombre ??= "Administrador";
+				admin.Contrasena = AdminContrasena;
+				admin.Rol = RolesSistema.Administrador;
+				admin.Activo = true;
+				actualizados = true;
 			}
 
-			admin.Contrasena = adminContrasena;
-			admin.EsAdmin = true;
-			admin.Activo = true;
-			GuardarJson(usuariosFile, usuarios);
+			if (actualizados)
+			{
+				GuardarJson(usuariosFile, usuarios);
+			}
 		}
 
 		private static void AsegurarDatosMuestra()
@@ -127,17 +155,23 @@ namespace Vinoteca.Services
 
 			foreach (var usuarioMuestra in CrearUsuariosMuestra())
 			{
-				bool existe = usuarios.Any(u =>
+				var usuarioExistente = usuarios.FirstOrDefault(u =>
 					!string.IsNullOrWhiteSpace(u.Correo) &&
 					u.Correo.Equals(usuarioMuestra.Correo, StringComparison.OrdinalIgnoreCase));
 
-				if (existe)
+				if (usuarioExistente == null)
 				{
+					usuarios.Add(usuarioMuestra);
+					usuariosActualizados = true;
 					continue;
 				}
 
-				usuarios.Add(usuarioMuestra);
-				usuariosActualizados = true;
+				string rolNormalizado = RolesSistema.Normalizar(usuarioExistente.Rol);
+				if (usuarioExistente.Rol != rolNormalizado)
+				{
+					usuarioExistente.Rol = rolNormalizado;
+					usuariosActualizados = true;
+				}
 			}
 
 			if (usuariosActualizados)
@@ -175,21 +209,21 @@ namespace Vinoteca.Services
 		{
 			return new List<Usuario>
 			{
-				new Usuario { Id = Guid.NewGuid().ToString(), Nombre = "Ana Lopez", Correo = "ana.lopez@vinoteca.com", Contrasena = "Ana_123*", EsAdmin = true, Activo = true },
-				new Usuario { Id = Guid.NewGuid().ToString(), Nombre = "Carlos Mendez", Correo = "carlos.mendez@vinoteca.com", Contrasena = "Carlos_123*", EsAdmin = true, Activo = true },
-				new Usuario { Id = Guid.NewGuid().ToString(), Nombre = "Laura Perez", Correo = "laura.perez@vinoteca.com", Contrasena = "Laura_123*", EsAdmin = false, Activo = true },
-				new Usuario { Id = Guid.NewGuid().ToString(), Nombre = "Diego Ruiz", Correo = "diego.ruiz@vinoteca.com", Contrasena = "Diego_123*", EsAdmin = false, Activo = true },
-				new Usuario { Id = Guid.NewGuid().ToString(), Nombre = "Sofia Vargas", Correo = "sofia.vargas@vinoteca.com", Contrasena = "Sofia_123*", EsAdmin = false, Activo = true },
-				new Usuario { Id = Guid.NewGuid().ToString(), Nombre = "Miguel Torres", Correo = "miguel.torres@vinoteca.com", Contrasena = "Miguel_123*", EsAdmin = false, Activo = true },
-				new Usuario { Id = Guid.NewGuid().ToString(), Nombre = "Valeria Castro", Correo = "valeria.castro@vinoteca.com", Contrasena = "Valeria_123*", EsAdmin = false, Activo = true },
-				new Usuario { Id = Guid.NewGuid().ToString(), Nombre = "Javier Moreno", Correo = "javier.moreno@vinoteca.com", Contrasena = "Javier_123*", EsAdmin = false, Activo = true },
-				new Usuario { Id = Guid.NewGuid().ToString(), Nombre = "Fernanda Gil", Correo = "fernanda.gil@vinoteca.com", Contrasena = "Fernanda_123*", EsAdmin = false, Activo = true },
-				new Usuario { Id = Guid.NewGuid().ToString(), Nombre = "Ricardo Salas", Correo = "ricardo.salas@vinoteca.com", Contrasena = "Ricardo_123*", EsAdmin = false, Activo = true },
-				new Usuario { Id = Guid.NewGuid().ToString(), Nombre = "Daniela Ortiz", Correo = "daniela.ortiz@vinoteca.com", Contrasena = "Daniela_123*", EsAdmin = false, Activo = true },
-				new Usuario { Id = Guid.NewGuid().ToString(), Nombre = "Eduardo Rios", Correo = "eduardo.rios@vinoteca.com", Contrasena = "Eduardo_123*", EsAdmin = false, Activo = true },
-				new Usuario { Id = Guid.NewGuid().ToString(), Nombre = "Mariana Vega", Correo = "mariana.vega@vinoteca.com", Contrasena = "Mariana_123*", EsAdmin = false, Activo = true },
-				new Usuario { Id = Guid.NewGuid().ToString(), Nombre = "Patricia Leon", Correo = "patricia.leon@vinoteca.com", Contrasena = "Patricia_123*", EsAdmin = false, Activo = true },
-				new Usuario { Id = Guid.NewGuid().ToString(), Nombre = "Hector Nava", Correo = "hector.nava@vinoteca.com", Contrasena = "Hector_123*", EsAdmin = false, Activo = true }
+				new Usuario { Id = Guid.NewGuid().ToString(), Nombre = "Ana Lopez", Correo = "ana.lopez@vinoteca.com", Contrasena = "Ana_123*", Rol = RolesSistema.Supervisor, Activo = true },
+				new Usuario { Id = Guid.NewGuid().ToString(), Nombre = "Carlos Mendez", Correo = "carlos.mendez@vinoteca.com", Contrasena = "Carlos_123*", Rol = RolesSistema.Supervisor, Activo = true },
+				new Usuario { Id = Guid.NewGuid().ToString(), Nombre = "Laura Perez", Correo = "laura.perez@vinoteca.com", Contrasena = "Laura_123*", Rol = RolesSistema.Cliente, Activo = true },
+				new Usuario { Id = Guid.NewGuid().ToString(), Nombre = "Diego Ruiz", Correo = "diego.ruiz@vinoteca.com", Contrasena = "Diego_123*", Rol = RolesSistema.Cliente, Activo = true },
+				new Usuario { Id = Guid.NewGuid().ToString(), Nombre = "Sofia Vargas", Correo = "sofia.vargas@vinoteca.com", Contrasena = "Sofia_123*", Rol = RolesSistema.Cliente, Activo = true },
+				new Usuario { Id = Guid.NewGuid().ToString(), Nombre = "Miguel Torres", Correo = "miguel.torres@vinoteca.com", Contrasena = "Miguel_123*", Rol = RolesSistema.Cliente, Activo = true },
+				new Usuario { Id = Guid.NewGuid().ToString(), Nombre = "Valeria Castro", Correo = "valeria.castro@vinoteca.com", Contrasena = "Valeria_123*", Rol = RolesSistema.Cliente, Activo = true },
+				new Usuario { Id = Guid.NewGuid().ToString(), Nombre = "Javier Moreno", Correo = "javier.moreno@vinoteca.com", Contrasena = "Javier_123*", Rol = RolesSistema.Cliente, Activo = true },
+				new Usuario { Id = Guid.NewGuid().ToString(), Nombre = "Fernanda Gil", Correo = "fernanda.gil@vinoteca.com", Contrasena = "Fernanda_123*", Rol = RolesSistema.Cliente, Activo = true },
+				new Usuario { Id = Guid.NewGuid().ToString(), Nombre = "Ricardo Salas", Correo = "ricardo.salas@vinoteca.com", Contrasena = "Ricardo_123*", Rol = RolesSistema.Cliente, Activo = true },
+				new Usuario { Id = Guid.NewGuid().ToString(), Nombre = "Daniela Ortiz", Correo = "daniela.ortiz@vinoteca.com", Contrasena = "Daniela_123*", Rol = RolesSistema.Cliente, Activo = true },
+				new Usuario { Id = Guid.NewGuid().ToString(), Nombre = "Eduardo Rios", Correo = "eduardo.rios@vinoteca.com", Contrasena = "Eduardo_123*", Rol = RolesSistema.Cliente, Activo = true },
+				new Usuario { Id = Guid.NewGuid().ToString(), Nombre = "Mariana Vega", Correo = "mariana.vega@vinoteca.com", Contrasena = "Mariana_123*", Rol = RolesSistema.Cliente, Activo = true },
+				new Usuario { Id = Guid.NewGuid().ToString(), Nombre = "Patricia Leon", Correo = "patricia.leon@vinoteca.com", Contrasena = "Patricia_123*", Rol = RolesSistema.Cliente, Activo = true },
+				new Usuario { Id = Guid.NewGuid().ToString(), Nombre = "Hector Nava", Correo = "hector.nava@vinoteca.com", Contrasena = "Hector_123*", Rol = RolesSistema.Cliente, Activo = true }
 			};
 		}
 
@@ -265,6 +299,7 @@ namespace Vinoteca.Services
 				return false;
 			}
 
+			usuario.Rol = RolesSistema.Normalizar(usuario.Rol);
 			usuarios.Add(usuario);
 			GuardarJson(usuariosFile, usuarios);
 			return true;
@@ -280,6 +315,7 @@ namespace Vinoteca.Services
 				return;
 			}
 
+			usuario.Rol = RolesSistema.Normalizar(usuario.Rol);
 			usuarios[index] = usuario;
 			GuardarJson(usuariosFile, usuarios);
 		}
@@ -300,7 +336,7 @@ namespace Vinoteca.Services
 
 		public static int ContarAdministradoresActivos()
 		{
-			return ObtenerUsuarios().Count(u => u.EsAdmin && u.Activo);
+			return ObtenerUsuarios().Count(u => u.Rol == RolesSistema.Administrador && u.Activo);
 		}
 
 		public static List<Producto> ObtenerProductos()
@@ -355,6 +391,14 @@ namespace Vinoteca.Services
 			{
 				return new List<Venta>();
 			}
+		}
+
+		public static List<Venta> ObtenerVentasPorUsuario(string usuarioId)
+		{
+			return ObtenerVentas()
+				.Where(v => v.UsuarioId == usuarioId)
+				.OrderByDescending(v => v.Fecha)
+				.ToList();
 		}
 
 		public static void GuardarVenta(Venta nuevaVenta)

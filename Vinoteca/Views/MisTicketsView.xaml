@@ -1,5 +1,5 @@
 <Page
-    x:Class="Vinoteca.Views.ReportesView"
+    x:Class="Vinoteca.Views.MisTicketsView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:models="using:Vinoteca.Models"
@@ -19,14 +19,13 @@
 				</Grid.RowDefinitions>
 
 				<StackPanel Grid.Row="0" Margin="0,0,0,20">
-					<TextBlock Text="Historial de ventas" FontSize="28" FontWeight="SemiBold" Foreground="{StaticResource WineTextBrush}"/>
-					<TextBlock x:Name="txtGananciasTotales" Text="Ganancias totales: $0.00" FontSize="18" Foreground="{StaticResource WineSuccessBrush}" FontWeight="SemiBold"/>
-					<TextBlock x:Name="txtResumenVentas" Text="Ventas registradas: 0 | Lineas vendidas: 0" Foreground="{StaticResource WineMutedBrush}"/>
+					<TextBlock Text="Mis Tickets" FontSize="28" FontWeight="SemiBold" Foreground="{StaticResource WineTextBrush}"/>
+					<TextBlock x:Name="txtResumenTickets" Text="Todavia no tienes compras registradas" Foreground="{StaticResource WineMutedBrush}"/>
 					<TextBlock x:Name="txtEstado" Visibility="Collapsed" Margin="0,8,0,0" TextWrapping="Wrap"/>
 				</StackPanel>
 
 				<Grid Grid.Row="1">
-					<ListView x:Name="lvHistorialVentas" SelectionMode="None" Background="Transparent">
+					<ListView x:Name="lvTickets" SelectionMode="None" Background="Transparent">
 						<ListView.ItemTemplate>
 							<DataTemplate x:DataType="models:Venta">
 								<Border Margin="0,0,0,10" Padding="16" CornerRadius="16" Background="#FFF8F2" BorderBrush="{StaticResource WineBorderBrush}" BorderThickness="1">
@@ -45,11 +44,9 @@
 											<StackPanel>
 												<TextBlock Text="{x:Bind Id, Converter={StaticResource LocalStringConverter}, ConverterParameter='{}Ticket: {0}'}" FontWeight="SemiBold" Foreground="{StaticResource WineTextBrush}"/>
 												<TextBlock Text="{x:Bind Fecha}" FontSize="12" Foreground="{StaticResource WineMutedBrush}"/>
-												<TextBlock Text="{x:Bind NombreCliente, Converter={StaticResource LocalStringConverter}, ConverterParameter='{}Cliente: {0}'}" Foreground="{StaticResource WineMutedBrush}"/>
-												<TextBlock Text="{x:Bind CorreoCliente}" Foreground="{StaticResource WineMutedBrush}" FontSize="12"/>
 											</StackPanel>
 
-											<TextBlock Grid.Column="1" Text="{x:Bind Total, Converter={StaticResource LocalStringConverter}, ConverterParameter='{}{0:C}'}" FontSize="18" FontWeight="Bold" VerticalAlignment="Center" Foreground="{StaticResource WineHeroBrush}"/>
+											<TextBlock Grid.Column="1" Text="{x:Bind Total, Converter={StaticResource LocalStringConverter}, ConverterParameter='{}{0:C}'}" FontSize="18" FontWeight="Bold" Foreground="{StaticResource WineHeroBrush}" VerticalAlignment="Center"/>
 										</Grid>
 
 										<Grid Grid.Row="1">
@@ -58,8 +55,8 @@
 												<ColumnDefinition Width="Auto"/>
 											</Grid.ColumnDefinitions>
 
-											<TextBlock Text="{x:Bind Productos.Count, Converter={StaticResource LocalStringConverter}, ConverterParameter='{}{0} producto(s) vendidos'}" VerticalAlignment="Center" Foreground="{StaticResource WineMutedBrush}"/>
-											<Button Grid.Column="1" Content="Exportar PDF" Tag="{x:Bind}" Style="{StaticResource WineSecondaryButtonStyle}" Click="btnExportarPdf_Click"/>
+											<TextBlock Text="{x:Bind Productos.Count, Converter={StaticResource LocalStringConverter}, ConverterParameter='{}{0} producto(s) en este ticket'}" Foreground="{StaticResource WineMutedBrush}" VerticalAlignment="Center"/>
+											<Button Grid.Column="1" Content="Descargar PDF" Tag="{x:Bind}" Style="{StaticResource WineSecondaryButtonStyle}" Click="btnDescargarPdf_Click"/>
 										</Grid>
 									</Grid>
 								</Border>
@@ -67,7 +64,7 @@
 						</ListView.ItemTemplate>
 					</ListView>
 
-					<TextBlock x:Name="txtSinVentas" Text="Todavia no hay ventas registradas" Visibility="Collapsed" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{StaticResource WineEmptyStateStyle}"/>
+					<TextBlock x:Name="txtSinTickets" Text="Aun no hay tickets para mostrar" Visibility="Collapsed" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{StaticResource WineEmptyStateStyle}"/>
 				</Grid>
 			</Grid>
 		</Border>

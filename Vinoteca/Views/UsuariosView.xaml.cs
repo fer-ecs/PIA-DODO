@@ -11,11 +11,12 @@ using Vinoteca.Services;
 
 namespace Vinoteca.Views
 {
-	public sealed partial class UsuariosView : Page
+	public sealed partial class UsuariosView : Page, ICambiosPendientes
 	{
 		private const string CorreoAdminPrincipal = "admin@vinoteca.com";
 
 		private Usuario? usuarioSeleccionado;
+		private bool ignorarCambioSeleccion;
 
 		public ObservableCollection<UsuarioItemViewModel> Usuarios { get; } = new();
 
@@ -24,29 +25,66 @@ namespace Vinoteca.Views
 			InitializeComponent();
 			InputRestrictionsHelper.AplicarSinEspaciosNiEnter(this);
 			lvUsuarios.ItemsSource = Usuarios;
+			ConfigurarRoles();
 
-			if (!SessionService.EsAdminActivo)
+			if (!SessionService.PuedeVerInformacionOperativa)
 			{
-				BloquearAccesoNoAdmin();
+				BloquearAccesoNoOperativo();
 				return;
+			}
+
+			if (!SessionService.PuedeGestionarUsuarios)
+			{
+				ConfigurarModoSoloLectura();
 			}
 
 			CargarUsuarios();
 			ActualizarModoFormulario();
 		}
 
-		private void BloquearAccesoNoAdmin()
+		public bool TieneCambiosPendientes => SessionService.PuedeGestionarUsuarios && FormularioTieneCambios();
+
+		public string ObtenerMensajeCambiosPendientes()
+		{
+			return usuarioSeleccionado == null
+				? "Hay un usuario nuevo sin guardar."
+				: "Hay cambios sin guardar en el usuario seleccionado.";
+		}
+
+		private void ConfigurarRoles()
+		{
+			cmbRol.SelectedIndex = 2;
+			chkActivo.IsChecked = true;
+		}
+
+		private void BloquearAccesoNoOperativo()
 		{
 			txtNombre.IsEnabled = false;
 			txtCorreo.IsEnabled = false;
 			txtPassword.IsEnabled = false;
 			txtConfirmarPassword.IsEnabled = false;
-			chkEsAdmin.IsEnabled = false;
+			cmbRol.IsEnabled = false;
+			chkActivo.IsEnabled = false;
 			btnGuardarUsuario.IsEnabled = false;
 			btnLimpiarUsuario.IsEnabled = false;
 			btnEliminarUsuario.IsEnabled = false;
 			lvUsuarios.IsEnabled = false;
-			MostrarError("Solo un administrador puede gestionar usuarios");
+			MostrarError("Solo personal autorizado puede revisar usuarios");
+		}
+
+		private void ConfigurarModoSoloLectura()
+		{
+			txtDescripcionFormulario.Text = "Vista de solo lectura para supervision de cuentas.";
+			txtDescripcionLista.Text = "Selecciona una cuenta para revisar su informacion.";
+			txtNombre.IsEnabled = false;
+			txtCorreo.IsEnabled = false;
+			txtPassword.IsEnabled = false;
+			txtConfirmarPassword.IsEnabled = false;
+			cmbRol.IsEnabled = false;
+			chkActivo.IsEnabled = false;
+			btnGuardarUsuario.IsEnabled = false;
+			btnLimpiarUsuario.IsEnabled = false;
+			btnEliminarUsuario.IsEnabled = false;
 		}
 
 		private void CargarUsuarios()
@@ -59,28 +97,47 @@ namespace Vinoteca.Views
 			}
 		}
 
-		private void lvUsuarios_SelectionChanged(object sender, SelectionChangedEventArgs e)
+		private async void lvUsuarios_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
+			if (ignorarCambioSeleccion)
+			{
+				return;
+			}
+
 			if (lvUsuarios.SelectedItem is not UsuarioItemViewModel item)
 			{
 				return;
 			}
 
-			usuarioSeleccionado = item.Usuario;
-			txtNombre.Text = item.Usuario.Nombre ?? string.Empty;
-			txtCorreo.Text = item.Usuario.Correo ?? string.Empty;
-			txtPassword.Password = item.Usuario.Contrasena ?? string.Empty;
-			txtConfirmarPassword.Password = item.Usuario.Contrasena ?? string.Empty;
-			chkEsAdmin.IsChecked = item.Usuario.EsAdmin;
+			if (usuarioSeleccionado?.Id == item.Usuario.Id)
+			{
+				return;
+			}
+
+			if (TieneCambiosPendientes)
+			{
+				bool puedeCambiar = await CambiosPendientesService.ConfirmarAccionSiHayCambiosAsync(
+					XamlRoot,
+					this,
+					"cambiar de usuario",
+					false);
+				if (!puedeCambiar)
+				{
+					RestaurarSeleccionAnterior();
+					return;
+				}
+			}
+
+			CargarUsuarioEnFormulario(item.Usuario);
 			ActualizarModoFormulario();
 			OcultarMensaje();
 		}
 
 		private void btnGuardarUsuario_Click(object sender, RoutedEventArgs e)
 		{
-			if (!SessionService.EsAdminActivo)
+			if (!SessionService.PuedeGestionarUsuarios)
 			{
-				MostrarError("Solo un administrador puede guardar usuarios");
+				MostrarError("Solo el administrador puede guardar usuarios");
 				return;
 			}
 
@@ -90,8 +147,9 @@ namespace Vinoteca.Views
 			string correo = txtCorreo.Text;
 			string password = txtPassword.Password;
 			string confirmarPassword = txtConfirmarPassword.Password;
+			string rol = ObtenerRolActual();
 
-			if (!ValidarFormulario(nombre, correo, password, confirmarPassword))
+			if (!ValidarFormulario(nombre, correo, password, confirmarPassword, rol))
 			{
 				return;
 			}
@@ -105,17 +163,29 @@ namespace Vinoteca.Views
 				return;
 			}
 
-			if (!esNuevoUsuario && EsAdminPrincipal(usuario) && chkEsAdmin.IsChecked != true)
+			if (!esNuevoUsuario && EsAdminPrincipal(usuario) && rol != RolesSistema.Administrador)
 			{
 				MostrarError("El administrador principal debe conservar su rol");
+				return;
+			}
+
+			if (!esNuevoUsuario && EsAdminPrincipal(usuario) && chkActivo.IsChecked != true)
+			{
+				MostrarError("El administrador principal debe permanecer activo");
 				return;
 			}
 
 			usuario.Nombre = nombre.Trim();
 			usuario.Correo = correo.Trim();
 			usuario.Contrasena = password;
-			usuario.EsAdmin = chkEsAdmin.IsChecked == true;
-			usuario.Activo = usuarioSeleccionado?.Activo ?? true;
+			usuario.Rol = RolesSistema.Normalizar(rol);
+			usuario.Activo = chkActivo.IsChecked == true;
+
+			if (usuario.Rol == RolesSistema.Administrador && !usuario.Activo)
+			{
+				MostrarError("Un administrador no puede quedar inactivo desde el formulario");
+				return;
+			}
 
 			if (esNuevoUsuario)
 			{
@@ -133,11 +203,11 @@ namespace Vinoteca.Views
 				MostrarExito("Usuario actualizado correctamente");
 			}
 
-			LimpiarFormulario();
+			LimpiarFormularioInterno();
 			CargarUsuarios();
 		}
 
-		private bool ValidarFormulario(string nombre, string correo, string password, string confirmarPassword)
+		private bool ValidarFormulario(string nombre, string correo, string password, string confirmarPassword, string rol)
 		{
 			if (string.IsNullOrWhiteSpace(nombre))
 			{
@@ -230,6 +300,12 @@ namespace Vinoteca.Views
 				return false;
 			}
 
+			if (string.IsNullOrWhiteSpace(rol))
+			{
+				MostrarError("Selecciona un rol");
+				return false;
+			}
+
 			return true;
 		}
 
@@ -241,11 +317,11 @@ namespace Vinoteca.Views
 				u.Correo.Equals(correo, StringComparison.OrdinalIgnoreCase));
 		}
 
-		private void btnEliminarUsuario_Click(object sender, RoutedEventArgs e)
+		private async void btnEliminarUsuario_Click(object sender, RoutedEventArgs e)
 		{
-			if (!SessionService.EsAdminActivo)
+			if (!SessionService.PuedeGestionarUsuarios)
 			{
-				MostrarError("Solo un administrador puede eliminar usuarios");
+				MostrarError("Solo el administrador puede eliminar usuarios");
 				return;
 			}
 
@@ -267,9 +343,19 @@ namespace Vinoteca.Views
 				return;
 			}
 
-			if (usuarioSeleccionado.EsAdmin && usuarioSeleccionado.Activo && DataService.ContarAdministradoresActivos() <= 1)
+			if (usuarioSeleccionado.Rol == RolesSistema.Administrador && usuarioSeleccionado.Activo && DataService.ContarAdministradoresActivos() <= 1)
 			{
 				MostrarError("Debe existir al menos un administrador activo");
+				return;
+			}
+
+			bool confirmarEliminacion = await CambiosPendientesService.MostrarConfirmacionAsync(
+				XamlRoot,
+				"Eliminar usuario",
+				"Deseas eliminar el usuario seleccionado?",
+				"Eliminar");
+			if (!confirmarEliminacion)
+			{
 				return;
 			}
 
@@ -280,15 +366,15 @@ namespace Vinoteca.Views
 			}
 
 			MostrarExito("Usuario eliminado correctamente");
-			LimpiarFormulario();
+			LimpiarFormularioInterno();
 			CargarUsuarios();
 		}
 
 		private void btnCambiarEstado_Click(object sender, RoutedEventArgs e)
 		{
-			if (!SessionService.EsAdminActivo)
+			if (!SessionService.PuedeGestionarUsuarios)
 			{
-				MostrarError("Solo un administrador puede cambiar el estado de usuarios");
+				MostrarError("Solo el administrador puede cambiar el estado de usuarios");
 				return;
 			}
 
@@ -310,7 +396,7 @@ namespace Vinoteca.Views
 				return;
 			}
 
-			if (usuario.EsAdmin && usuario.Activo && DataService.ContarAdministradoresActivos() <= 1)
+			if (usuario.Rol == RolesSistema.Administrador && usuario.Activo && DataService.ContarAdministradoresActivos() <= 1)
 			{
 				MostrarError("Debe existir al menos un administrador activo");
 				return;
@@ -322,52 +408,7 @@ namespace Vinoteca.Views
 
 			if (usuarioSeleccionado?.Id == usuario.Id)
 			{
-				usuarioSeleccionado = usuario;
-			}
-
-			CargarUsuarios();
-		}
-
-		private void btnCambiarRol_Click(object sender, RoutedEventArgs e)
-		{
-			if (!SessionService.EsAdminActivo)
-			{
-				MostrarError("Solo un administrador puede gestionar roles");
-				return;
-			}
-
-			if (sender is not Button button || button.Tag is not UsuarioItemViewModel item)
-			{
-				return;
-			}
-
-			var usuario = item.Usuario;
-			if (EsAdminPrincipal(usuario))
-			{
-				MostrarError("El rol del administrador principal no se puede modificar");
-				return;
-			}
-
-			if (EsUsuarioActual(usuario))
-			{
-				MostrarError("No puedes cambiar tu propio rol");
-				return;
-			}
-
-			if (usuario.EsAdmin && DataService.ContarAdministradoresActivos() <= 1)
-			{
-				MostrarError("Debe existir al menos un administrador activo");
-				return;
-			}
-
-			usuario.EsAdmin = !usuario.EsAdmin;
-			DataService.ActualizarUsuario(usuario);
-			MostrarExito(usuario.EsAdmin ? "Rol actualizado a administrador" : "Rol actualizado a usuario");
-
-			if (usuarioSeleccionado?.Id == usuario.Id)
-			{
-				usuarioSeleccionado = usuario;
-				chkEsAdmin.IsChecked = usuario.EsAdmin;
+				CargarUsuarioEnFormulario(usuario);
 			}
 
 			CargarUsuarios();
@@ -391,22 +432,110 @@ namespace Vinoteca.Views
 				usuario.Id == SessionService.UsuarioActivo.Id;
 		}
 
-		private void btnLimpiarUsuario_Click(object sender, RoutedEventArgs e)
+		private async void btnLimpiarUsuario_Click(object sender, RoutedEventArgs e)
 		{
-			LimpiarFormulario();
+			if (TieneCambiosPendientes)
+			{
+				bool puedeLimpiar = await CambiosPendientesService.ConfirmarAccionSiHayCambiosAsync(
+					XamlRoot,
+					this,
+					"limpiar el formulario",
+					false);
+				if (!puedeLimpiar)
+				{
+					return;
+				}
+			}
+
+			LimpiarFormularioInterno();
 			OcultarMensaje();
 		}
 
-		private void LimpiarFormulario()
+		private void LimpiarFormularioInterno()
 		{
 			usuarioSeleccionado = null;
 			txtNombre.Text = string.Empty;
 			txtCorreo.Text = string.Empty;
 			txtPassword.Password = string.Empty;
 			txtConfirmarPassword.Password = string.Empty;
-			chkEsAdmin.IsChecked = false;
+			SeleccionarRol(RolesSistema.Cliente);
+			chkActivo.IsChecked = true;
+
+			ignorarCambioSeleccion = true;
 			lvUsuarios.SelectedItem = null;
+			ignorarCambioSeleccion = false;
+
 			ActualizarModoFormulario();
+		}
+
+		private void CargarUsuarioEnFormulario(Usuario usuario)
+		{
+			usuarioSeleccionado = usuario;
+			txtNombre.Text = usuario.Nombre ?? string.Empty;
+			txtCorreo.Text = usuario.Correo ?? string.Empty;
+			txtPassword.Password = usuario.Contrasena ?? string.Empty;
+			txtConfirmarPassword.Password = usuario.Contrasena ?? string.Empty;
+			SeleccionarRol(usuario.Rol);
+			chkActivo.IsChecked = usuario.Activo;
+		}
+
+		private void RestaurarSeleccionAnterior()
+		{
+			ignorarCambioSeleccion = true;
+			lvUsuarios.SelectedItem = usuarioSeleccionado == null
+				? null
+				: Usuarios.FirstOrDefault(u => u.Usuario.Id == usuarioSeleccionado.Id);
+			ignorarCambioSeleccion = false;
+		}
+
+		private bool FormularioTieneCambios()
+		{
+			if (usuarioSeleccionado == null)
+			{
+				return !FormularioVacio();
+			}
+
+			return !FormularioCoincideConUsuario(usuarioSeleccionado);
+		}
+
+		private bool FormularioVacio()
+		{
+			return string.IsNullOrWhiteSpace(txtNombre.Text) &&
+				string.IsNullOrWhiteSpace(txtCorreo.Text) &&
+				string.IsNullOrWhiteSpace(txtPassword.Password) &&
+				string.IsNullOrWhiteSpace(txtConfirmarPassword.Password) &&
+				ObtenerRolActual() == RolesSistema.Cliente &&
+				chkActivo.IsChecked == true;
+		}
+
+		private bool FormularioCoincideConUsuario(Usuario usuario)
+		{
+			return string.Equals((txtNombre.Text ?? string.Empty).Trim(), usuario.Nombre ?? string.Empty, StringComparison.Ordinal) &&
+				string.Equals((txtCorreo.Text ?? string.Empty).Trim(), usuario.Correo ?? string.Empty, StringComparison.Ordinal) &&
+				string.Equals(txtPassword.Password, usuario.Contrasena ?? string.Empty, StringComparison.Ordinal) &&
+				string.Equals(txtConfirmarPassword.Password, usuario.Contrasena ?? string.Empty, StringComparison.Ordinal) &&
+				ObtenerRolActual() == RolesSistema.Normalizar(usuario.Rol) &&
+				chkActivo.IsChecked == usuario.Activo;
+		}
+
+		private string ObtenerRolActual()
+		{
+			return (cmbRol.SelectedItem as ComboBoxItem)?.Content?.ToString() ?? RolesSistema.Cliente;
+		}
+
+		private void SeleccionarRol(string rol)
+		{
+			string rolNormalizado = RolesSistema.Normalizar(rol);
+			foreach (ComboBoxItem item in cmbRol.Items)
+			{
+				if (item.Content?.ToString() == rolNormalizado)
+				{
+					cmbRol.SelectedItem = item;
+					return;
+				}
+			}
+
+			cmbRol.SelectedIndex = 2;
 		}
 
 		private void ActualizarModoFormulario()
@@ -414,7 +543,7 @@ namespace Vinoteca.Views
 			bool edicion = usuarioSeleccionado != null;
 			txtModoFormulario.Text = edicion ? "Editar usuario seleccionado" : "Nuevo usuario";
 			btnGuardarUsuario.Content = edicion ? "Guardar cambios" : "Guardar usuario";
-			btnEliminarUsuario.IsEnabled = edicion;
+			btnEliminarUsuario.IsEnabled = edicion && SessionService.PuedeGestionarUsuarios;
 		}
 
 		private void MostrarError(string mensaje)
@@ -442,10 +571,9 @@ namespace Vinoteca.Views
 		public Usuario Usuario { get; }
 		public string Nombre => Usuario.Nombre ?? string.Empty;
 		public string Correo => Usuario.Correo ?? string.Empty;
-		public string RolTexto => Usuario.EsAdmin ? "Rol: Admin" : "Rol: Usuario";
+		public string RolTexto => $"Rol: {RolesSistema.Normalizar(Usuario.Rol)}";
 		public string EstadoTexto => Usuario.Activo ? "Activo" : "Inactivo";
 		public string AccionEstadoTexto => Usuario.Activo ? "Desactivar" : "Activar";
-		public string AccionRolTexto => Usuario.EsAdmin ? "Hacer usuario" : "Hacer admin";
 
 		public UsuarioItemViewModel(Usuario usuario)
 		{

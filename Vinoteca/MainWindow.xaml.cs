@@ -1,7 +1,5 @@
-using System;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Windowing;
+using Microsoft.UI.Xaml;
 using Vinoteca.Services;
 using Vinoteca.Views;
 
@@ -9,8 +7,8 @@ namespace Vinoteca
 {
 	public sealed partial class MainWindow : Window
 	{
-		private AppWindow _appWindow;
-		private bool _isDialogOpen = false;
+		private readonly AppWindow _appWindow;
+		private bool _isDialogOpen;
 
 		public MainWindow()
 		{
@@ -25,33 +23,29 @@ namespace Vinoteca
 
 		private async void AppWindowClosing(AppWindow sender, dynamic args)
 		{
-			if (_isDialogOpen) 
-            {
-                args.Cancel = true;
-                return;
-            }
+			if (_isDialogOpen)
+			{
+				args.Cancel = true;
+				return;
+			}
 
 			args.Cancel = true;
 			_isDialogOpen = true;
 
-			var dialog = new ContentDialog
-			{
-				Title = "Salir",
-				Content = "¿Deseas cerrar la aplicación?",
-				PrimaryButtonText = "Sí",
-				CloseButtonText = "Cancelar",
-				XamlRoot = this.Content.XamlRoot
-			};
+			bool confirmarCierre = await CambiosPendientesService.ConfirmarSalidaAsync(
+				this.Content.XamlRoot,
+				this.Content as DependencyObject,
+				"cerrar el sistema");
 
-			var result = await dialog.ShowAsync();
 			_isDialogOpen = false;
 
-			if (result == ContentDialogResult.Primary)
+			if (!confirmarCierre)
 			{
-				_appWindow.Closing -= AppWindowClosing;
-				this.Close();
+				return;
 			}
-		}
 
+			_appWindow.Closing -= AppWindowClosing;
+			this.Close();
+		}
 	}
 }

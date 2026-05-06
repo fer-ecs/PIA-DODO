@@ -19,6 +19,8 @@
 			<SolidColorBrush x:Key="WineAccentSoftBrush" Color="#D6A46D"/>
 			<SolidColorBrush x:Key="WineTextBrush" Color="#2F1D1F"/>
 			<SolidColorBrush x:Key="WineMutedBrush" Color="#755A52"/>
+			<SolidColorBrush x:Key="WineLabelBrush" Color="#875F55"/>
+			<SolidColorBrush x:Key="WinePlaceholderBrush" Color="#A4867B"/>
 			<SolidColorBrush x:Key="WineBorderBrush" Color="#E2D4C7"/>
 			<SolidColorBrush x:Key="WineHeroBrush" Color="#6D2432"/>
 			<SolidColorBrush x:Key="WineHeroSoftBrush" Color="#C58D54"/>
@@ -99,24 +101,42 @@
 				<Setter Property="CornerRadius" Value="12"/>
 				<Setter Property="Background" Value="#FFFDF9"/>
 				<Setter Property="BorderBrush" Value="{StaticResource WineBorderBrush}"/>
+				<Setter Property="Foreground" Value="{StaticResource WineTextBrush}"/>
 			</Style>
 
 			<Style x:Key="WinePasswordBoxStyle" TargetType="PasswordBox">
 				<Setter Property="CornerRadius" Value="12"/>
 				<Setter Property="Background" Value="#FFFDF9"/>
 				<Setter Property="BorderBrush" Value="{StaticResource WineBorderBrush}"/>
+				<Setter Property="Foreground" Value="{StaticResource WineTextBrush}"/>
 			</Style>
 
 			<Style x:Key="WineComboBoxStyle" TargetType="ComboBox">
 				<Setter Property="CornerRadius" Value="12"/>
 				<Setter Property="Background" Value="#FFFDF9"/>
 				<Setter Property="BorderBrush" Value="{StaticResource WineBorderBrush}"/>
+				<Setter Property="Foreground" Value="{StaticResource WineTextBrush}"/>
 			</Style>
 
 			<Style x:Key="WineNumberBoxStyle" TargetType="NumberBox">
 				<Setter Property="CornerRadius" Value="12"/>
 				<Setter Property="Background" Value="#FFFDF9"/>
 				<Setter Property="BorderBrush" Value="{StaticResource WineBorderBrush}"/>
+				<Setter Property="Foreground" Value="{StaticResource WineTextBrush}"/>
+			</Style>
+
+			<Style x:Key="WineFieldLabelStyle" TargetType="TextBlock">
+				<Setter Property="Foreground" Value="{StaticResource WineLabelBrush}"/>
+				<Setter Property="FontSize" Value="13"/>
+				<Setter Property="Margin" Value="0,6,0,0"/>
+			</Style>
+
+			<Style x:Key="WineEmptyStateStyle" TargetType="TextBlock">
+				<Setter Property="Foreground" Value="{StaticResource WineLabelBrush}"/>
+				<Setter Property="FontSize" Value="22"/>
+				<Setter Property="FontWeight" Value="SemiBold"/>
+				<Setter Property="TextAlignment" Value="Center"/>
+				<Setter Property="Opacity" Value="0.88"/>
 			</Style>
 		</ResourceDictionary>
 	</Application.Resources>

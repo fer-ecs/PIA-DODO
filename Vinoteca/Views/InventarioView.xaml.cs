@@ -12,11 +12,12 @@ using Vinoteca.Services;
 
 namespace Vinoteca.Views
 {
-	public sealed partial class InventarioView : Page
+	public sealed partial class InventarioView : Page, ICambiosPendientes
 	{
 		public ObservableCollection<ProductoItemViewModel> ProductosMostrados { get; } = new();
 		private List<Producto> todosLosProductos = new();
 		private Producto? productoSeleccionado;
+		private bool ignorarCambioSeleccion;
 
 		public InventarioView()
 		{
@@ -24,13 +25,27 @@ namespace Vinoteca.Views
 			InputRestrictionsHelper.AplicarSinEspaciosNiEnter(this);
 			lvProductos.ItemsSource = ProductosMostrados;
 
-			if (!SessionService.EsAdminActivo)
+			if (!SessionService.PuedeVerInformacionOperativa)
 			{
 				BloquearAcceso();
 				return;
 			}
 
+			if (!SessionService.PuedeGestionarInventario)
+			{
+				ConfigurarModoSoloLectura();
+			}
+
 			CargarDatos();
+		}
+
+		public bool TieneCambiosPendientes => SessionService.PuedeGestionarInventario && FormularioTieneCambios();
+
+		public string ObtenerMensajeCambiosPendientes()
+		{
+			return productoSeleccionado == null
+				? "Hay un producto nuevo sin guardar."
+				: "Hay cambios sin guardar en el producto seleccionado.";
 		}
 
 		private void BloquearAcceso()
@@ -47,6 +62,20 @@ namespace Vinoteca.Views
 			lvProductos.IsEnabled = false;
 			txtBuscar.IsEnabled = false;
 			MostrarMensaje("Solo un administrador puede gestionar inventario", false);
+		}
+
+		private void ConfigurarModoSoloLectura()
+		{
+			txtNombre.IsEnabled = false;
+			txtMarca.IsEnabled = false;
+			cmbCategoria.IsEnabled = false;
+			numPrecioVenta.IsEnabled = false;
+			numStock.IsEnabled = false;
+			txtImagen.IsEnabled = false;
+			btnGuardar.IsEnabled = false;
+			btnEliminar.IsEnabled = false;
+			btnLimpiar.IsEnabled = false;
+			MostrarMensaje("Modo de solo lectura para supervision del inventario", true);
 		}
 
 		private void CargarDatos()
@@ -75,9 +104,9 @@ namespace Vinoteca.Views
 
 		private void btnGuardar_Click(object sender, RoutedEventArgs e)
 		{
-			if (!SessionService.EsAdminActivo)
+			if (!SessionService.PuedeGestionarInventario)
 			{
-				MostrarMensaje("Solo un administrador puede guardar productos", false);
+				MostrarMensaje("Solo el administrador puede guardar productos", false);
 				return;
 			}
 
@@ -86,6 +115,7 @@ namespace Vinoteca.Views
 				return;
 			}
 
+			bool esNuevoProducto = productoSeleccionado == null;
 			var producto = productoSeleccionado ?? new Producto();
 			producto.Nombre = nombre;
 			producto.Marca = marca;
@@ -97,16 +127,16 @@ namespace Vinoteca.Views
 
 			DataService.GuardarProducto(producto);
 
-			LimpiarFormulario();
+			LimpiarFormularioInterno();
 			CargarDatos();
-			MostrarMensaje(productoSeleccionado == null ? "Producto creado correctamente" : "Producto actualizado correctamente", true);
+			MostrarMensaje(esNuevoProducto ? "Producto creado correctamente" : "Producto actualizado correctamente", true);
 		}
 
 		private bool ValidarFormulario(out string nombre, out string marca, out string categoria, out string imagen, out double precio, out int stock)
 		{
 			nombre = txtNombre.Text?.Trim() ?? string.Empty;
 			marca = txtMarca.Text?.Trim() ?? string.Empty;
-			categoria = (cmbCategoria.SelectedItem as ComboBoxItem)?.Content?.ToString() ?? string.Empty;
+			categoria = ObtenerCategoriaActual();
 			imagen = txtImagen.Text?.Trim() ?? string.Empty;
 			precio = numPrecioVenta.Value;
 			stock = (int)numStock.Value;
@@ -190,35 +220,46 @@ namespace Vinoteca.Views
 			return true;
 		}
 
-		private void lvProductos_SelectionChanged(object sender, SelectionChangedEventArgs e)
+		private async void lvProductos_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
+			if (ignorarCambioSeleccion)
+			{
+				return;
+			}
+
 			if (lvProductos.SelectedItem is not ProductoItemViewModel item)
 			{
 				return;
 			}
 
-			productoSeleccionado = item.Producto;
-			txtNombre.Text = item.Producto.Nombre;
-			txtMarca.Text = item.Producto.Marca;
-			numPrecioVenta.Value = item.Producto.PrecioVenta;
-			numStock.Value = item.Producto.Stock;
-			txtImagen.Text = item.Producto.ImagenPath;
-
-			foreach (ComboBoxItem comboItem in cmbCategoria.Items)
+			if (productoSeleccionado?.Id == item.Producto.Id)
 			{
-				if (comboItem.Content?.ToString() == item.Producto.Categoria)
+				return;
+			}
+
+			if (TieneCambiosPendientes)
+			{
+				bool puedeCambiar = await CambiosPendientesService.ConfirmarAccionSiHayCambiosAsync(
+					XamlRoot,
+					this,
+					"cambiar de producto",
+					false);
+				if (!puedeCambiar)
 				{
-					cmbCategoria.SelectedItem = comboItem;
-					break;
+					RestaurarSeleccionAnterior();
+					return;
 				}
 			}
+
+			CargarProductoEnFormulario(item.Producto);
+			OcultarMensaje();
 		}
 
-		private void btnEliminar_Click(object sender, RoutedEventArgs e)
+		private async void btnEliminar_Click(object sender, RoutedEventArgs e)
 		{
-			if (!SessionService.EsAdminActivo)
+			if (!SessionService.PuedeGestionarInventario)
 			{
-				MostrarMensaje("Solo un administrador puede eliminar productos", false);
+				MostrarMensaje("Solo el administrador puede eliminar productos", false);
 				return;
 			}
 
@@ -228,19 +269,42 @@ namespace Vinoteca.Views
 				return;
 			}
 
+			bool confirmarEliminacion = await CambiosPendientesService.MostrarConfirmacionAsync(
+				XamlRoot,
+				"Eliminar producto",
+				"Deseas eliminar el producto seleccionado?",
+				"Eliminar");
+			if (!confirmarEliminacion)
+			{
+				return;
+			}
+
 			DataService.EliminarProducto(productoSeleccionado.Id);
-			LimpiarFormulario();
+			LimpiarFormularioInterno();
 			CargarDatos();
 			MostrarMensaje("Producto eliminado correctamente", true);
 		}
 
-		private void btnLimpiar_Click(object sender, RoutedEventArgs e)
+		private async void btnLimpiar_Click(object sender, RoutedEventArgs e)
 		{
-			LimpiarFormulario();
+			if (TieneCambiosPendientes)
+			{
+				bool puedeLimpiar = await CambiosPendientesService.ConfirmarAccionSiHayCambiosAsync(
+					XamlRoot,
+					this,
+					"limpiar el formulario",
+					false);
+				if (!puedeLimpiar)
+				{
+					return;
+				}
+			}
+
+			LimpiarFormularioInterno();
 			OcultarMensaje();
 		}
 
-		private void LimpiarFormulario()
+		private void LimpiarFormularioInterno()
 		{
 			productoSeleccionado = null;
 			txtNombre.Text = string.Empty;
@@ -249,7 +313,74 @@ namespace Vinoteca.Views
 			numPrecioVenta.Value = 0;
 			numStock.Value = 0;
 			txtImagen.Text = string.Empty;
+
+			ignorarCambioSeleccion = true;
 			lvProductos.SelectedItem = null;
+			ignorarCambioSeleccion = false;
+		}
+
+		private void CargarProductoEnFormulario(Producto producto)
+		{
+			productoSeleccionado = producto;
+			txtNombre.Text = producto.Nombre ?? string.Empty;
+			txtMarca.Text = producto.Marca ?? string.Empty;
+			numPrecioVenta.Value = producto.PrecioVenta;
+			numStock.Value = producto.Stock;
+			txtImagen.Text = producto.ImagenPath ?? string.Empty;
+
+			cmbCategoria.SelectedIndex = -1;
+			foreach (ComboBoxItem comboItem in cmbCategoria.Items)
+			{
+				if (comboItem.Content?.ToString() == producto.Categoria)
+				{
+					cmbCategoria.SelectedItem = comboItem;
+					break;
+				}
+			}
+		}
+
+		private void RestaurarSeleccionAnterior()
+		{
+			ignorarCambioSeleccion = true;
+			lvProductos.SelectedItem = productoSeleccionado == null
+				? null
+				: ProductosMostrados.FirstOrDefault(p => p.Producto.Id == productoSeleccionado.Id);
+			ignorarCambioSeleccion = false;
+		}
+
+		private bool FormularioTieneCambios()
+		{
+			if (productoSeleccionado == null)
+			{
+				return !FormularioVacio();
+			}
+
+			return !FormularioCoincideConProducto(productoSeleccionado);
+		}
+
+		private bool FormularioVacio()
+		{
+			return string.IsNullOrWhiteSpace(txtNombre.Text) &&
+				string.IsNullOrWhiteSpace(txtMarca.Text) &&
+				string.IsNullOrWhiteSpace(ObtenerCategoriaActual()) &&
+				numPrecioVenta.Value == 0 &&
+				numStock.Value == 0 &&
+				string.IsNullOrWhiteSpace(txtImagen.Text);
+		}
+
+		private bool FormularioCoincideConProducto(Producto producto)
+		{
+			return string.Equals((txtNombre.Text ?? string.Empty).Trim(), producto.Nombre ?? string.Empty, StringComparison.Ordinal) &&
+				string.Equals((txtMarca.Text ?? string.Empty).Trim(), producto.Marca ?? string.Empty, StringComparison.Ordinal) &&
+				string.Equals(ObtenerCategoriaActual(), producto.Categoria ?? string.Empty, StringComparison.Ordinal) &&
+				numPrecioVenta.Value == producto.PrecioVenta &&
+				(int)numStock.Value == producto.Stock &&
+				string.Equals((txtImagen.Text ?? string.Empty).Trim(), producto.ImagenPath ?? string.Empty, StringComparison.Ordinal);
+		}
+
+		private string ObtenerCategoriaActual()
+		{
+			return (cmbCategoria.SelectedItem as ComboBoxItem)?.Content?.ToString() ?? string.Empty;
 		}
 
 		private void txtBuscar_TextChanged(object sender, TextChangedEventArgs e)

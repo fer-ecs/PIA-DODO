@@ -29,7 +29,7 @@
 					<Border Style="{StaticResource WineCardStyle}" Padding="18,14">
 						<StackPanel>
 							<TextBlock Text="Control de cuentas" FontWeight="SemiBold" Foreground="{StaticResource WineTextBrush}"/>
-							<TextBlock Text="Gestion de usuarios y roles" Foreground="{StaticResource WineMutedBrush}" FontSize="12"/>
+							<TextBlock Text="Gestion de usuarios, roles y tickets" Foreground="{StaticResource WineMutedBrush}" FontSize="12"/>
 						</StackPanel>
 					</Border>
 				</StackPanel>
@@ -45,33 +45,19 @@
 				<TextBlock Text="Bienvenido" FontSize="32" FontWeight="SemiBold" Foreground="{StaticResource WineTextBrush}"/>
 				<TextBlock Text="Ingresa con tu cuenta para administrar la vinoteca o atender compras." TextWrapping="Wrap" Foreground="{StaticResource WineMutedBrush}" Margin="0,0,0,8"/>
 
-				<TextBox x:Name="txtCorreo"
-                     Header="Correo electronico"
-                     Style="{StaticResource WineTextBoxStyle}"
-                     MaxLength="80"
-                     PlaceholderText="admin@vinoteca.com"/>
+				<TextBlock Text="Correo electronico" Style="{StaticResource WineFieldLabelStyle}"/>
+				<TextBox x:Name="txtCorreo" Style="{StaticResource WineTextBoxStyle}" MaxLength="80" PlaceholderText="admin@vinoteca.com"/>
 
-				<PasswordBox x:Name="txtPassword"
-                         Header="Contrasena"
-                         Style="{StaticResource WinePasswordBoxStyle}"
-                         MaxLength="20"
-                         PlaceholderText="********"/>
+				<TextBlock Text="Contrasena" Style="{StaticResource WineFieldLabelStyle}"/>
+				<PasswordBox x:Name="txtPassword" Style="{StaticResource WinePasswordBoxStyle}" MaxLength="20" PlaceholderText="********"/>
 
-				<TextBlock x:Name="txtError"
-                       Foreground="{ThemeResource SystemFillColorCriticalBrush}"
-                       Visibility="Collapsed"
-                       TextWrapping="Wrap"/>
+				<TextBlock x:Name="txtError" Foreground="{ThemeResource SystemFillColorCriticalBrush}" Visibility="Collapsed" TextWrapping="Wrap"/>
 
-				<Button Content="Ingresar"
-                    Style="{StaticResource WinePrimaryButtonStyle}"
-                    Click="BtnLogin_Click"/>
-
-				<Button Content="Crear cuenta"
-                    Style="{StaticResource WineSecondaryButtonStyle}"
-                    Click="BtnIrRegistro_Click"/>
+				<Button Content="Ingresar" Style="{StaticResource WinePrimaryButtonStyle}" Click="BtnLogin_Click"/>
+				<Button Content="Crear cuenta" Style="{StaticResource WineSecondaryButtonStyle}" Click="BtnIrRegistro_Click"/>
 
 				<Border Background="#FFF5EC" CornerRadius="14" Padding="14">
-					<TextBlock Text="Si eres cliente puedes crear tu cuenta. Si administras la tienda, usa tus credenciales de operacion." TextWrapping="Wrap" Foreground="{StaticResource WineMutedBrush}" FontSize="13"/>
+					<TextBlock Text="Cliente: compra y revisa tickets. Supervisor: revisa informacion. Administrador: controla el sistema completo." TextWrapping="Wrap" Foreground="{StaticResource WineMutedBrush}" FontSize="13"/>
 				</Border>
 			</StackPanel>
 		</Border>
