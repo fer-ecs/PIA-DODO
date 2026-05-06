@@ -1,4 +1,7 @@
+using System;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Windowing;
 using Vinoteca.Services;
 using Vinoteca.Views;
 
@@ -6,6 +9,9 @@ namespace Vinoteca
 {
 	public sealed partial class MainWindow : Window
 	{
+		private AppWindow _appWindow;
+		private bool _isDialogOpen = false;
+
 		public MainWindow()
 		{
 			InitializeComponent();
@@ -16,8 +22,8 @@ namespace Vinoteca
 			_appWindow = this.AppWindow;
 			_appWindow.Closing += AppWindowClosing;
 		}
-		
-		private async void AppWindowClosing(AppWindow sender, AppWindowClosingEventArgs args)
+
+		private async void AppWindowClosing(AppWindow sender, dynamic args)
 		{
 			if (_isDialogOpen) 
             {
