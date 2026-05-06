@@ -7,9 +7,9 @@ using Vinoteca.Helpers;
 using Vinoteca.Models;
 using Vinoteca.Services;
 
-namespace Vinoteca.Views
-{
-	public sealed partial class RegisterView : Page
+	namespace Vinoteca.Views
+	{
+	public sealed partial class RegisterView : Page, ICambiosPendientes
 	{
 		public RegisterView()
 		{
@@ -136,7 +136,7 @@ namespace Vinoteca.Views
 				Nombre = nombre,
 				Correo = correo,
 				Contrasena = password,
-				EsAdmin = false,
+				Rol = RolesSistema.Cliente,
 				Activo = true
 			};
 
@@ -162,8 +162,29 @@ namespace Vinoteca.Views
 			return Regex.IsMatch(password, patron);
 		}
 
-		private void BtnVolverLogin_Click(object sender, RoutedEventArgs e)
+		public bool TieneCambiosPendientes =>
+			!string.IsNullOrWhiteSpace(txtNombre.Text) ||
+			!string.IsNullOrWhiteSpace(txtCorreo.Text) ||
+			!string.IsNullOrWhiteSpace(txtPassword.Password) ||
+			!string.IsNullOrWhiteSpace(txtConfirmarPassword.Password);
+
+		public string ObtenerMensajeCambiosPendientes()
 		{
+			return "Hay datos del registro sin terminar.";
+		}
+
+		private async void BtnVolverLogin_Click(object sender, RoutedEventArgs e)
+		{
+			bool puedeSalir = await CambiosPendientesService.ConfirmarAccionSiHayCambiosAsync(
+				XamlRoot,
+				this,
+				"volver al login",
+				false);
+			if (!puedeSalir)
+			{
+				return;
+			}
+
 			Frame.Navigate(typeof(LoginView));
 		}
 

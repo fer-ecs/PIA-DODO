@@ -29,47 +29,23 @@
 				<TextBlock Text="Crear cuenta" FontSize="30" FontWeight="SemiBold" Foreground="{StaticResource WineTextBrush}"/>
 				<TextBlock Text="Alta de usuarios para operacion o compra." Foreground="{StaticResource WineMutedBrush}" Margin="0,0,0,6"/>
 
-				<TextBox x:Name="txtNombre"
-                     Header="Nombre completo"
-                     Style="{StaticResource WineTextBoxStyle}"
-                     MaxLength="50"
-                     PlaceholderText="Juan Perez"/>
+				<TextBlock Text="Nombre completo" Style="{StaticResource WineFieldLabelStyle}"/>
+				<TextBox x:Name="txtNombre" Style="{StaticResource WineTextBoxStyle}" MaxLength="50" PlaceholderText="Juan Perez"/>
 
-				<TextBox x:Name="txtCorreo"
-                     Header="Correo electronico"
-                     Style="{StaticResource WineTextBoxStyle}"
-                     MaxLength="80"
-                     PlaceholderText="usuario@vinoteca.com"/>
+				<TextBlock Text="Correo electronico" Style="{StaticResource WineFieldLabelStyle}"/>
+				<TextBox x:Name="txtCorreo" Style="{StaticResource WineTextBoxStyle}" MaxLength="80" PlaceholderText="usuario@vinoteca.com"/>
 
-				<PasswordBox x:Name="txtPassword"
-                         Header="Contrasena"
-                         Style="{StaticResource WinePasswordBoxStyle}"
-                         MaxLength="20"
-                         PlaceholderText="********"/>
+				<TextBlock Text="Contrasena" Style="{StaticResource WineFieldLabelStyle}"/>
+				<PasswordBox x:Name="txtPassword" Style="{StaticResource WinePasswordBoxStyle}" MaxLength="20" PlaceholderText="********"/>
 
-				<PasswordBox x:Name="txtConfirmarPassword"
-                         Header="Confirmar contrasena"
-                         Style="{StaticResource WinePasswordBoxStyle}"
-                         MaxLength="20"
-                         PlaceholderText="********"/>
+				<TextBlock Text="Confirmar contrasena" Style="{StaticResource WineFieldLabelStyle}"/>
+				<PasswordBox x:Name="txtConfirmarPassword" Style="{StaticResource WinePasswordBoxStyle}" MaxLength="20" PlaceholderText="********"/>
 
-				<TextBlock x:Name="txtError"
-                       Foreground="{ThemeResource SystemFillColorCriticalBrush}"
-                       Visibility="Collapsed"
-                       TextWrapping="Wrap"/>
+				<TextBlock x:Name="txtError" Foreground="{ThemeResource SystemFillColorCriticalBrush}" Visibility="Collapsed" TextWrapping="Wrap"/>
+				<TextBlock x:Name="txtExito" Foreground="{ThemeResource SystemFillColorSuccessBrush}" Visibility="Collapsed" TextWrapping="Wrap"/>
 
-				<TextBlock x:Name="txtExito"
-                       Foreground="{ThemeResource SystemFillColorSuccessBrush}"
-                       Visibility="Collapsed"
-                       TextWrapping="Wrap"/>
-
-				<Button Content="Crear cuenta"
-                    Style="{StaticResource WinePrimaryButtonStyle}"
-                    Click="BtnRegistrar_Click"/>
-
-				<Button Content="Volver al login"
-                    Style="{StaticResource WineSecondaryButtonStyle}"
-                    Click="BtnVolverLogin_Click"/>
+				<Button Content="Crear cuenta" Style="{StaticResource WinePrimaryButtonStyle}" Click="BtnRegistrar_Click"/>
+				<Button Content="Volver al login" Style="{StaticResource WineSecondaryButtonStyle}" Click="BtnVolverLogin_Click"/>
 			</StackPanel>
 		</Border>
 	</Grid>

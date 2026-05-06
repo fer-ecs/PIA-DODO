@@ -6,12 +6,12 @@ namespace Vinoteca.Helpers
 {
 	public class ImageSourceConverter : IValueConverter
 	{
-		public object Convert(object value, Type targetType, object parameter, string language)
+		public object? Convert(object value, Type targetType, object parameter, string language)
 		{
 			var path = value as string;
 
 			if (string.IsNullOrWhiteSpace(path))
-				return Microsoft.UI.Xaml.DependencyProperty.UnsetValue;
+				return null;
 
 			try
 			{
@@ -19,11 +19,11 @@ namespace Vinoteca.Helpers
 			}
 			catch
 			{
-				return Microsoft.UI.Xaml.DependencyProperty.UnsetValue;
+				return null;
 			}
 		}
 
-		public object ConvertBack(object value, Type targetType, object parameter, string language)
+		public object? ConvertBack(object value, Type targetType, object parameter, string language)
 		{
 			throw new NotImplementedException();
 		}

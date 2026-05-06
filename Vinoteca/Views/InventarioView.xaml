@@ -17,10 +17,14 @@
 					<TextBlock Text="Gestion de productos" FontSize="28" FontWeight="SemiBold" Foreground="{StaticResource WineTextBrush}"/>
 					<TextBlock Text="Registra botellas, controla stock y conserva un catalogo claro para la tienda." Foreground="{StaticResource WineMutedBrush}" TextWrapping="Wrap"/>
 
-					<TextBox x:Name="txtNombre" Style="{StaticResource WineTextBoxStyle}" Header="Nombre del producto" PlaceholderText="Ej. Casillero del Diablo" MaxLength="60"/>
-					<TextBox x:Name="txtMarca" Style="{StaticResource WineTextBoxStyle}" Header="Marca" PlaceholderText="Ej. Concha y Toro" MaxLength="40"/>
+					<TextBlock Text="Nombre del producto" Style="{StaticResource WineFieldLabelStyle}"/>
+					<TextBox x:Name="txtNombre" Style="{StaticResource WineTextBoxStyle}" PlaceholderText="Ej. Casillero del Diablo" MaxLength="60"/>
 
-					<ComboBox x:Name="cmbCategoria" Style="{StaticResource WineComboBoxStyle}" Header="Categoria" HorizontalAlignment="Stretch">
+					<TextBlock Text="Marca" Style="{StaticResource WineFieldLabelStyle}"/>
+					<TextBox x:Name="txtMarca" Style="{StaticResource WineTextBoxStyle}" PlaceholderText="Ej. Concha y Toro" MaxLength="40"/>
+
+					<TextBlock Text="Categoria" Style="{StaticResource WineFieldLabelStyle}"/>
+					<ComboBox x:Name="cmbCategoria" Style="{StaticResource WineComboBoxStyle}" HorizontalAlignment="Stretch">
 						<ComboBoxItem Content="Tinto"/>
 						<ComboBoxItem Content="Blanco"/>
 						<ComboBoxItem Content="Rosado"/>
@@ -32,18 +36,27 @@
 							<ColumnDefinition Width="*"/>
 							<ColumnDefinition Width="*"/>
 						</Grid.ColumnDefinitions>
-						<NumberBox x:Name="numPrecioVenta" Style="{StaticResource WineNumberBoxStyle}" Header="Precio de venta" Value="0" Minimum="0" Maximum="100000" SmallChange="1" SpinButtonPlacementMode="Compact" Grid.Column="0"/>
-						<NumberBox x:Name="numStock" Style="{StaticResource WineNumberBoxStyle}" Header="Stock" Value="0" Minimum="0" Maximum="5000" SmallChange="1" SpinButtonPlacementMode="Compact" Grid.Column="1"/>
+
+						<StackPanel Grid.Column="0">
+							<TextBlock Text="Precio de venta" Style="{StaticResource WineFieldLabelStyle}"/>
+							<NumberBox x:Name="numPrecioVenta" Style="{StaticResource WineNumberBoxStyle}" Value="0" Minimum="0" Maximum="100000" SmallChange="1" SpinButtonPlacementMode="Compact"/>
+						</StackPanel>
+
+						<StackPanel Grid.Column="1">
+							<TextBlock Text="Stock" Style="{StaticResource WineFieldLabelStyle}"/>
+							<NumberBox x:Name="numStock" Style="{StaticResource WineNumberBoxStyle}" Value="0" Minimum="0" Maximum="5000" SmallChange="1" SpinButtonPlacementMode="Compact"/>
+						</StackPanel>
 					</Grid>
 
-					<TextBox x:Name="txtImagen" Style="{StaticResource WineTextBoxStyle}" Header="Ruta o URL de imagen" PlaceholderText="https://... o C:\imagenes\vino.jpg" MaxLength="300"/>
+					<TextBlock Text="Ruta o URL de imagen" Style="{StaticResource WineFieldLabelStyle}"/>
+					<TextBox x:Name="txtImagen" Style="{StaticResource WineTextBoxStyle}" PlaceholderText="https://... o C:\imagenes\vino.jpg" MaxLength="300"/>
 
 					<TextBlock x:Name="txtMensaje" Visibility="Collapsed" TextWrapping="Wrap"/>
 
 					<StackPanel Orientation="Horizontal" Spacing="8" Margin="0,12,0,0">
 						<Button x:Name="btnGuardar" Content="Guardar" Style="{StaticResource WinePrimaryButtonStyle}" Click="btnGuardar_Click"/>
 						<Button x:Name="btnLimpiar" Content="Limpiar" Style="{StaticResource WineSecondaryButtonStyle}" Click="btnLimpiar_Click"/>
-						<Button x:Name="btnEliminar" Content="Eliminar" Style="{StaticResource WineSecondaryButtonStyle}" Click="btnEliminar_Click"/>
+						<Button x:Name="btnEliminar" Content="Eliminar" Style="{StaticResource WineDangerButtonStyle}" Click="btnEliminar_Click"/>
 					</StackPanel>
 				</StackPanel>
 			</ScrollViewer>
@@ -58,7 +71,8 @@
 
 				<StackPanel Margin="0,0,0,16">
 					<TextBlock Text="Catalogo registrado" FontSize="24" FontWeight="SemiBold" Foreground="{StaticResource WineTextBrush}"/>
-					<TextBox x:Name="txtBuscar" Style="{StaticResource WineTextBoxStyle}" Header="Buscar producto" PlaceholderText="Nombre, marca o categoria" MaxLength="50" Margin="0,10,0,0" TextChanged="txtBuscar_TextChanged"/>
+					<TextBlock Text="Buscar producto" Style="{StaticResource WineFieldLabelStyle}" Margin="0,10,0,0"/>
+					<TextBox x:Name="txtBuscar" Style="{StaticResource WineTextBoxStyle}" PlaceholderText="Nombre, marca o categoria" MaxLength="50" TextChanged="txtBuscar_TextChanged"/>
 				</StackPanel>
 
 				<ListView x:Name="lvProductos" Grid.Row="1" SelectionChanged="lvProductos_SelectionChanged" Background="Transparent" BorderBrush="{StaticResource WineBorderBrush}" BorderThickness="1" CornerRadius="16">

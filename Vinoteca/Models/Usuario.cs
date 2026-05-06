@@ -1,12 +1,29 @@
-﻿namespace Vinoteca.Models
+using Vinoteca.Services;
+
+namespace Vinoteca.Models
 {
 	public class Usuario
 	{
 		public string Id { get; set; } = string.Empty;
-		public string? Nombre { get; set; } // El '?' permite que sea nulo
+		public string? Nombre { get; set; }
 		public string? Correo { get; set; }
 		public string? Contrasena { get; set; }
-		public bool EsAdmin { get; set; }
+		public string Rol { get; set; } = RolesSistema.Cliente;
+		public bool EsAdmin
+		{
+			get => Rol == RolesSistema.Administrador;
+			set
+			{
+				if (value)
+				{
+					Rol = RolesSistema.Administrador;
+				}
+				else if (Rol == RolesSistema.Administrador)
+				{
+					Rol = RolesSistema.Cliente;
+				}
+			}
+		}
 		public bool Activo { get; set; }
 	}
 }

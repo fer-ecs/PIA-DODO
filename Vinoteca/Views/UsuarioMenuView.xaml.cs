@@ -9,7 +9,7 @@ namespace Vinoteca.Views
 		{
 			InitializeComponent();
 
-			if (SessionService.UsuarioActivo == null || SessionService.EsAdminActivo)
+			if (SessionService.UsuarioActivo == null || !SessionService.EsClienteActivo)
 			{
 				Frame?.Navigate(typeof(LoginView));
 				return;
@@ -17,6 +17,7 @@ namespace Vinoteca.Views
 
 			txtNombreUsuarioActivo.Text = SessionService.UsuarioActivo.Nombre;
 			txtCorreoUsuarioActivo.Text = SessionService.UsuarioActivo.Correo;
+			txtRolActivo.Text = $"{SessionService.RolActivo} activo";
 
 			CarritoService.CarritoActualizado += ActualizarContadorCarrito;
 			ActualizarContadorCarrito();
@@ -40,21 +41,55 @@ namespace Vinoteca.Views
 				: Microsoft.UI.Xaml.Visibility.Collapsed;
 		}
 
-		private void btnNavTienda_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
+		private async void btnNavTienda_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
 		{
-			UsuarioContentFrame.Navigate(typeof(TiendaView));
+			await NavegarModuloAsync(typeof(TiendaView));
 		}
 
-		private void btnNavCarrito_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
+		private async void btnNavCarrito_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
 		{
-			UsuarioContentFrame.Navigate(typeof(CarritoView));
+			await NavegarModuloAsync(typeof(CarritoView));
 		}
 
-		private void btnCerrarSesionUsuario_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
+		private async void btnNavMisTickets_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
 		{
+			await NavegarModuloAsync(typeof(MisTicketsView));
+		}
+
+		private async void btnCerrarSesionUsuario_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
+		{
+			bool confirmarSalida = await CambiosPendientesService.ConfirmarSalidaAsync(
+				XamlRoot,
+				this,
+				"cerrar la sesion");
+			if (!confirmarSalida)
+			{
+				return;
+			}
+
 			CarritoService.CarritoActualizado -= ActualizarContadorCarrito;
 			SessionService.CerrarSesion();
 			Frame.Navigate(typeof(LoginView));
+		}
+
+		private async System.Threading.Tasks.Task NavegarModuloAsync(System.Type destino)
+		{
+			if (UsuarioContentFrame.CurrentSourcePageType == destino)
+			{
+				return;
+			}
+
+			bool puedeNavegar = await CambiosPendientesService.ConfirmarAccionSiHayCambiosAsync(
+				XamlRoot,
+				UsuarioContentFrame,
+				"cambiar de pestana",
+				false);
+			if (!puedeNavegar)
+			{
+				return;
+			}
+
+			UsuarioContentFrame.Navigate(destino);
 		}
 	}
 }

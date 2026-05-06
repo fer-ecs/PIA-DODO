@@ -75,8 +75,23 @@ namespace Vinoteca.Views
 			CarritoService.QuitarDelCarrito(item.Producto.Id);
 		}
 
-		private void btnVaciar_Click(object sender, RoutedEventArgs e)
+		private async void btnVaciar_Click(object sender, RoutedEventArgs e)
 		{
+			if (CarritoService.ObtenerCarrito().Count == 0)
+			{
+				return;
+			}
+
+			bool confirmarVaciado = await CambiosPendientesService.MostrarConfirmacionAsync(
+				XamlRoot,
+				"Vaciar carrito",
+				"Deseas quitar todos los productos del carrito?",
+				"Vaciar");
+			if (!confirmarVaciado)
+			{
+				return;
+			}
+
 			CarritoService.LimpiarCarrito();
 		}
 

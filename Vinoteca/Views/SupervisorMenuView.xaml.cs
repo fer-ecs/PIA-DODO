@@ -4,13 +4,13 @@ using Vinoteca.Services;
 
 namespace Vinoteca.Views
 {
-	public sealed partial class AdminMenuView : Page
+	public sealed partial class SupervisorMenuView : Page
 	{
-		public AdminMenuView()
+		public SupervisorMenuView()
 		{
 			InitializeComponent();
 
-			if (!SessionService.EsAdministradorActivo)
+			if (!SessionService.EsSupervisorActivo)
 			{
 				Frame?.Navigate(typeof(LoginView));
 				return;
@@ -18,16 +18,11 @@ namespace Vinoteca.Views
 
 			if (SessionService.UsuarioActivo != null)
 			{
-				txtNombreAdminActivo.Text = SessionService.UsuarioActivo.Nombre;
-				txtCorreoAdminActivo.Text = SessionService.UsuarioActivo.Correo;
+				txtNombreSupervisorActivo.Text = SessionService.UsuarioActivo.Nombre;
+				txtCorreoSupervisorActivo.Text = SessionService.UsuarioActivo.Correo;
 			}
 
-			AdminContentFrame.Navigate(typeof(TiendaView));
-		}
-
-		private async void btnNavTienda_Click(object sender, RoutedEventArgs e)
-		{
-			await NavegarModuloAsync(typeof(TiendaView));
+			SupervisorContentFrame.Navigate(typeof(ReportesView));
 		}
 
 		private async void btnNavInventario_Click(object sender, RoutedEventArgs e)
@@ -40,17 +35,12 @@ namespace Vinoteca.Views
 			await NavegarModuloAsync(typeof(UsuariosView));
 		}
 
-		private async void btnNavVentas_Click(object sender, RoutedEventArgs e)
-		{
-			await NavegarModuloAsync(typeof(VentasAdminView));
-		}
-
 		private async void btnNavReportes_Click(object sender, RoutedEventArgs e)
 		{
 			await NavegarModuloAsync(typeof(ReportesView));
 		}
 
-		private async void btnCerrarSesionAdmin_Click(object sender, RoutedEventArgs e)
+		private async void btnCerrarSesionSupervisor_Click(object sender, RoutedEventArgs e)
 		{
 			bool confirmarSalida = await CambiosPendientesService.ConfirmarSalidaAsync(
 				XamlRoot,
@@ -67,14 +57,14 @@ namespace Vinoteca.Views
 
 		private async System.Threading.Tasks.Task NavegarModuloAsync(System.Type destino)
 		{
-			if (AdminContentFrame.CurrentSourcePageType == destino)
+			if (SupervisorContentFrame.CurrentSourcePageType == destino)
 			{
 				return;
 			}
 
 			bool puedeNavegar = await CambiosPendientesService.ConfirmarAccionSiHayCambiosAsync(
 				XamlRoot,
-				AdminContentFrame,
+				SupervisorContentFrame,
 				"cambiar de pestana",
 				false);
 			if (!puedeNavegar)
@@ -82,7 +72,7 @@ namespace Vinoteca.Views
 				return;
 			}
 
-			AdminContentFrame.Navigate(destino);
+			SupervisorContentFrame.Navigate(destino);
 		}
 	}
 }
