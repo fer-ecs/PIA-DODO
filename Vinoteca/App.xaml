@@ -14,25 +14,28 @@
 
 			<SolidColorBrush x:Key="WineBackgroundBrush" Color="Transparent"/>
 			<SolidColorBrush x:Key="WinePanelBrush" Color="#FFFFFF"/>
-			<SolidColorBrush x:Key="WineSidebarBrush" Color="#0D0A0B"/>
-			<SolidColorBrush x:Key="WineTextBrush" Color="#111111"/>
-			<SolidColorBrush x:Key="WineMutedBrush" Color="#666666"/>
-			<SolidColorBrush x:Key="WineLabelBrush" Color="#444444"/>
-			<SolidColorBrush x:Key="WinePlaceholderBrush" Color="#A1A1A1"/>
+			<SolidColorBrush x:Key="WineSidebarBrush" Color="#F4F4F5"/>
 
-			<SolidColorBrush x:Key="WineBorderBrush" Color="#E5E5E5"/>
-			<SolidColorBrush x:Key="WineAccentBrush" Color="#8F2D3B"/>
-			<SolidColorBrush x:Key="WineHeroBrush" Color="#6D2432"/>
+			<SolidColorBrush x:Key="WineTextBrush" Color="#18181B"/>
+			<SolidColorBrush x:Key="WineMutedBrush" Color="#71717A"/>
+			<SolidColorBrush x:Key="WineLabelBrush" Color="#52525B"/>
+			<SolidColorBrush x:Key="WinePlaceholderBrush" Color="#A1A1AA"/>
 
-			<SolidColorBrush x:Key="WineDangerBrush" Color="#D93838"/>
-			<SolidColorBrush x:Key="WineSuccessBrush" Color="#2E7D32"/>
+			<SolidColorBrush x:Key="WineBorderBrush" Color="#E4E4E7"/>
+			<SolidColorBrush x:Key="WineAccentBrush" Color="#7A2030"/>
+			<SolidColorBrush x:Key="WineHeroBrush" Color="#8F2D3B"/>
+			<SolidColorBrush x:Key="WineAccentSoftBrush" Color="#F3E8E8"/>
+			<SolidColorBrush x:Key="WineHeroSoftBrush" Color="#E9D5D5"/>
 
-			<SolidColorBrush x:Key="AccentButtonBackground" Color="#8F2D3B"/>
-			<SolidColorBrush x:Key="AccentButtonBackgroundPointerOver" Color="#7A2531"/>
-			<SolidColorBrush x:Key="AccentButtonBackgroundPressed" Color="#6D2432"/>
+			<SolidColorBrush x:Key="WineDangerBrush" Color="#DC2626"/>
+			<SolidColorBrush x:Key="WineSuccessBrush" Color="#16A34A"/>
+
+			<SolidColorBrush x:Key="AccentButtonBackground" Color="#7A2030"/>
+			<SolidColorBrush x:Key="AccentButtonBackgroundPointerOver" Color="#8F2D3B"/>
+			<SolidColorBrush x:Key="AccentButtonBackgroundPressed" Color="#5C1824"/>
 			<SolidColorBrush x:Key="AccentButtonForeground" Color="#FFFFFF"/>
 			<SolidColorBrush x:Key="AccentButtonForegroundPointerOver" Color="#FFFFFF"/>
-			<SolidColorBrush x:Key="AccentButtonForegroundPressed" Color="#E0E0E0"/>
+			<SolidColorBrush x:Key="AccentButtonForegroundPressed" Color="#E4E4E7"/>
 			<SolidColorBrush x:Key="AccentButtonBorderBrush" Color="Transparent"/>
 
 			<Style x:Key="WinePageRootStyle" TargetType="Grid">
@@ -77,7 +80,7 @@
 				<Setter Property="Padding" Value="14,10"/>
 				<Setter Property="Margin" Value="0,0,0,4"/>
 				<Setter Property="Background" Value="Transparent"/>
-				<Setter Property="Foreground" Value="#E0E0E0"/>
+				<Setter Property="Foreground" Value="{StaticResource WineTextBrush}"/>
 				<Setter Property="BorderThickness" Value="0"/>
 			</Style>
 
