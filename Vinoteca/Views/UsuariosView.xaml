@@ -11,40 +11,42 @@
 		</Grid.ColumnDefinitions>
 
 		<Border Grid.Column="0" Style="{StaticResource WineCardStyle}" Padding="22">
-			<StackPanel Spacing="12">
-				<TextBlock Text="Gestion de usuarios" FontSize="28" FontWeight="SemiBold" Foreground="{StaticResource WineTextBrush}"/>
-				<TextBlock x:Name="txtModoFormulario" Text="Nuevo usuario" Foreground="{StaticResource WineHeroBrush}" FontWeight="SemiBold"/>
-				<TextBlock x:Name="txtDescripcionFormulario" Text="Administra cuentas del negocio y clientes registrados desde un mismo panel." TextWrapping="Wrap" Foreground="{StaticResource WineMutedBrush}"/>
+			<ScrollViewer VerticalScrollBarVisibility="Auto" Margin="-10" Padding="10">
+				<StackPanel Spacing="12">
+					<TextBlock Text="Gestion de usuarios" FontSize="28" FontWeight="SemiBold" Foreground="{StaticResource WineTextBrush}"/>
+					<TextBlock x:Name="txtModoFormulario" Text="Nuevo usuario" Foreground="{StaticResource WineHeroBrush}" FontWeight="SemiBold"/>
+					<TextBlock x:Name="txtDescripcionFormulario" Text="Administra cuentas del negocio y clientes registrados desde un mismo panel." TextWrapping="Wrap" Foreground="{StaticResource WineMutedBrush}"/>
 
-				<TextBlock Text="Nombre" Style="{StaticResource WineFieldLabelStyle}"/>
-				<TextBox x:Name="txtNombre" Style="{StaticResource WineTextBoxStyle}" MaxLength="50" PlaceholderText="Nombre del usuario"/>
+					<TextBlock Text="Nombre" Style="{StaticResource WineFieldLabelStyle}"/>
+					<TextBox x:Name="txtNombre" Style="{StaticResource WineTextBoxStyle}" MaxLength="50" PlaceholderText="Nombre del usuario"/>
 
-				<TextBlock Text="Correo" Style="{StaticResource WineFieldLabelStyle}"/>
-				<TextBox x:Name="txtCorreo" Style="{StaticResource WineTextBoxStyle}" MaxLength="80" PlaceholderText="usuario@vinoteca.com"/>
+					<TextBlock Text="Correo" Style="{StaticResource WineFieldLabelStyle}"/>
+					<TextBox x:Name="txtCorreo" Style="{StaticResource WineTextBoxStyle}" MaxLength="80" PlaceholderText="usuario@vinoteca.com"/>
 
-				<TextBlock Text="Contrasena" Style="{StaticResource WineFieldLabelStyle}"/>
-				<PasswordBox x:Name="txtPassword" Style="{StaticResource WinePasswordBoxStyle}" MaxLength="20" PlaceholderText="********"/>
+					<TextBlock Text="Contrasena" Style="{StaticResource WineFieldLabelStyle}"/>
+					<PasswordBox x:Name="txtPassword" Style="{StaticResource WinePasswordBoxStyle}" MaxLength="20" PlaceholderText="********"/>
 
-				<TextBlock Text="Confirmar contrasena" Style="{StaticResource WineFieldLabelStyle}"/>
-				<PasswordBox x:Name="txtConfirmarPassword" Style="{StaticResource WinePasswordBoxStyle}" MaxLength="20" PlaceholderText="********"/>
+					<TextBlock Text="Confirmar contrasena" Style="{StaticResource WineFieldLabelStyle}"/>
+					<PasswordBox x:Name="txtConfirmarPassword" Style="{StaticResource WinePasswordBoxStyle}" MaxLength="20" PlaceholderText="********"/>
 
-				<TextBlock Text="Rol" Style="{StaticResource WineFieldLabelStyle}"/>
-				<ComboBox x:Name="cmbRol" Style="{StaticResource WineComboBoxStyle}">
-					<ComboBoxItem Content="Administrador"/>
-					<ComboBoxItem Content="Supervisor"/>
-					<ComboBoxItem Content="Cliente"/>
-				</ComboBox>
+					<TextBlock Text="Rol" Style="{StaticResource WineFieldLabelStyle}"/>
+					<ComboBox x:Name="cmbRol" Style="{StaticResource WineComboBoxStyle}">
+						<ComboBoxItem Content="Administrador"/>
+						<ComboBoxItem Content="Supervisor"/>
+						<ComboBoxItem Content="Cliente"/>
+					</ComboBox>
 
-				<CheckBox x:Name="chkActivo" Content="Cuenta activa"/>
+					<CheckBox x:Name="chkActivo" Content="Cuenta activa"/>
 
-				<TextBlock x:Name="txtMensaje" Visibility="Collapsed" TextWrapping="Wrap"/>
+					<TextBlock x:Name="txtMensaje" Visibility="Collapsed" TextWrapping="Wrap"/>
 
-				<StackPanel Orientation="Horizontal" Spacing="8">
-					<Button x:Name="btnGuardarUsuario" Content="Guardar usuario" Style="{StaticResource WinePrimaryButtonStyle}" Click="btnGuardarUsuario_Click"/>
-					<Button x:Name="btnLimpiarUsuario" Content="Limpiar" Style="{StaticResource WineSecondaryButtonStyle}" Click="btnLimpiarUsuario_Click"/>
-					<Button x:Name="btnEliminarUsuario" Content="Eliminar" Style="{StaticResource WineDangerButtonStyle}" Click="btnEliminarUsuario_Click"/>
+					<StackPanel Orientation="Horizontal" Spacing="8">
+						<Button x:Name="btnGuardarUsuario" Content="Guardar usuario" Style="{StaticResource WinePrimaryButtonStyle}" Click="btnGuardarUsuario_Click"/>
+						<Button x:Name="btnLimpiarUsuario" Content="Limpiar" Style="{StaticResource WineSecondaryButtonStyle}" Click="btnLimpiarUsuario_Click"/>
+						<Button x:Name="btnEliminarUsuario" Content="Eliminar" Style="{StaticResource WineDangerButtonStyle}" Click="btnEliminarUsuario_Click"/>
+					</StackPanel>
 				</StackPanel>
-			</StackPanel>
+			</ScrollViewer>
 		</Border>
 
 		<Border Grid.Column="1" Style="{StaticResource WineCardStyle}" Padding="22">
