@@ -12,47 +12,28 @@
 
 			<helpers:StringFormatConverter x:Key="StringFormatConverter"/>
 
-			<SolidColorBrush x:Key="WineBackgroundBrush" Color="#5B1F2A"/>
-			<SolidColorBrush x:Key="WinePanelBrush" Color="#FFF9F4"/>
-			<SolidColorBrush x:Key="WineSidebarBrush" Color="#402228"/>
+			<SolidColorBrush x:Key="WineBackgroundBrush" Color="Transparent"/>
+			<SolidColorBrush x:Key="WinePanelBrush" Color="#FFFFFF"/>
+			<SolidColorBrush x:Key="WineSidebarBrush" Color="#0D0A0B"/>
+			<SolidColorBrush x:Key="WineTextBrush" Color="#111111"/>
+			<SolidColorBrush x:Key="WineMutedBrush" Color="#666666"/>
+			<SolidColorBrush x:Key="WineLabelBrush" Color="#444444"/>
+			<SolidColorBrush x:Key="WinePlaceholderBrush" Color="#A1A1A1"/>
+
+			<SolidColorBrush x:Key="WineBorderBrush" Color="#E5E5E5"/>
 			<SolidColorBrush x:Key="WineAccentBrush" Color="#8F2D3B"/>
-			<SolidColorBrush x:Key="WineAccentSoftBrush" Color="#D6A46D"/>
-			<SolidColorBrush x:Key="WineTextBrush" Color="#2F1D1F"/>
-			<SolidColorBrush x:Key="WineMutedBrush" Color="#755A52"/>
-			<SolidColorBrush x:Key="WineLabelBrush" Color="#875F55"/>
-			<SolidColorBrush x:Key="WinePlaceholderBrush" Color="#A4867B"/>
-			<SolidColorBrush x:Key="WineBorderBrush" Color="#E2D4C7"/>
 			<SolidColorBrush x:Key="WineHeroBrush" Color="#6D2432"/>
-			<SolidColorBrush x:Key="WineHeroSoftBrush" Color="#C58D54"/>
-			<SolidColorBrush x:Key="WineDangerBrush" Color="#9F3B37"/>
-			<SolidColorBrush x:Key="WineSuccessBrush" Color="#4D6B45"/>
 
-			<SolidColorBrush x:Key="AccentButtonBackground" Color="#7A2030"/>
-			<SolidColorBrush x:Key="AccentButtonBackgroundPointerOver" Color="#651928"/>
-			<SolidColorBrush x:Key="AccentButtonBackgroundPressed" Color="#541321"/>
-			<SolidColorBrush x:Key="AccentButtonForeground" Color="#FFF8F3"/>
-			<SolidColorBrush x:Key="AccentButtonForegroundPointerOver" Color="#FFF8F3"/>
-			<SolidColorBrush x:Key="AccentButtonForegroundPressed" Color="#FFF8F3"/>
-			<SolidColorBrush x:Key="AccentButtonBorderBrush" Color="#7A2030"/>
-			<SolidColorBrush x:Key="AccentButtonBorderBrushPointerOver" Color="#651928"/>
-			<SolidColorBrush x:Key="AccentButtonBorderBrushPressed" Color="#541321"/>
+			<SolidColorBrush x:Key="WineDangerBrush" Color="#D93838"/>
+			<SolidColorBrush x:Key="WineSuccessBrush" Color="#2E7D32"/>
 
-			<SolidColorBrush x:Key="ButtonBackground" Color="#F1E3D4"/>
-			<SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="#E4D0BE"/>
-			<SolidColorBrush x:Key="ButtonBackgroundPressed" Color="#DABFA9"/>
-			<SolidColorBrush x:Key="ButtonForeground" Color="#2F1D1F"/>
-			<SolidColorBrush x:Key="ButtonForegroundPointerOver" Color="#2F1D1F"/>
-			<SolidColorBrush x:Key="ButtonForegroundPressed" Color="#2F1D1F"/>
-			<SolidColorBrush x:Key="ButtonBorderBrush" Color="#D1B9A6"/>
-			<SolidColorBrush x:Key="ButtonBorderBrushPointerOver" Color="#C4A68D"/>
-			<SolidColorBrush x:Key="ButtonBorderBrushPressed" Color="#B89273"/>
-
-			<SolidColorBrush x:Key="ListViewItemBackgroundPointerOver" Color="#FFF2E6"/>
-			<SolidColorBrush x:Key="ListViewItemBackgroundSelected" Color="#F4E3D7"/>
-			<SolidColorBrush x:Key="ListViewItemBackgroundSelectedPointerOver" Color="#EFDACA"/>
-			<SolidColorBrush x:Key="ListViewItemForegroundPointerOver" Color="#2F1D1F"/>
-			<SolidColorBrush x:Key="ListViewItemForegroundSelected" Color="#2F1D1F"/>
-			<SolidColorBrush x:Key="ListViewItemForegroundSelectedPointerOver" Color="#2F1D1F"/>
+			<SolidColorBrush x:Key="AccentButtonBackground" Color="#8F2D3B"/>
+			<SolidColorBrush x:Key="AccentButtonBackgroundPointerOver" Color="#7A2531"/>
+			<SolidColorBrush x:Key="AccentButtonBackgroundPressed" Color="#6D2432"/>
+			<SolidColorBrush x:Key="AccentButtonForeground" Color="#FFFFFF"/>
+			<SolidColorBrush x:Key="AccentButtonForegroundPointerOver" Color="#FFFFFF"/>
+			<SolidColorBrush x:Key="AccentButtonForegroundPressed" Color="#E0E0E0"/>
+			<SolidColorBrush x:Key="AccentButtonBorderBrush" Color="Transparent"/>
 
 			<Style x:Key="WinePageRootStyle" TargetType="Grid">
 				<Setter Property="Background" Value="{StaticResource WineBackgroundBrush}"/>
@@ -62,82 +43,87 @@
 				<Setter Property="Background" Value="{StaticResource WinePanelBrush}"/>
 				<Setter Property="BorderBrush" Value="{StaticResource WineBorderBrush}"/>
 				<Setter Property="BorderThickness" Value="1"/>
-				<Setter Property="CornerRadius" Value="20"/>
+				<Setter Property="CornerRadius" Value="8"/>
 			</Style>
 
 			<Style x:Key="WinePrimaryButtonStyle" TargetType="Button" BasedOn="{StaticResource AccentButtonStyle}">
-				<Setter Property="CornerRadius" Value="12"/>
-				<Setter Property="Padding" Value="18,12"/>
+				<Setter Property="CornerRadius" Value="6"/>
+				<Setter Property="Padding" Value="20,10"/>
+				<Setter Property="FontWeight" Value="SemiBold"/>
 			</Style>
 
 			<Style x:Key="WineSecondaryButtonStyle" TargetType="Button">
-				<Setter Property="CornerRadius" Value="12"/>
-				<Setter Property="Padding" Value="16,11"/>
-				<Setter Property="Background" Value="#F1E3D4"/>
+				<Setter Property="CornerRadius" Value="6"/>
+				<Setter Property="Padding" Value="18,9"/>
+				<Setter Property="Background" Value="#F5F5F5"/>
 				<Setter Property="Foreground" Value="{StaticResource WineTextBrush}"/>
 				<Setter Property="BorderBrush" Value="{StaticResource WineBorderBrush}"/>
+				<Setter Property="BorderThickness" Value="1"/>
 			</Style>
 
 			<Style x:Key="WineDangerButtonStyle" TargetType="Button">
-				<Setter Property="CornerRadius" Value="12"/>
-				<Setter Property="Padding" Value="16,11"/>
-				<Setter Property="Background" Value="#F0D6D2"/>
+				<Setter Property="CornerRadius" Value="6"/>
+				<Setter Property="Padding" Value="18,9"/>
+				<Setter Property="Background" Value="#FFF0F0"/>
 				<Setter Property="Foreground" Value="{StaticResource WineDangerBrush}"/>
-				<Setter Property="BorderBrush" Value="#D8AAA3"/>
+				<Setter Property="BorderBrush" Value="#FFD6D6"/>
+				<Setter Property="BorderThickness" Value="1"/>
 			</Style>
 
 			<Style x:Key="WineSidebarButtonStyle" TargetType="Button">
 				<Setter Property="HorizontalAlignment" Value="Stretch"/>
 				<Setter Property="HorizontalContentAlignment" Value="Left"/>
-				<Setter Property="CornerRadius" Value="14"/>
-				<Setter Property="Padding" Value="14,12"/>
-				<Setter Property="Margin" Value="0,0,0,8"/>
-				<Setter Property="Background" Value="#24FFFFFF"/>
-				<Setter Property="Foreground" Value="White"/>
+				<Setter Property="CornerRadius" Value="6"/>
+				<Setter Property="Padding" Value="14,10"/>
+				<Setter Property="Margin" Value="0,0,0,4"/>
+				<Setter Property="Background" Value="Transparent"/>
+				<Setter Property="Foreground" Value="#E0E0E0"/>
 				<Setter Property="BorderThickness" Value="0"/>
 			</Style>
 
 			<Style x:Key="WineTextBoxStyle" TargetType="TextBox">
-				<Setter Property="CornerRadius" Value="12"/>
-				<Setter Property="Background" Value="#FFFDF9"/>
+				<Setter Property="CornerRadius" Value="6"/>
+				<Setter Property="Background" Value="#FAFAFA"/>
 				<Setter Property="BorderBrush" Value="{StaticResource WineBorderBrush}"/>
 				<Setter Property="Foreground" Value="{StaticResource WineTextBrush}"/>
 			</Style>
 
 			<Style x:Key="WinePasswordBoxStyle" TargetType="PasswordBox">
-				<Setter Property="CornerRadius" Value="12"/>
-				<Setter Property="Background" Value="#FFFDF9"/>
+				<Setter Property="CornerRadius" Value="6"/>
+				<Setter Property="Background" Value="#FAFAFA"/>
 				<Setter Property="BorderBrush" Value="{StaticResource WineBorderBrush}"/>
 				<Setter Property="Foreground" Value="{StaticResource WineTextBrush}"/>
 			</Style>
 
 			<Style x:Key="WineComboBoxStyle" TargetType="ComboBox">
-				<Setter Property="CornerRadius" Value="12"/>
-				<Setter Property="Background" Value="#FFFDF9"/>
+				<Setter Property="CornerRadius" Value="6"/>
+				<Setter Property="Background" Value="#FAFAFA"/>
 				<Setter Property="BorderBrush" Value="{StaticResource WineBorderBrush}"/>
 				<Setter Property="Foreground" Value="{StaticResource WineTextBrush}"/>
 			</Style>
 
 			<Style x:Key="WineNumberBoxStyle" TargetType="NumberBox">
-				<Setter Property="CornerRadius" Value="12"/>
-				<Setter Property="Background" Value="#FFFDF9"/>
+				<Setter Property="CornerRadius" Value="6"/>
+				<Setter Property="Background" Value="#FAFAFA"/>
 				<Setter Property="BorderBrush" Value="{StaticResource WineBorderBrush}"/>
 				<Setter Property="Foreground" Value="{StaticResource WineTextBrush}"/>
 			</Style>
 
-			<Style x:Key="WineFieldLabelStyle" TargetType="TextBlock">
-				<Setter Property="Foreground" Value="{StaticResource WineLabelBrush}"/>
-				<Setter Property="FontSize" Value="13"/>
-				<Setter Property="Margin" Value="0,6,0,0"/>
-			</Style>
-
 			<Style x:Key="WineEmptyStateStyle" TargetType="TextBlock">
 				<Setter Property="Foreground" Value="{StaticResource WineLabelBrush}"/>
-				<Setter Property="FontSize" Value="22"/>
+				<Setter Property="FontSize" Value="20"/>
 				<Setter Property="FontWeight" Value="SemiBold"/>
 				<Setter Property="TextAlignment" Value="Center"/>
-				<Setter Property="Opacity" Value="0.88"/>
+				<Setter Property="Opacity" Value="0.8"/>
 			</Style>
+
+			<Style x:Key="WineFieldLabelStyle" TargetType="TextBlock">
+				<Setter Property="Foreground" Value="{StaticResource WineLabelBrush}"/>
+				<Setter Property="FontSize" Value="12"/>
+				<Setter Property="FontWeight" Value="SemiBold"/>
+				<Setter Property="Margin" Value="0,8,0,4"/>
+			</Style>
+
 		</ResourceDictionary>
 	</Application.Resources>
 </Application>
