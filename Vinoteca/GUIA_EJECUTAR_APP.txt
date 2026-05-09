@@ -1,41 +1,41 @@
-╔════════════════════════════════════════════════════════════════════════════╗
-║                  GUÍA PARA EJECUTAR VINOTECA                                ║
-║                     (Windows UI - WinUI 3)                                  ║
-╚════════════════════════════════════════════════════════════════════════════╝
+﻿â•”â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•—
+â•‘                  GUÃA PARA EJECUTAR VINOTECA                                â•‘
+â•‘                     (Windows UI - WinUI 3)                                  â•‘
+â•šâ•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
-✅ PROBLEMA SOLUCIONADO
-═════════════════════════════════════════════════════════════════════════════
+âœ… PROBLEMA SOLUCIONADO
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
-El error que tenías era:
-❌ "Packaged .NET applications with an app host exe cannot be 
+El error que tenÃ­as era:
+âŒ "Packaged .NET applications with an app host exe cannot be 
    ProcessorArchitecture neutral"
 
-Se corrigió cambiando:
-   EnableMsixTooling: true  →  false
+Se corrigiÃ³ cambiando:
+   EnableMsixTooling: true  â†’  false
 
-Esto permite ejecutar la aplicación desde terminal sin problemas de empaquetado.
+Esto permite ejecutar la aplicaciÃ³n desde terminal sin problemas de empaquetado.
 
-═════════════════════════════════════════════════════════════════════════════
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
-🚀 FORMA 1: EJECUTAR DESDE TERMINAL (Recomendado)
-═════════════════════════════════════════════════════════════════════════════
+ðŸš€ FORMA 1: EJECUTAR DESDE TERMINAL (Recomendado)
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
 Paso 1: Abre PowerShell
 
 Paso 2: Navega a la carpeta del proyecto
-   cd "C:\Users\erick\OneDrive\Documents\6to\PAL\PIA-DODO\Vinoteca"
+   cd "[carpeta-donde-clonaste]\Vinoteca"
 
-Paso 3: Ejecuta la aplicación
+Paso 3: Ejecuta la aplicaciÃ³n
    dotnet run
 
 RESULTADO:
-   ✅ La aplicación se abrirá automáticamente
-   ✅ Verás la pantalla de Login
+   âœ… La aplicaciÃ³n se abrirÃ¡ automÃ¡ticamente
+   âœ… VerÃ¡s la pantalla de Login
 
-═════════════════════════════════════════════════════════════════════════════
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
-🚀 FORMA 2: COMPILAR Y EJECUTAR POR SEPARADO
-═════════════════════════════════════════════════════════════════════════════
+ðŸš€ FORMA 2: COMPILAR Y EJECUTAR POR SEPARADO
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
 Paso 1: Compilar el proyecto
    dotnet build -c Debug
@@ -44,130 +44,130 @@ Paso 2: Ejecutar el archivo compilado
    cd bin\Debug\net8.0-windows10.0.19041.0
    .\Vinoteca.exe
 
-═════════════════════════════════════════════════════════════════════════════
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
-🚀 FORMA 3: EJECUTAR DESDE VISUAL STUDIO
-═════════════════════════════════════════════════════════════════════════════
+ðŸš€ FORMA 3: EJECUTAR DESDE VISUAL STUDIO
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
 Paso 1: Abre Visual Studio
 
-Paso 2: Archivo → Abrir → Carpeta
+Paso 2: Archivo â†’ Abrir â†’ Carpeta
    O presiona: Ctrl + K, Ctrl + O
 
 Paso 3: Selecciona esta carpeta:
-   C:\Users\erick\OneDrive\Documents\6to\PAL\PIA-DODO\Vinoteca
+   [carpeta-donde-clonaste]\Vinoteca
 
 Paso 4: Espera a que cargue el proyecto (1-2 minutos)
 
-Paso 5: Click en botón VERDE ▶️ "Ejecutar"
+Paso 5: Click en botÃ³n VERDE â–¶ï¸ "Ejecutar"
    O presiona: F5
 
 RESULTADO:
-   ✅ La aplicación se abrirá en la ventana de depuración
+   âœ… La aplicaciÃ³n se abrirÃ¡ en la ventana de depuraciÃ³n
 
-═════════════════════════════════════════════════════════════════════════════
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
-🔐 CREDENCIALES DE PRUEBA
-═════════════════════════════════════════════════════════════════════════════
+ðŸ” CREDENCIALES DE PRUEBA
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
-Una vez que la aplicación se abre, verás la pantalla de Login:
+Una vez que la aplicaciÃ³n se abre, verÃ¡s la pantalla de Login:
 
    Correo:      admin@vinoteca.com
-   Contraseña:  Admin@123
+   ContraseÃ±a:  Admin@123
 
 Ingresa estos datos y haz click en "Ingresar"
 
 Resultado esperado:
-   ✅ Accederás a la pantalla de AdminMenuView (menú principal)
+   âœ… AccederÃ¡s a la pantalla de AdminMenuView (menÃº principal)
 
-═════════════════════════════════════════════════════════════════════════════
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
-⚙️  REQUISITOS MÍNIMOS
-═════════════════════════════════════════════════════════════════════════════
+âš™ï¸  REQUISITOS MÃNIMOS
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
-✓ .NET 8.0 SDK (o superior)
-  └─ Verifica con: dotnet --version
+âœ“ .NET 8.0 SDK (o superior)
+  â””â”€ Verifica con: dotnet --version
 
-✓ Windows 10 o Windows 11
+âœ“ Windows 10 o Windows 11
 
-✓ Visual Studio 2022 (opcional, para desarrollo)
-  └─ Con carga de trabajo "Desarrollo de escritorio de Windows"
+âœ“ Visual Studio 2022 (opcional, para desarrollo)
+  â””â”€ Con carga de trabajo "Desarrollo de escritorio de Windows"
 
-═════════════════════════════════════════════════════════════════════════════
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
-🛠️  SI TIENES ERRORES
-═════════════════════════════════════════════════════════════════════════════
+ðŸ› ï¸  SI TIENES ERRORES
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
 ERROR 1: ".NET SDK not found"
-   Solución:
+   SoluciÃ³n:
    1. Descarga .NET 8.0 desde: https://dotnet.microsoft.com/download/dotnet/8.0
    2. Instala el SDK
    3. Reinicia la terminal
    4. Verifica con: dotnet --version
 
 ERROR 2: "launchSettings.json not found"
-   Solución:
+   SoluciÃ³n:
    dotnet run --no-build
 
 ERROR 3: "WinUI 3 not found"
-   Solución:
-   1. Este se instala automáticamente la primera vez
+   SoluciÃ³n:
+   1. Este se instala automÃ¡ticamente la primera vez
    2. Si persiste, descarga: Microsoft.WindowsAppSDK v2.0.1
 
-ERROR 4: "La aplicación no aparece"
-   Solución:
-   1. Espera 10-15 segundos (primera ejecución es lenta)
+ERROR 4: "La aplicaciÃ³n no aparece"
+   SoluciÃ³n:
+   1. Espera 10-15 segundos (primera ejecuciÃ³n es lenta)
    2. Verifica en la barra de tareas de Windows
-   3. Prueba con: dotnet run --configuration Release (más rápido)
+   3. Prueba con: dotnet run --configuration Release (mÃ¡s rÃ¡pido)
 
-═════════════════════════════════════════════════════════════════════════════
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
-⏱️  TIEMPO DE EJECUCIÓN
-═════════════════════════════════════════════════════════════════════════════
+â±ï¸  TIEMPO DE EJECUCIÃ“N
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
-Primera ejecución:
-   ⏱️  15-30 segundos (descarga dependencias)
+Primera ejecuciÃ³n:
+   â±ï¸  15-30 segundos (descarga dependencias)
 
 Ejecuciones posteriores:
-   ⏱️  5-10 segundos
+   â±ï¸  5-10 segundos
 
 Release (optimizado):
-   ⏱️  2-5 segundos
+   â±ï¸  2-5 segundos
 
-═════════════════════════════════════════════════════════════════════════════
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
-📋 VALIDACIONES QUE VERÁS EN EL LOGIN
-═════════════════════════════════════════════════════════════════════════════
+ðŸ“‹ VALIDACIONES QUE VERÃS EN EL LOGIN
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
-Prueba 1: Dejar campos vacíos
-   └─ Click "Ingresar"
-   └─ Error: "El correo es obligatorio"
+Prueba 1: Dejar campos vacÃ­os
+   â””â”€ Click "Ingresar"
+   â””â”€ Error: "El correo es obligatorio"
 
-Prueba 2: Correo inválido
-   └─ Correo: admin (sin @)
-   └─ Error: "Ingresa un formato válido"
+Prueba 2: Correo invÃ¡lido
+   â””â”€ Correo: admin (sin @)
+   â””â”€ Error: "Ingresa un formato vÃ¡lido"
 
-Prueba 3: Contraseña débil
-   └─ Correo: admin@vinoteca.com
-   └─ Contraseña: admin123
-   └─ Error: "Use mayúsculas, números y caracteres especiales"
+Prueba 3: ContraseÃ±a dÃ©bil
+   â””â”€ Correo: admin@vinoteca.com
+   â””â”€ ContraseÃ±a: admin123
+   â””â”€ Error: "Use mayÃºsculas, nÃºmeros y caracteres especiales"
 
 Prueba 4: Credenciales incorrectas
-   └─ Correo: admin@vinoteca.com
-   └─ Contraseña: WrongPassword@123
-   └─ Error: "Credenciales incorrectas. Intento 1/3"
+   â””â”€ Correo: admin@vinoteca.com
+   â””â”€ ContraseÃ±a: WrongPassword@123
+   â””â”€ Error: "Credenciales incorrectas. Intento 1/3"
 
 Prueba 5: Login exitoso
-   └─ Correo: admin@vinoteca.com
-   └─ Contraseña: Admin@123
-   └─ ✅ Acceso a AdminMenuView
+   â””â”€ Correo: admin@vinoteca.com
+   â””â”€ ContraseÃ±a: Admin@123
+   â””â”€ âœ… Acceso a AdminMenuView
 
-═════════════════════════════════════════════════════════════════════════════
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
-💡 COMANDOS ÚTILES
-═════════════════════════════════════════════════════════════════════════════
+ðŸ’¡ COMANDOS ÃšTILES
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
-# Ver versión de .NET
+# Ver versiÃ³n de .NET
 dotnet --version
 
 # Compilar en modo Debug
@@ -182,37 +182,37 @@ dotnet run --no-build
 # Limpiar archivos compilados
 dotnet clean
 
-# Ver información del proyecto
+# Ver informaciÃ³n del proyecto
 dotnet project-assets-json-reader
 
 # Ejecutar con logs detallados
 dotnet run --verbosity detailed
 
-═════════════════════════════════════════════════════════════════════════════
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
-📂 ESTRUCTURA DE ARCHIVOS COMPILADOS
-═════════════════════════════════════════════════════════════════════════════
+ðŸ“‚ ESTRUCTURA DE ARCHIVOS COMPILADOS
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
-Después de compilar, encontrarás:
+DespuÃ©s de compilar, encontrarÃ¡s:
 
 bin/
-├── Debug/
-│   └── net8.0-windows10.0.19041.0/
-│       ├── Vinoteca.exe          ← Ejecutable principal
-│       ├── Vinoteca.dll
-│       └── (otras dependencias)
-└── Release/
-    └── net8.0-windows10.0.19041.0/
-        └── Vinoteca.exe          ← Versión optimizada
+â”œâ”€â”€ Debug/
+â”‚   â””â”€â”€ net8.0-windows10.0.19041.0/
+â”‚       â”œâ”€â”€ Vinoteca.exe          â† Ejecutable principal
+â”‚       â”œâ”€â”€ Vinoteca.dll
+â”‚       â””â”€â”€ (otras dependencias)
+â””â”€â”€ Release/
+    â””â”€â”€ net8.0-windows10.0.19041.0/
+        â””â”€â”€ Vinoteca.exe          â† VersiÃ³n optimizada
 
-═════════════════════════════════════════════════════════════════════════════
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
-🎯 RESUMEN: FORMA MÁS RÁPIDA
-═════════════════════════════════════════════════════════════════════════════
+ðŸŽ¯ RESUMEN: FORMA MÃS RÃPIDA
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
 1. Abre PowerShell
 
-2. cd "C:\Users\erick\OneDrive\Documents\6to\PAL\PIA-DODO\Vinoteca"
+2. cd "[carpeta-donde-clonaste]\Vinoteca"
 
 3. dotnet run
 
@@ -220,10 +220,11 @@ bin/
 
 5. Ingresa:
    - Correo: admin@vinoteca.com
-   - Contraseña: Admin@123
+   - ContraseÃ±a: Admin@123
 
 6. Click en "Ingresar"
 
-¡Listo! 🎉 Ya está ejecutándose Vinoteca
+Â¡Listo! ðŸŽ‰ Ya estÃ¡ ejecutÃ¡ndose Vinoteca
 
-═════════════════════════════════════════════════════════════════════════════
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+

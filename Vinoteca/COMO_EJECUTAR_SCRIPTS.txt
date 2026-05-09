@@ -1,104 +1,104 @@
-╔════════════════════════════════════════════════════════════════════════════╗
-║                  SCRIPTS PARA EJECUTAR VINOTECA FÁCILMENTE                  ║
-╚════════════════════════════════════════════════════════════════════════════╝
+﻿â•”â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•—
+â•‘                  SCRIPTS PARA EJECUTAR VINOTECA FÃCILMENTE                  â•‘
+â•šâ•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
-He creado 2 scripts para que ejecutes la aplicación con un solo click 🎉
+He creado 2 scripts para que ejecutes la aplicaciÃ³n con un solo click ðŸŽ‰
 
-═════════════════════════════════════════════════════════════════════════════
-📌 OPCIÓN 1: USAR EL SCRIPT .BAT (Más fácil)
-═════════════════════════════════════════════════════════════════════════════
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+ðŸ“Œ OPCIÃ“N 1: USAR EL SCRIPT .BAT (MÃ¡s fÃ¡cil)
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
 Archivo: ejecutar.bat
 
-Ubicación: C:\Users\erick\OneDrive\Documents\6to\PAL\PIA-DODO\Vinoteca\
+UbicaciÃ³n: [carpeta-donde-clonaste]\Vinoteca\
            ejecutar.bat
 
-¿Cómo usar?
-──────────────────────────────────────────────────────────────────────────────
+Â¿CÃ³mo usar?
+â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 1. Abre el Explorador de archivos (Windows Explorer)
 
-2. Navega a: C:\Users\erick\OneDrive\Documents\6to\PAL\PIA-DODO\Vinoteca
+2. Navega a: [carpeta-donde-clonaste]\Vinoteca
 
 3. Busca el archivo: ejecutar.bat
 
 4. DOBLE CLIC en el archivo
 
-5. Se abrirá una ventana negra (cmd) que:
-   ✅ Limpiará compilación anterior
-   ✅ Compilará el proyecto
-   ✅ Ejecutará la aplicación
-   ✅ Esperará a que cierres la app
+5. Se abrirÃ¡ una ventana negra (cmd) que:
+   âœ… LimpiarÃ¡ compilaciÃ³n anterior
+   âœ… CompilarÃ¡ el proyecto
+   âœ… EjecutarÃ¡ la aplicaciÃ³n
+   âœ… EsperarÃ¡ a que cierres la app
 
-¿Ventajas?
-──────────────────────────────────────────────────────────────────────────────
-✅ Solo un clic
-✅ No necesitas abrir terminal
-✅ Automatiza todo el proceso
-✅ Funciona en cualquier Windows
+Â¿Ventajas?
+â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+âœ… Solo un clic
+âœ… No necesitas abrir terminal
+âœ… Automatiza todo el proceso
+âœ… Funciona en cualquier Windows
 
-═════════════════════════════════════════════════════════════════════════════
-📌 OPCIÓN 2: USAR EL SCRIPT .PS1 (PowerShell - Con colores)
-═════════════════════════════════════════════════════════════════════════════
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+ðŸ“Œ OPCIÃ“N 2: USAR EL SCRIPT .PS1 (PowerShell - Con colores)
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
 Archivo: ejecutar.ps1
 
-Ubicación: C:\Users\erick\OneDrive\Documents\6to\PAL\PIA-DODO\Vinoteca\
+UbicaciÃ³n: [carpeta-donde-clonaste]\Vinoteca\
            ejecutar.ps1
 
-¿Cómo usar?
-──────────────────────────────────────────────────────────────────────────────
+Â¿CÃ³mo usar?
+â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
-MÉTODO A: Hacer clic derecho
-────────────────────────────
+MÃ‰TODO A: Hacer clic derecho
+â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 1. Abre el Explorador de archivos
-2. Navega a: C:\Users\erick\OneDrive\Documents\6to\PAL\PIA-DODO\Vinoteca
+2. Navega a: [carpeta-donde-clonaste]\Vinoteca
 3. Busca: ejecutar.ps1
 4. CLIC DERECHO en el archivo
 5. Selecciona: "Ejecutar con PowerShell"
-6. Si aparece un aviso de seguridad, presiona: S (Sí)
-7. ¡Listo! Se ejecutará la aplicación
+6. Si aparece un aviso de seguridad, presiona: S (SÃ­)
+7. Â¡Listo! Se ejecutarÃ¡ la aplicaciÃ³n
 
-MÉTODO B: Desde PowerShell
-────────────────────────────
+MÃ‰TODO B: Desde PowerShell
+â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 1. Abre PowerShell
 2. Copia y pega este comando:
-   C:\Users\erick\OneDrive\Documents\6to\PAL\PIA-DODO\Vinoteca\ejecutar.ps1
+   [carpeta-donde-clonaste]\Vinoteca\ejecutar.ps1
 3. Presiona Enter
-4. ¡La aplicación se abrirá!
+4. Â¡La aplicaciÃ³n se abrirÃ¡!
 
 Si aparece error de permisos:
-──────────────────────────────
+â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 Ejecuta esto primero en PowerShell:
    Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
 
 Luego ejecuta el script nuevamente.
 
-¿Ventajas?
-──────────────────────────────────────────────────────────────────────────────
-✅ Colores en la consola (más fácil de leer)
-✅ Mensajes más claros
-✅ Detecta errores automáticamente
-✅ Mejor experiencia visual
+Â¿Ventajas?
+â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+âœ… Colores en la consola (mÃ¡s fÃ¡cil de leer)
+âœ… Mensajes mÃ¡s claros
+âœ… Detecta errores automÃ¡ticamente
+âœ… Mejor experiencia visual
 
-═════════════════════════════════════════════════════════════════════════════
-📌 OPCIÓN 3: EJECUTAR MANUALMENTE DESDE TERMINAL (Si los scripts no funcionan)
-═════════════════════════════════════════════════════════════════════════════
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+ðŸ“Œ OPCIÃ“N 3: EJECUTAR MANUALMENTE DESDE TERMINAL (Si los scripts no funcionan)
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
 Abre PowerShell y ejecuta:
 
-cd "C:\Users\erick\OneDrive\Documents\6to\PAL\PIA-DODO\Vinoteca"
+cd "[carpeta-donde-clonaste]\Vinoteca"
 dotnet run
 
-═════════════════════════════════════════════════════════════════════════════
-📌 OPCIÓN 4: DOBLE CLIC EN EL EJECUTABLE (Más rápido)
-═════════════════════════════════════════════════════════════════════════════
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+ðŸ“Œ OPCIÃ“N 4: DOBLE CLIC EN EL EJECUTABLE (MÃ¡s rÃ¡pido)
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
-Ubicación del archivo:
-C:\Users\erick\OneDrive\Documents\6to\PAL\PIA-DODO\Vinoteca\
+UbicaciÃ³n del archivo:
+[carpeta-donde-clonaste]\Vinoteca\
 bin\Debug\net8.0-windows10.0.19041.0\Vinoteca.exe
 
-¿Cómo usar?
-──────────────────────────────────────────────────────────────────────────────
+Â¿CÃ³mo usar?
+â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 1. Abre el Explorador de archivos
 
 2. Navega a la ruta anterior
@@ -107,102 +107,103 @@ bin\Debug\net8.0-windows10.0.19041.0\Vinoteca.exe
 
 4. DOBLE CLIC
 
-5. ¡La aplicación se abre instantáneamente!
+5. Â¡La aplicaciÃ³n se abre instantÃ¡neamente!
 
-¿Ventajas?
-──────────────────────────────────────────────────────────────────────────────
-✅ El más rápido (no necesita compilar)
-✅ No requiere terminal
-✅ Funciona incluso sin .NET (casi)
+Â¿Ventajas?
+â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+âœ… El mÃ¡s rÃ¡pido (no necesita compilar)
+âœ… No requiere terminal
+âœ… Funciona incluso sin .NET (casi)
 
 NOTA: Solo funciona si ya fue compilado.
-      Si haces cambios en el código, necesitas compilar nuevamente.
+      Si haces cambios en el cÃ³digo, necesitas compilar nuevamente.
 
-═════════════════════════════════════════════════════════════════════════════
-🎯 RECOMENDACIÓN: ¿CUÁL USAR?
-═════════════════════════════════════════════════════════════════════════════
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+ðŸŽ¯ RECOMENDACIÃ“N: Â¿CUÃL USAR?
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
 Para primera vez / desarrollo:
-   → Usa ejecutar.bat
-      (Compila automáticamente y luego ejecuta)
+   â†’ Usa ejecutar.bat
+      (Compila automÃ¡ticamente y luego ejecuta)
 
-Para uso rápido (después de compilar):
-   → Doble clic en Vinoteca.exe
-      (Más rápido, no necesita compilar)
+Para uso rÃ¡pido (despuÃ©s de compilar):
+   â†’ Doble clic en Vinoteca.exe
+      (MÃ¡s rÃ¡pido, no necesita compilar)
 
-Para ver los detalles de compilación:
-   → Usa ejecutar.ps1
+Para ver los detalles de compilaciÃ³n:
+   â†’ Usa ejecutar.ps1
       (Muestra colores y detalles)
 
-═════════════════════════════════════════════════════════════════════════════
-🔐 CREDENCIALES DE PRUEBA
-═════════════════════════════════════════════════════════════════════════════
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+ðŸ” CREDENCIALES DE PRUEBA
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
-Cuando se abra la aplicación:
+Cuando se abra la aplicaciÃ³n:
 
-📧 Correo:      admin@vinoteca.com
-🔐 Contraseña:  Admin@123
+ðŸ“§ Correo:      admin@vinoteca.com
+ðŸ” ContraseÃ±a:  Admin@123
 
-Click en "Ingresar" → ✅ Acceso al dashboard
+Click en "Ingresar" â†’ âœ… Acceso al dashboard
 
-═════════════════════════════════════════════════════════════════════════════
-❓ ¿QUÉ HACEN ESTOS SCRIPTS?
-═════════════════════════════════════════════════════════════════════════════
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+â“ Â¿QUÃ‰ HACEN ESTOS SCRIPTS?
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
 ejecutar.bat:
    1. Se navega a la carpeta del proyecto
-   2. Limpia compilación anterior
+   2. Limpia compilaciÃ³n anterior
    3. Compila el proyecto con: dotnet build -c Debug
    4. Ejecuta la app con: dotnet run --no-build
    5. Mantiene la ventana abierta para ver errores
 
 ejecutar.ps1:
    1. Lo mismo que el .bat
-   2. Pero con mensajes más claros
+   2. Pero con mensajes mÃ¡s claros
    3. Colores para mejor lectura
-   4. Detecta errores de compilación
+   4. Detecta errores de compilaciÃ³n
 
-═════════════════════════════════════════════════════════════════════════════
-⚡ SOLUCIÓN RÁPIDA SI HAY PROBLEMAS
-═════════════════════════════════════════════════════════════════════════════
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+âš¡ SOLUCIÃ“N RÃPIDA SI HAY PROBLEMAS
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
-¿La aplicación no se abre?
-──────────────────────────
+Â¿La aplicaciÃ³n no se abre?
+â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 Intenta manualmente en PowerShell:
-   cd "C:\Users\erick\OneDrive\Documents\6to\PAL\PIA-DODO\Vinoteca"
+   cd "[carpeta-donde-clonaste]\Vinoteca"
    dotnet clean
    dotnet build -c Debug
    dotnet run
 
-¿Aparece error de permisos?
-──────────────────────────
+Â¿Aparece error de permisos?
+â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 En PowerShell (como Administrador):
    Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
 
-¿Aparece "dotnet not found"?
-──────────────────────────
-.NET no está instalado o no está en el PATH
+Â¿Aparece "dotnet not found"?
+â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+.NET no estÃ¡ instalado o no estÃ¡ en el PATH
 Descarga desde: https://dotnet.microsoft.com/download/dotnet/8.0
 
-═════════════════════════════════════════════════════════════════════════════
-✅ RESUMEN
-═════════════════════════════════════════════════════════════════════════════
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+âœ… RESUMEN
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
-He creado 2 scripts para que ejecutes la app fácilmente:
+He creado 2 scripts para que ejecutes la app fÃ¡cilmente:
 
 1. ejecutar.bat
-   └─ Doble clic → Se ejecuta todo automáticamente
+   â””â”€ Doble clic â†’ Se ejecuta todo automÃ¡ticamente
 
 2. ejecutar.ps1
-   └─ Doble clic derecho → Ejecutar con PowerShell
+   â””â”€ Doble clic derecho â†’ Ejecutar con PowerShell
 
-Ubicación: C:\Users\erick\OneDrive\Documents\6to\PAL\PIA-DODO\Vinoteca\
+UbicaciÃ³n: [carpeta-donde-clonaste]\Vinoteca\
 
-La próxima vez que quieras ejecutar VINOTECA, solo:
-   ✅ Abre el Explorador
-   ✅ Navega a la carpeta Vinoteca
-   ✅ Doble clic en ejecutar.bat
+La prÃ³xima vez que quieras ejecutar VINOTECA, solo:
+   âœ… Abre el Explorador
+   âœ… Navega a la carpeta Vinoteca
+   âœ… Doble clic en ejecutar.bat
 
-¡Listo! 🎉
+Â¡Listo! ðŸŽ‰
 
-═════════════════════════════════════════════════════════════════════════════
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+

@@ -1,175 +1,175 @@
-╔════════════════════════════════════════════════════════════════════════════╗
-║                  ✅ APLICACIÓN FUNCIONANDO CORRECTAMENTE                   ║
-║                             VINOTECA - FINAL                                ║
-╚════════════════════════════════════════════════════════════════════════════╝
+﻿â•”â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•—
+â•‘                  âœ… APLICACIÃ“N FUNCIONANDO CORRECTAMENTE                   â•‘
+â•‘                             VINOTECA - FINAL                                â•‘
+â•šâ•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
-🎉 ESTADO: LA APLICACIÓN YA FUNCIONA Y SE ABRE CORRECTAMENTE
-═════════════════════════════════════════════════════════════════════════════
+ðŸŽ‰ ESTADO: LA APLICACIÃ“N YA FUNCIONA Y SE ABRE CORRECTAMENTE
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
-✅ Compilación: Exitosa
-✅ Ejecutable: Generado correctamente
-✅ Aplicación: Se abre sin problemas
-✅ Validaciones de Login: Implementadas y funcionando
+âœ… CompilaciÃ³n: Exitosa
+âœ… Ejecutable: Generado correctamente
+âœ… AplicaciÃ³n: Se abre sin problemas
+âœ… Validaciones de Login: Implementadas y funcionando
 
-═════════════════════════════════════════════════════════════════════════════
-🚀 CÓMO EJECUTAR LA APLICACIÓN - OPCIÓN MÁS RÁPIDA
-═════════════════════════════════════════════════════════════════════════════
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+ðŸš€ CÃ“MO EJECUTAR LA APLICACIÃ“N - OPCIÃ“N MÃS RÃPIDA
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
 DESDE TERMINAL (PowerShell):
-─────────────────────────────────────────────────────────────────────────────
+â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 1. Abre PowerShell (o Command Prompt)
 
 2. Copia y pega este comando:
-   cd "C:\Users\erick\OneDrive\Documents\6to\PAL\PIA-DODO\Vinoteca" ; dotnet run
+   cd "[carpeta-donde-clonaste]\Vinoteca" ; dotnet run
 
 3. Espera 10-15 segundos
 
-4. ¡La ventana de la aplicación se abrirá automáticamente!
+4. Â¡La ventana de la aplicaciÃ³n se abrirÃ¡ automÃ¡ticamente!
 
 
 DIRECTAMENTE DESDE EL EJECUTABLE:
-─────────────────────────────────────────────────────────────────────────────
+â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 Busca este archivo en tu computadora:
-   C:\Users\erick\OneDrive\Documents\6to\PAL\PIA-DODO\Vinoteca\
+   [carpeta-donde-clonaste]\Vinoteca\
    bin\Debug\net8.0-windows10.0.19041.0\Vinoteca.exe
 
-Haz DOBLE CLIC y se abrirá la aplicación directamente.
+Haz DOBLE CLIC y se abrirÃ¡ la aplicaciÃ³n directamente.
 
 
 DESDE VISUAL STUDIO:
-─────────────────────────────────────────────────────────────────────────────
+â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 1. Abre Visual Studio
-2. Archivo → Abrir → Carpeta
-3. Selecciona: C:\Users\erick\OneDrive\Documents\6to\PAL\PIA-DODO\Vinoteca
+2. Archivo â†’ Abrir â†’ Carpeta
+3. Selecciona: [carpeta-donde-clonaste]\Vinoteca
 4. Espera a que cargue
-5. Click en botón ▶️ "Ejecutar" (o presiona F5)
+5. Click en botÃ³n â–¶ï¸ "Ejecutar" (o presiona F5)
 
-═════════════════════════════════════════════════════════════════════════════
-🔐 CREDENCIALES DE LOGIN
-═════════════════════════════════════════════════════════════════════════════
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+ðŸ” CREDENCIALES DE LOGIN
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
-Cuando se abre la aplicación verás una pantalla de LOGIN
+Cuando se abre la aplicaciÃ³n verÃ¡s una pantalla de LOGIN
 
 Ingresa:
-   📧 Correo:      admin@vinoteca.com
-   🔐 Contraseña:  Admin@123
+   ðŸ“§ Correo:      admin@vinoteca.com
+   ðŸ” ContraseÃ±a:  Admin@123
 
-Click en botón "Ingresar"
+Click en botÃ³n "Ingresar"
 
 Resultado esperado:
-   ✅ Acceso al panel de administrador
-   ✅ Verás menú con: Tienda, Inventario, Usuarios, Ventas, Reportes
+   âœ… Acceso al panel de administrador
+   âœ… VerÃ¡s menÃº con: Tienda, Inventario, Usuarios, Ventas, Reportes
 
-═════════════════════════════════════════════════════════════════════════════
-✅ VALIDACIONES DE LOGIN QUE FUNCIONAN
-═════════════════════════════════════════════════════════════════════════════
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+âœ… VALIDACIONES DE LOGIN QUE FUNCIONAN
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
-1. Campos vacíos
-   └─ Error: "El correo es obligatorio" / "La contraseña es obligatoria"
+1. Campos vacÃ­os
+   â””â”€ Error: "El correo es obligatorio" / "La contraseÃ±a es obligatoria"
 
-2. Formato inválido de correo
-   └─ Error: "Ingresa un formato válido para el correo electrónico"
+2. Formato invÃ¡lido de correo
+   â””â”€ Error: "Ingresa un formato vÃ¡lido para el correo electrÃ³nico"
 
 3. Sin espacios en blanco
-   └─ Error: "El correo y la contraseña no deben contener espacios"
+   â””â”€ Error: "El correo y la contraseÃ±a no deben contener espacios"
 
-4. Longitud mínima de contraseña
-   └─ Error: "La contraseña debe contener al menos 6 caracteres"
+4. Longitud mÃ­nima de contraseÃ±a
+   â””â”€ Error: "La contraseÃ±a debe contener al menos 6 caracteres"
 
-5. Contraseña débil
-   └─ Error: "Use mayúsculas, números y caracteres especiales"
+5. ContraseÃ±a dÃ©bil
+   â””â”€ Error: "Use mayÃºsculas, nÃºmeros y caracteres especiales"
 
 6. Credenciales incorrectas
-   └─ Error: "Credenciales incorrectas. Intento X/3"
+   â””â”€ Error: "Credenciales incorrectas. Intento X/3"
 
-7. Límite de intentos
-   └─ Después de 3 intentos fallidos: "Demasiados intentos. Espere 5 minutos"
+7. LÃ­mite de intentos
+   â””â”€ DespuÃ©s de 3 intentos fallidos: "Demasiados intentos. Espere 5 minutos"
 
 8. Usuario inactivo
-   └─ Error: "Esta cuenta ha sido desactivada. Contacte al administrador"
+   â””â”€ Error: "Esta cuenta ha sido desactivada. Contacte al administrador"
 
-═════════════════════════════════════════════════════════════════════════════
-📊 INFORMACIÓN TÉCNICA
-═════════════════════════════════════════════════════════════════════════════
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+ðŸ“Š INFORMACIÃ“N TÃ‰CNICA
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
-Tecnología:
-   • Framework: .NET 8.0
-   • UI: WinUI 3 (Windows UI)
-   • Lenguaje: C# con XAML
-   • Base de datos: JSON (local)
+TecnologÃ­a:
+   â€¢ Framework: .NET 8.0
+   â€¢ UI: WinUI 3 (Windows UI)
+   â€¢ Lenguaje: C# con XAML
+   â€¢ Base de datos: JSON (local)
 
 Archivos compilados:
-   • Ejecutable: Vinoteca.exe (152 KB)
-   • Ubicación: bin\Debug\net8.0-windows10.0.19041.0\
+   â€¢ Ejecutable: Vinoteca.exe (152 KB)
+   â€¢ UbicaciÃ³n: bin\Debug\net8.0-windows10.0.19041.0\
 
 Datos guardados en:
-   • Usuarios: Data/usuarios.json
-   • Productos: Data/productos.json
-   • Ventas: Data/ventas.json
+   â€¢ Usuarios: Data/usuarios.json
+   â€¢ Productos: Data/productos.json
+   â€¢ Ventas: Data/ventas.json
 
-═════════════════════════════════════════════════════════════════════════════
-🎯 CÓMO PROBAR TODO
-═════════════════════════════════════════════════════════════════════════════
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+ðŸŽ¯ CÃ“MO PROBAR TODO
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
-PRUEBA 1: Validación de campos vacíos
-   1. Abre la aplicación
+PRUEBA 1: ValidaciÃ³n de campos vacÃ­os
+   1. Abre la aplicaciÃ³n
    2. Click "Ingresar" sin escribir nada
-   3. Resultado: ✅ Error "El correo es obligatorio"
+   3. Resultado: âœ… Error "El correo es obligatorio"
 
-PRUEBA 2: Validación de formato de correo
+PRUEBA 2: ValidaciÃ³n de formato de correo
    1. Correo: miusuario (sin @)
-   2. Contraseña: Admin@123
+   2. ContraseÃ±a: Admin@123
    3. Click "Ingresar"
-   4. Resultado: ✅ Error "Ingresa un formato válido"
+   4. Resultado: âœ… Error "Ingresa un formato vÃ¡lido"
 
-PRUEBA 3: Validación de contraseña débil
+PRUEBA 3: ValidaciÃ³n de contraseÃ±a dÃ©bil
    1. Correo: admin@vinoteca.com
-   2. Contraseña: admin123 (sin mayúsculas ni caracteres especiales)
+   2. ContraseÃ±a: admin123 (sin mayÃºsculas ni caracteres especiales)
    3. Click "Ingresar"
-   4. Resultado: ✅ Error "Use mayúsculas, números y caracteres especiales"
+   4. Resultado: âœ… Error "Use mayÃºsculas, nÃºmeros y caracteres especiales"
 
 PRUEBA 4: Bloqueo por intentos fallidos
-   1. Ingresa correo correcto pero contraseña incorrecta 3 veces
+   1. Ingresa correo correcto pero contraseÃ±a incorrecta 3 veces
    2. Cuarto intento:
-   3. Resultado: ✅ Error "Demasiados intentos. Espere 5 minutos"
+   3. Resultado: âœ… Error "Demasiados intentos. Espere 5 minutos"
 
 PRUEBA 5: Login exitoso
    1. Correo: admin@vinoteca.com
-   2. Contraseña: Admin@123
+   2. ContraseÃ±a: Admin@123
    3. Click "Ingresar"
-   4. Resultado: ✅ Se abre el panel de administrador
+   4. Resultado: âœ… Se abre el panel de administrador
 
-═════════════════════════════════════════════════════════════════════════════
-⚠️  NOTAS IMPORTANTES
-═════════════════════════════════════════════════════════════════════════════
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+âš ï¸  NOTAS IMPORTANTES
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
-1. PRIMERA EJECUCIÓN
-   └─ Tardará 15-30 segundos (carga todas las dependencias)
-   └─ Las siguientes ejecuciones serán más rápidas (5-10 segundos)
+1. PRIMERA EJECUCIÃ“N
+   â””â”€ TardarÃ¡ 15-30 segundos (carga todas las dependencias)
+   â””â”€ Las siguientes ejecuciones serÃ¡n mÃ¡s rÃ¡pidas (5-10 segundos)
 
-2. WARNINGS DURANTE COMPILACIÓN
-   └─ Aparecen 36 warnings (NO son errores)
-   └─ Son advertencias de null-safety en C# 8.0
-   └─ La aplicación funciona correctamente a pesar de ellos
+2. WARNINGS DURANTE COMPILACIÃ“N
+   â””â”€ Aparecen 36 warnings (NO son errores)
+   â””â”€ Son advertencias de null-safety en C# 8.0
+   â””â”€ La aplicaciÃ³n funciona correctamente a pesar de ellos
 
 3. ARCHIVO EJECUTABLE
-   └─ Puedes copiar solo el Vinoteca.exe a otra carpeta
-   └─ Pero necesita las dependencias que están en bin\Debug
+   â””â”€ Puedes copiar solo el Vinoteca.exe a otra carpeta
+   â””â”€ Pero necesita las dependencias que estÃ¡n en bin\Debug
 
 4. DATOS PERSISTENTES
-   └─ Los datos se guardan en archivos JSON locales
-   └─ La sesión se guarda en memoria (NO persiste entre reinicios)
+   â””â”€ Los datos se guardan en archivos JSON locales
+   â””â”€ La sesiÃ³n se guarda en memoria (NO persiste entre reinicios)
 
-5. CONTRASEÑA
-   └─ Se guarda en TEXTO PLANO (no hasheada)
-   └─ Para producción, implementar cifrado SHA256 o bcrypt
+5. CONTRASEÃ‘A
+   â””â”€ Se guarda en TEXTO PLANO (no hasheada)
+   â””â”€ Para producciÃ³n, implementar cifrado SHA256 o bcrypt
 
-═════════════════════════════════════════════════════════════════════════════
-📝 COMANDOS ÚTILES
-═════════════════════════════════════════════════════════════════════════════
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+ðŸ“ COMANDOS ÃšTILES
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
 # Ejecutar desde terminal
 dotnet run
@@ -183,40 +183,41 @@ dotnet build -c Release
 # Limpiar archivos compilados
 dotnet clean
 
-# Ejecutar versión Release compilada
+# Ejecutar versiÃ³n Release compilada
 dotnet run -c Release
 
-═════════════════════════════════════════════════════════════════════════════
-✅ CHECKLIST FINAL
-═════════════════════════════════════════════════════════════════════════════
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+âœ… CHECKLIST FINAL
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
-✅ Proyecto compila sin errores
-✅ Ejecutable se genera correctamente
-✅ Aplicación se abre sin problemas
-✅ Pantalla de Login aparece
-✅ Validaciones de login funcionan
-✅ Campos acepta entrada correctamente
-✅ Botón "Ingresar" funciona
-✅ Mensajes de error se muestran
-✅ Login exitoso redirige al menú
-✅ Código está en GitHub
-✅ Rama "Login" sincronizada
+âœ… Proyecto compila sin errores
+âœ… Ejecutable se genera correctamente
+âœ… AplicaciÃ³n se abre sin problemas
+âœ… Pantalla de Login aparece
+âœ… Validaciones de login funcionan
+âœ… Campos acepta entrada correctamente
+âœ… BotÃ³n "Ingresar" funciona
+âœ… Mensajes de error se muestran
+âœ… Login exitoso redirige al menÃº
+âœ… CÃ³digo estÃ¡ en GitHub
+âœ… Rama "Login" sincronizada
 
-═════════════════════════════════════════════════════════════════════════════
-🎉 ¡TODO ESTÁ LISTO!
-═════════════════════════════════════════════════════════════════════════════
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+ðŸŽ‰ Â¡TODO ESTÃ LISTO!
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
-La aplicación VINOTECA está completamente funcional con todas las 
+La aplicaciÃ³n VINOTECA estÃ¡ completamente funcional con todas las 
 validaciones de login implementadas.
 
 Para ejecutar:
-   cd "C:\Users\erick\OneDrive\Documents\6to\PAL\PIA-DODO\Vinoteca"
+   cd "[carpeta-donde-clonaste]\Vinoteca"
    dotnet run
 
 Credenciales:
    Email: admin@vinoteca.com
    Password: Admin@123
 
-¡A disfrutar! 🚀
+Â¡A disfrutar! ðŸš€
 
-═════════════════════════════════════════════════════════════════════════════
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+

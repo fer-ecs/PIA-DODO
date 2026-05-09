@@ -1,53 +1,55 @@
-#!/usr/bin/env pwsh
+param(
+    [switch]$SkipClean
+)
 
-# Script para ejecutar VINOTECA con PowerShell
-# Este script compila y ejecuta la aplicación automáticamente
+$ErrorActionPreference = "Stop"
+$projectRoot = $PSScriptRoot
+$projectFile = Join-Path $projectRoot "Vinoteca.csproj"
 
-Write-Host "╔════════════════════════════════════════════════════════════╗" -ForegroundColor Cyan
-Write-Host "║                  VINOTECA - LAUNCHER                      ║" -ForegroundColor Cyan
-Write-Host "╚════════════════════════════════════════════════════════════╝" -ForegroundColor Cyan
+Write-Host "VINOTECA - launcher portable" -ForegroundColor Cyan
 Write-Host ""
 
-# Navegar a la carpeta del proyecto
-$projectPath = "C:\Users\erick\OneDrive\Documents\6to\PAL\PIA-DODO\Vinoteca"
-
-if (-not (Test-Path $projectPath)) {
-    Write-Host "ERROR: La carpeta del proyecto no existe: $projectPath" -ForegroundColor Red
+if (-not (Test-Path $projectFile)) {
+    Write-Host "ERROR: No se encontro Vinoteca.csproj en: $projectRoot" -ForegroundColor Red
     exit 1
 }
 
-Set-Location $projectPath
-Write-Host "📁 Ubicación: $projectPath" -ForegroundColor Green
-Write-Host ""
+if (-not (Get-Command dotnet -ErrorAction SilentlyContinue)) {
+    Write-Host "ERROR: No se encontro dotnet. Instala .NET 8 SDK y vuelve a intentar" -ForegroundColor Red
+    exit 1
+}
 
-# Limpiar compilación anterior
-Write-Host "🧹 Limpiando compilación anterior..." -ForegroundColor Yellow
-dotnet clean -q 2>&1 | Out-Null
-Write-Host "✅ Limpieza completada" -ForegroundColor Green
-Write-Host ""
-
-# Compilar
-Write-Host "🔨 Compilando proyecto..." -ForegroundColor Yellow
-dotnet build -c Debug -q
-
-if ($LASTEXITCODE -ne 0) {
-    Write-Host "❌ ERROR: La compilación falló" -ForegroundColor Red
+Push-Location $projectRoot
+try {
+    Write-Host "Ubicacion: $projectRoot" -ForegroundColor Green
+    Write-Host "SDK dotnet: $(dotnet --version)" -ForegroundColor Green
     Write-Host ""
-    Write-Host "Intenta nuevamente compilando con más detalles:" -ForegroundColor Yellow
-    Write-Host "dotnet build -c Debug" -ForegroundColor Cyan
-    exit 1
+
+    if (-not $SkipClean) {
+        Write-Host "Limpiando compilacion anterior..." -ForegroundColor Yellow
+        dotnet clean "Vinoteca.sln" -c Debug -v quiet
+        if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+        Write-Host "Limpieza completada" -ForegroundColor Green
+        Write-Host ""
+    }
+
+    Write-Host "Restaurando paquetes..." -ForegroundColor Yellow
+    dotnet restore "Vinoteca.sln"
+    if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+    Write-Host ""
+
+    Write-Host "Compilando proyecto..." -ForegroundColor Yellow
+    dotnet build "Vinoteca.sln" -c Debug --no-restore
+    if ($LASTEXITCODE -ne 0) {
+        Write-Host ""
+        Write-Host "ERROR: La compilacion fallo" -ForegroundColor Red
+        exit $LASTEXITCODE
+    }
+
+    Write-Host ""
+    Write-Host "Ejecutando VINOTECA..." -ForegroundColor Yellow
+    dotnet run --project $projectFile --no-build
 }
-
-Write-Host "✅ Compilación exitosa" -ForegroundColor Green
-Write-Host ""
-
-# Ejecutar
-Write-Host "🚀 Ejecutando VINOTECA..." -ForegroundColor Yellow
-Write-Host ""
-Write-Host "Espera 10-15 segundos para que se abra la aplicación..." -ForegroundColor Cyan
-Write-Host ""
-
-dotnet run --no-build
-
-Write-Host ""
-Write-Host "👋 Aplicación cerrada" -ForegroundColor Yellow
+finally {
+    Pop-Location
+}
