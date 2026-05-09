@@ -14,6 +14,16 @@ namespace Vinoteca.Views
 		public CarritoView()
 		{
 			InitializeComponent();
+
+			if (!SessionService.PuedeComprar)
+			{
+				txtResumen.Text = "Solo clientes pueden consultar el carrito";
+				txtEstado.Text = "Acceso restringido para compras de cliente";
+				txtEstado.Visibility = Visibility.Visible;
+				lvCarrito.IsEnabled = false;
+				return;
+			}
+
 			CargarCarrito();
 			CarritoService.CarritoActualizado += CargarCarrito;
 			Unloaded += CarritoView_Unloaded;
@@ -43,6 +53,12 @@ namespace Vinoteca.Views
 
 		private void btnAumentar_Click(object sender, RoutedEventArgs e)
 		{
+			if (!SessionService.PuedeComprar)
+			{
+				MostrarEstado("Solo clientes pueden modificar el carrito");
+				return;
+			}
+
 			if (sender is not Button button || button.Tag is not CarritoItem item)
 			{
 				return;
@@ -57,6 +73,12 @@ namespace Vinoteca.Views
 
 		private void btnDisminuir_Click(object sender, RoutedEventArgs e)
 		{
+			if (!SessionService.PuedeComprar)
+			{
+				MostrarEstado("Solo clientes pueden modificar el carrito");
+				return;
+			}
+
 			if (sender is not Button button || button.Tag is not CarritoItem item)
 			{
 				return;
@@ -67,6 +89,12 @@ namespace Vinoteca.Views
 
 		private void btnEliminar_Click(object sender, RoutedEventArgs e)
 		{
+			if (!SessionService.PuedeComprar)
+			{
+				MostrarEstado("Solo clientes pueden modificar el carrito");
+				return;
+			}
+
 			if (sender is not Button button || button.Tag is not CarritoItem item)
 			{
 				return;
@@ -77,6 +105,12 @@ namespace Vinoteca.Views
 
 		private async void btnVaciar_Click(object sender, RoutedEventArgs e)
 		{
+			if (!SessionService.PuedeComprar)
+			{
+				MostrarEstado("Solo clientes pueden vaciar el carrito");
+				return;
+			}
+
 			if (CarritoService.ObtenerCarrito().Count == 0)
 			{
 				return;
@@ -97,6 +131,12 @@ namespace Vinoteca.Views
 
 		private void btnFinalizarCompra_Click(object sender, RoutedEventArgs e)
 		{
+			if (!SessionService.PuedeComprar)
+			{
+				MostrarEstado("Solo clientes pueden finalizar compras");
+				return;
+			}
+
 			if (CarritoService.ObtenerCarrito().Count == 0)
 			{
 				MostrarEstado("El carrito esta vacio");

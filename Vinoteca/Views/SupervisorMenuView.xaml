@@ -26,29 +26,15 @@
 				<StackPanel Grid.Row="1" Padding="8,0">
 					<Border Background="#18FFFFFF" CornerRadius="18" Padding="16" Margin="0,0,0,18">
 						<StackPanel Spacing="4">
-							<TextBlock Text="Revision operativa" Foreground="White" FontWeight="SemiBold"/>
-							<TextBlock Text="Consulta inventario, usuarios y tickets para revisar la operacion sin editar datos." TextWrapping="Wrap" Foreground="#E9D9CF" FontSize="12"/>
+							<TextBlock Text="Auditoria y analisis" Foreground="White" FontWeight="SemiBold"/>
+							<TextBlock Text="Consulta indicadores y descarga reportes estadisticos sin modificar datos." TextWrapping="Wrap" Foreground="#E9D9CF" FontSize="12"/>
 						</StackPanel>
 					</Border>
 
-					<Button Style="{StaticResource WineSidebarButtonStyle}" Click="btnNavInventario_Click">
+					<Button Style="{StaticResource WineSidebarButtonStyle}" Click="btnNavAnalisis_Click">
 						<StackPanel Orientation="Horizontal" Spacing="12">
-							<SymbolIcon Symbol="Library"/>
-							<TextBlock Text="Inventario" VerticalAlignment="Center"/>
-						</StackPanel>
-					</Button>
-
-					<Button Style="{StaticResource WineSidebarButtonStyle}" Click="btnNavUsuarios_Click">
-						<StackPanel Orientation="Horizontal" Spacing="12">
-							<SymbolIcon Symbol="People"/>
-							<TextBlock Text="Usuarios" VerticalAlignment="Center"/>
-						</StackPanel>
-					</Button>
-
-					<Button Style="{StaticResource WineSidebarButtonStyle}" Click="btnNavReportes_Click">
-						<StackPanel Orientation="Horizontal" Spacing="12">
-							<SymbolIcon Symbol="Document"/>
-							<TextBlock Text="Tickets y ventas" VerticalAlignment="Center"/>
+							<SymbolIcon Symbol="ViewAll"/>
+							<TextBlock Text="Analisis de datos" VerticalAlignment="Center"/>
 						</StackPanel>
 					</Button>
 				</StackPanel>
@@ -86,8 +72,8 @@
 					</Grid.ColumnDefinitions>
 
 					<StackPanel>
-						<TextBlock Text="Revision de la operacion" FontSize="28" FontWeight="SemiBold" Foreground="{StaticResource WineTextBrush}"/>
-						<TextBlock Text="Consulta la informacion clave del negocio sin intervenir en el flujo de administracion." Foreground="{StaticResource WineMutedBrush}" Margin="0,6,0,0"/>
+						<TextBlock Text="Analisis de datos" FontSize="28" FontWeight="SemiBold" Foreground="{StaticResource WineTextBrush}"/>
+						<TextBlock Text="Modulo exclusivo para supervision, auditoria y reportes estadisticos." Foreground="{StaticResource WineMutedBrush}" Margin="0,6,0,0"/>
 					</StackPanel>
 
 					<Border Grid.Column="1" Background="#F2E1D4" CornerRadius="16" Padding="16,10" VerticalAlignment="Center">

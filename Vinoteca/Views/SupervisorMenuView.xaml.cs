@@ -22,22 +22,12 @@ namespace Vinoteca.Views
 				txtCorreoSupervisorActivo.Text = SessionService.UsuarioActivo.Correo;
 			}
 
-			SupervisorContentFrame.Navigate(typeof(ReportesView));
+			SupervisorContentFrame.Navigate(typeof(AnalisisSupervisorView));
 		}
 
-		private async void btnNavInventario_Click(object sender, RoutedEventArgs e)
+		private async void btnNavAnalisis_Click(object sender, RoutedEventArgs e)
 		{
-			await NavegarModuloAsync(typeof(InventarioView));
-		}
-
-		private async void btnNavUsuarios_Click(object sender, RoutedEventArgs e)
-		{
-			await NavegarModuloAsync(typeof(UsuariosView));
-		}
-
-		private async void btnNavReportes_Click(object sender, RoutedEventArgs e)
-		{
-			await NavegarModuloAsync(typeof(ReportesView));
+			await NavegarModuloAsync(typeof(AnalisisSupervisorView));
 		}
 
 		private async void btnCerrarSesionSupervisor_Click(object sender, RoutedEventArgs e)

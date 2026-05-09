@@ -27,7 +27,7 @@
 					<Border Background="#18FFFFFF" CornerRadius="18" Padding="16" Margin="0,0,0,18">
 						<StackPanel Spacing="4">
 							<TextBlock Text="Control del negocio" Foreground="White" FontWeight="SemiBold"/>
-							<TextBlock Text="Inventario, ventas, cuentas y reportes en un mismo lugar." TextWrapping="Wrap" Foreground="#E9D9CF" FontSize="12"/>
+							<TextBlock Text="Inventario, cuentas y reportes administrativos en un mismo lugar." TextWrapping="Wrap" Foreground="#E9D9CF" FontSize="12"/>
 						</StackPanel>
 					</Border>
 
@@ -42,13 +42,6 @@
 						<StackPanel Orientation="Horizontal" Spacing="12">
 							<SymbolIcon Symbol="People"/>
 							<TextBlock Text="Usuarios" VerticalAlignment="Center"/>
-						</StackPanel>
-					</Button>
-
-					<Button Style="{StaticResource WineSidebarButtonStyle}" Click="btnNavVentas_Click">
-						<StackPanel Orientation="Horizontal" Spacing="12">
-							<SymbolIcon Symbol="Tag"/>
-							<TextBlock Text="Ventas" VerticalAlignment="Center"/>
 						</StackPanel>
 					</Button>
 

@@ -22,12 +22,7 @@ namespace Vinoteca.Views
 				txtCorreoAdminActivo.Text = SessionService.UsuarioActivo.Correo;
 			}
 
-			AdminContentFrame.Navigate(typeof(TiendaView));
-		}
-
-		private async void btnNavTienda_Click(object sender, RoutedEventArgs e)
-		{
-			await NavegarModuloAsync(typeof(TiendaView));
+			AdminContentFrame.Navigate(typeof(InventarioView));
 		}
 
 		private async void btnNavInventario_Click(object sender, RoutedEventArgs e)
@@ -38,11 +33,6 @@ namespace Vinoteca.Views
 		private async void btnNavUsuarios_Click(object sender, RoutedEventArgs e)
 		{
 			await NavegarModuloAsync(typeof(UsuariosView));
-		}
-
-		private async void btnNavVentas_Click(object sender, RoutedEventArgs e)
-		{
-			await NavegarModuloAsync(typeof(VentasAdminView));
 		}
 
 		private async void btnNavReportes_Click(object sender, RoutedEventArgs e)

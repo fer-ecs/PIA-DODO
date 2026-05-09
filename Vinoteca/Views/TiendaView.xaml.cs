@@ -17,6 +17,17 @@ namespace Vinoteca.Views
 		public TiendaView()
 		{
 			InitializeComponent();
+
+			if (!SessionService.PuedeComprar)
+			{
+				txtEstado.Text = "Solo clientes pueden comprar productos";
+				txtEstado.Visibility = Visibility.Visible;
+				txtBuscar.IsEnabled = false;
+				gvTienda.IsEnabled = false;
+				lvCarritoRapido.IsEnabled = false;
+				return;
+			}
+
 			InputRestrictionsHelper.AplicarSinEspaciosNiEnter(this);
 			CargarCatalogo();
 			RefrescarCarritoVisual();
@@ -66,6 +77,13 @@ namespace Vinoteca.Views
 
 		private void btnAgregar_Click(object sender, RoutedEventArgs e)
 		{
+			if (!SessionService.PuedeComprar)
+			{
+				txtEstado.Text = "Solo clientes pueden agregar productos al carrito";
+				txtEstado.Visibility = Visibility.Visible;
+				return;
+			}
+
 			if (sender is not Button btn || btn.Tag is not Producto producto)
 			{
 				return;
@@ -93,6 +111,13 @@ namespace Vinoteca.Views
 
 		private void btnIrAPagar_Click(object sender, RoutedEventArgs e)
 		{
+			if (!SessionService.PuedeComprar)
+			{
+				txtEstado.Text = "Solo clientes pueden finalizar compras";
+				txtEstado.Visibility = Visibility.Visible;
+				return;
+			}
+
 			if (CarritoService.ObtenerCarrito().Count == 0)
 			{
 				txtEstado.Text = "Agrega al menos un producto al carrito";

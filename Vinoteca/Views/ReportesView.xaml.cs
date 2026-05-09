@@ -15,7 +15,7 @@ namespace Vinoteca.Views
 
 			if (!SessionService.PuedeVerReportes)
 			{
-				txtEstado.Text = "Solo administracion y supervision pueden ver reportes";
+				txtEstado.Text = "Solo administracion puede ver reportes administrativos";
 				txtEstado.Visibility = Visibility.Visible;
 				lvHistorialVentas.IsEnabled = false;
 				return;

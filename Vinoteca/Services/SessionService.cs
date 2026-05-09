@@ -12,18 +12,26 @@ namespace Vinoteca.Services
 		public static bool EsClienteActivo => RolActivo == RolesSistema.Cliente;
 		public static bool PuedeGestionarUsuarios => EsAdministradorActivo;
 		public static bool PuedeGestionarInventario => EsAdministradorActivo;
-		public static bool PuedeVerInformacionOperativa => EsAdministradorActivo || EsSupervisorActivo;
-		public static bool PuedeVerReportes => EsAdministradorActivo || EsSupervisorActivo;
-		public static bool PuedeProcesarVentas => EsAdministradorActivo;
+		public static bool PuedeVerInformacionOperativa => EsAdministradorActivo;
+		public static bool PuedeVerReportes => EsAdministradorActivo;
+		public static bool PuedeVerAnalisisSupervisor => EsSupervisorActivo;
+		public static bool PuedeComprar => EsClienteActivo;
+		public static bool PuedeProcesarVentas => EsClienteActivo;
 
 		public static void IniciarSesion(Usuario usuario)
 		{
+			if (UsuarioActivo?.Id != usuario.Id)
+			{
+				CarritoService.LimpiarCarrito();
+			}
+
 			usuario.Rol = RolesSistema.Normalizar(usuario.Rol);
 			UsuarioActivo = usuario;
 		}
 
 		public static void CerrarSesion()
 		{
+			CarritoService.LimpiarCarrito();
 			UsuarioActivo = null;
 		}
 	}

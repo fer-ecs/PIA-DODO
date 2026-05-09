@@ -17,10 +17,11 @@ namespace Vinoteca.Views
 
 		private void CargarTickets()
 		{
-			if (SessionService.UsuarioActivo == null)
+			if (!SessionService.PuedeComprar || SessionService.UsuarioActivo == null)
 			{
-				txtEstado.Text = "No hay una sesion activa para consultar tickets";
+				txtEstado.Text = "Solo clientes pueden consultar tickets de compra";
 				txtEstado.Visibility = Visibility.Visible;
+				lvTickets.IsEnabled = false;
 				return;
 			}
 
@@ -35,6 +36,13 @@ namespace Vinoteca.Views
 
 		private void btnDescargarPdf_Click(object sender, RoutedEventArgs e)
 		{
+			if (!SessionService.PuedeComprar)
+			{
+				txtEstado.Text = "Solo clientes pueden descargar sus tickets";
+				txtEstado.Visibility = Visibility.Visible;
+				return;
+			}
+
 			if (sender is not Button button || button.Tag is not Venta venta)
 			{
 				return;

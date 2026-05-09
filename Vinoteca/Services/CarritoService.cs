@@ -15,6 +15,12 @@ namespace Vinoteca.Services
 		{
 			mensaje = string.Empty;
 
+			if (!SessionService.PuedeComprar)
+			{
+				mensaje = "Solo clientes pueden agregar productos al carrito";
+				return false;
+			}
+
 			if (producto == null || string.IsNullOrWhiteSpace(producto.Id))
 			{
 				mensaje = "Producto invalido";
@@ -61,6 +67,12 @@ namespace Vinoteca.Services
 		public static bool CambiarCantidad(string productoId, int nuevaCantidad, out string mensaje)
 		{
 			mensaje = string.Empty;
+			if (!SessionService.PuedeComprar)
+			{
+				mensaje = "Solo clientes pueden modificar el carrito";
+				return false;
+			}
+
 			var item = carrito.FirstOrDefault(c => c.Producto.Id == productoId);
 			if (item == null)
 			{
@@ -98,6 +110,11 @@ namespace Vinoteca.Services
 
 		public static bool QuitarDelCarrito(string productoId)
 		{
+			if (!SessionService.PuedeComprar)
+			{
+				return false;
+			}
+
 			var item = carrito.FirstOrDefault(c => c.Producto.Id == productoId);
 			if (item == null)
 			{

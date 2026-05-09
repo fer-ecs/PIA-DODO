@@ -15,6 +15,17 @@ namespace Vinoteca.Views
 		public VentasAdminView()
 		{
 			InitializeComponent();
+
+			if (!SessionService.PuedeComprar)
+			{
+				txtTitulo.Text = "Compra restringida";
+				txtSubtitulo.Text = "Solo clientes pueden confirmar compras";
+				txtEstado.Text = "Admin y supervisor no pueden realizar acciones de cliente";
+				txtEstado.Visibility = Visibility.Visible;
+				lvCarrito.IsEnabled = false;
+				return;
+			}
+
 			ActualizarInterfaz();
 			CarritoService.CarritoActualizado += ActualizarInterfaz;
 			Unloaded += VentasAdminView_Unloaded;
@@ -38,13 +49,19 @@ namespace Vinoteca.Views
 			lvCarrito.ItemsSource = ItemsCarrito;
 			txtTotalCarrito.Text = CarritoService.ObtenerTotal().ToString("C");
 			txtEstado.Visibility = Visibility.Collapsed;
-			txtTitulo.Text = SessionService.PuedeProcesarVentas ? "Panel de venta" : "Confirmacion de compra";
-			txtSubtitulo.Text = $"{CarritoService.ObtenerCantidadTotalArticulos()} articulo(s) listos para procesar";
+			txtTitulo.Text = "Confirmacion de compra";
+			txtSubtitulo.Text = $"{CarritoService.ObtenerCantidadTotalArticulos()} articulo(s) listos para pagar";
 			txtVacio.Visibility = carrito.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
 		}
 
 		private async void btnVaciar_Click(object sender, RoutedEventArgs e)
 		{
+			if (!SessionService.PuedeComprar)
+			{
+				MostrarEstado("Solo clientes pueden vaciar una compra");
+				return;
+			}
+
 			if (CarritoService.ObtenerCarrito().Count == 0)
 			{
 				return;
@@ -65,6 +82,12 @@ namespace Vinoteca.Views
 
 		private async void btnFinalizarVenta_Click(object sender, RoutedEventArgs e)
 		{
+			if (!SessionService.PuedeComprar)
+			{
+				MostrarEstado("Solo clientes pueden confirmar compras");
+				return;
+			}
+
 			var items = CarritoService.ObtenerCarrito();
 			if (items.Count == 0)
 			{
@@ -123,12 +146,6 @@ namespace Vinoteca.Views
 			}
 
 			CarritoService.LimpiarCarrito();
-
-			if (SessionService.PuedeProcesarVentas)
-			{
-				Frame.Navigate(typeof(ReportesView));
-				return;
-			}
 
 			Frame.Navigate(typeof(MisTicketsView));
 		}

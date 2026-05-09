@@ -403,6 +403,11 @@ namespace Vinoteca.Services
 
 		public static void GuardarVenta(Venta nuevaVenta)
 		{
+			if (!SessionService.PuedeComprar)
+			{
+				throw new InvalidOperationException("Solo clientes pueden registrar compras");
+			}
+
 			var ventas = ObtenerVentas();
 			ventas.Add(nuevaVenta);
 			GuardarJson(ventasFile, ventas);
