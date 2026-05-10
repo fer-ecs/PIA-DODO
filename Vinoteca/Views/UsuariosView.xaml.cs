@@ -549,14 +549,14 @@ namespace Vinoteca.Views
 		private void MostrarError(string mensaje)
 		{
 			txtMensaje.Text = mensaje;
-			txtMensaje.Foreground = new SolidColorBrush(Microsoft.UI.Colors.Red);
+			txtMensaje.Foreground = (SolidColorBrush)Application.Current.Resources["WineDangerBrush"];
 			txtMensaje.Visibility = Visibility.Visible;
 		}
 
 		private void MostrarExito(string mensaje)
 		{
 			txtMensaje.Text = mensaje;
-			txtMensaje.Foreground = new SolidColorBrush(Microsoft.UI.Colors.Green);
+			txtMensaje.Foreground = (SolidColorBrush)Application.Current.Resources["WineSuccessBrush"];
 			txtMensaje.Visibility = Visibility.Visible;
 		}
 

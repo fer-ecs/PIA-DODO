@@ -37,7 +37,7 @@
 					<DataTemplate x:DataType="models:Producto">
 						<Border Width="210" Margin="6" Style="{StaticResource WineCardStyle}" Padding="10">
 							<StackPanel Spacing="8">
-								<Border CornerRadius="14" Background="#F2E8DE" Padding="6">
+								<Border CornerRadius="14" Background="{StaticResource WineAccentSoftBrush}" Padding="6">
 									<Image Source="{x:Bind ImagenPath, Mode=OneWay, Converter={StaticResource LocalImageConverter}}" Height="132" Stretch="UniformToFill"/>
 								</Border>
 								<TextBlock Text="{x:Bind Nombre}" FontWeight="SemiBold" FontSize="15" TextWrapping="WrapWholeWords" MaxLines="2" Foreground="{StaticResource WineTextBrush}"/>
@@ -69,7 +69,7 @@
 				<ListView x:Name="lvCarritoRapido" Grid.Row="1" Margin="0,0,0,10" SelectionMode="None">
 					<ListView.ItemTemplate>
 						<DataTemplate x:DataType="models:CarritoItem">
-							<Border Background="#FFF7F0" CornerRadius="14" Padding="12" Margin="0,0,0,10">
+							<Border Background="{StaticResource WineHeroSoftBrush}" CornerRadius="14" Padding="12" Margin="0,0,0,10">
 								<Grid>
 									<Grid.ColumnDefinitions>
 										<ColumnDefinition Width="*"/>

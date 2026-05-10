@@ -391,7 +391,7 @@ namespace Vinoteca.Views
 		private void MostrarMensaje(string mensaje, bool esExito)
 		{
 			txtMensaje.Text = mensaje;
-			txtMensaje.Foreground = new SolidColorBrush(esExito ? Microsoft.UI.Colors.Green : Microsoft.UI.Colors.Red);
+			txtMensaje.Foreground = (SolidColorBrush)Application.Current.Resources[esExito ? "WineSuccessBrush" : "WineDangerBrush"];
 			txtMensaje.Visibility = Visibility.Visible;
 		}
 

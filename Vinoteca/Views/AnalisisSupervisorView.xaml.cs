@@ -123,7 +123,7 @@ namespace Vinoteca.Views
 			File.WriteAllText(ruta, reporteActual, Encoding.UTF8);
 
 			txtEstado.Text = $"Reporte exportado en: {ruta}";
-			txtEstado.Foreground = new SolidColorBrush(Microsoft.UI.Colors.Green);
+			txtEstado.Foreground = (SolidColorBrush)Application.Current.Resources["WineSuccessBrush"];
 			txtEstado.Visibility = Visibility.Visible;
 		}
 	}

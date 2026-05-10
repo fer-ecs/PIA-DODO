@@ -10,7 +10,7 @@
 			<ColumnDefinition Width="*"/>
 		</Grid.ColumnDefinitions>
 
-		<Border Grid.Column="0" Background="{StaticResource WineSidebarBrush}" Margin="18" CornerRadius="24">
+		<Border Grid.Column="0" Background="{StaticResource WineAccentBrush}" Margin="18" CornerRadius="24">
 			<Grid Padding="18">
 				<Grid.RowDefinitions>
 					<RowDefinition Height="Auto"/>
@@ -19,27 +19,21 @@
 				</Grid.RowDefinitions>
 
 				<StackPanel Grid.Row="0" Padding="10,18,10,24" Spacing="6">
-					<TextBlock Text="Vinoteca" FontSize="30" FontWeight="SemiBold" Foreground="White"/>
-					<TextBlock Text="Panel de supervision" Foreground="#DCC7B9"/>
+					<TextBlock Text="Vinoteca" FontSize="30" FontWeight="SemiBold" Foreground="#FFFFFF"/>
+					<TextBlock Text="Panel de supervision" Foreground="#E5D5CC"/>
 				</StackPanel>
 
 				<StackPanel Grid.Row="1" Padding="8,0">
-					<Border Background="#18FFFFFF" CornerRadius="18" Padding="16" Margin="0,0,0,18">
-						<StackPanel Spacing="4">
-							<TextBlock Text="Auditoria y analisis" Foreground="White" FontWeight="SemiBold"/>
-							<TextBlock Text="Consulta indicadores y descarga reportes estadisticos sin modificar datos." TextWrapping="Wrap" Foreground="#E9D9CF" FontSize="12"/>
-						</StackPanel>
-					</Border>
 
 					<Button Style="{StaticResource WineSidebarButtonStyle}" Click="btnNavAnalisis_Click">
 						<StackPanel Orientation="Horizontal" Spacing="12">
 							<SymbolIcon Symbol="ViewAll"/>
-							<TextBlock Text="Analisis de datos" VerticalAlignment="Center"/>
+							<TextBlock Text="Analisis de datos" VerticalAlignment="Center" Foreground="#FFFFFF"/>
 						</StackPanel>
 					</Button>
 				</StackPanel>
 
-				<Border Grid.Row="2" Background="#1DFFFFFF" CornerRadius="18" Padding="16">
+				<Border Grid.Row="2" Background="#5C1720" CornerRadius="18" Padding="16">
 					<Grid>
 						<Grid.RowDefinitions>
 							<RowDefinition Height="Auto"/>
@@ -48,8 +42,8 @@
 						</Grid.RowDefinitions>
 
 						<StackPanel Grid.Row="0" Spacing="2">
-							<TextBlock x:Name="txtNombreSupervisorActivo" Text="Supervisor" FontWeight="SemiBold" Foreground="White"/>
-							<TextBlock x:Name="txtCorreoSupervisorActivo" Text="supervisor@vinoteca.com" Foreground="#E0CDC3" FontSize="12"/>
+							<TextBlock x:Name="txtNombreSupervisorActivo" Text="Supervisor" FontWeight="SemiBold" Foreground="#FFFFFF"/>
+							<TextBlock x:Name="txtCorreoSupervisorActivo" Text="supervisor@vinoteca.com" Foreground="#E5D5CC" FontSize="12"/>
 						</StackPanel>
 
 						<Button Grid.Row="2" x:Name="btnCerrarSesionSupervisor" Content="Cerrar sesion" Style="{StaticResource WineSecondaryButtonStyle}" Click="btnCerrarSesionSupervisor_Click"/>
@@ -76,8 +70,8 @@
 						<TextBlock Text="Modulo exclusivo para supervision, auditoria y reportes estadisticos." Foreground="{StaticResource WineMutedBrush}" Margin="0,6,0,0"/>
 					</StackPanel>
 
-					<Border Grid.Column="1" Background="#F2E1D4" CornerRadius="16" Padding="16,10" VerticalAlignment="Center">
-						<TextBlock Text="Supervision activa" Foreground="{StaticResource WineHeroBrush}" FontWeight="SemiBold"/>
+					<Border Grid.Column="1" Background="{StaticResource WineAccentSoftBrush}" CornerRadius="16" Padding="16,10" VerticalAlignment="Center">
+						<TextBlock Text="Supervision activa" Foreground="{StaticResource WineAccentBrush}" FontWeight="SemiBold"/>
 					</Border>
 				</Grid>
 			</Border>
