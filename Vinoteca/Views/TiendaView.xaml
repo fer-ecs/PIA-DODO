@@ -27,7 +27,7 @@
 				<StackPanel Spacing="10">
 					<TextBlock Text="Catalogo de Vinos" FontSize="28" FontWeight="SemiBold" Foreground="{StaticResource WineTextBrush}"/>
 					<TextBlock Text="Botellas pensadas para una compra facil, visual y agradable." Foreground="{StaticResource WineMutedBrush}"/>
-					<TextBox x:Name="txtBuscar" Style="{StaticResource WineTextBoxStyle}" PlaceholderText="Buscar por nombre, marca o categoria" Width="340" MaxLength="50" HorizontalAlignment="Left" TextChanged="txtBuscar_TextChanged"/>
+					<TextBox x:Name="txtBuscar" Style="{StaticResource WineTextBoxStyle}" PlaceholderText="Buscar por nombre, marca o categoria" Foreground="Black" PlaceholderForeground="Black" Width="340" MaxLength="50" HorizontalAlignment="Left" TextChanged="txtBuscar_TextChanged"/>
 					<TextBlock x:Name="txtEstado" Visibility="Collapsed" TextWrapping="Wrap"/>
 				</StackPanel>
 			</Border>

@@ -11,11 +11,61 @@ using Vinoteca.Services;
 	{
 	public sealed partial class RegisterView : Page, ICambiosPendientes
 	{
+		private const string CACHE_KEY_NOMBRE = "Register_Nombre";
+		private const string CACHE_KEY_CORREO = "Register_Correo";
+		private const string CACHE_KEY_PASSWORD = "Register_Password";
+		private const string CACHE_KEY_CONFIRMAR = "Register_ConfirmarPassword";
+
 		public RegisterView()
 		{
 			this.InitializeComponent();
 			InputRestrictionsHelper.AplicarSinEspaciosNiEnter(this);
+
+			// Cargar valores del cache
+			CargarValoresDelCache();
+
+			// Suscribirse a cambios de texto para guardar en cache
+			txtNombre.TextChanged += (s, e) => GuardarEnCache(CACHE_KEY_NOMBRE, txtNombre.Text);
+			txtCorreo.TextChanged += (s, e) => GuardarEnCache(CACHE_KEY_CORREO, txtCorreo.Text);
+			txtPassword.PasswordChanged += (s, e) => GuardarEnCache(CACHE_KEY_PASSWORD, txtPassword.Password);
+			txtConfirmarPassword.PasswordChanged += (s, e) => GuardarEnCache(CACHE_KEY_CONFIRMAR, txtConfirmarPassword.Password);
+
 			txtNombre.Focus(FocusState.Programmatic);
+		}
+
+		private void CargarValoresDelCache()
+		{
+			var nombre = App.FormCacheService.GetValue(CACHE_KEY_NOMBRE);
+			if (!string.IsNullOrEmpty(nombre))
+				txtNombre.Text = nombre;
+
+			var correo = App.FormCacheService.GetValue(CACHE_KEY_CORREO);
+			if (!string.IsNullOrEmpty(correo))
+				txtCorreo.Text = correo;
+
+			var password = App.FormCacheService.GetValue(CACHE_KEY_PASSWORD);
+			if (!string.IsNullOrEmpty(password))
+				txtPassword.Password = password;
+
+			var confirmar = App.FormCacheService.GetValue(CACHE_KEY_CONFIRMAR);
+			if (!string.IsNullOrEmpty(confirmar))
+				txtConfirmarPassword.Password = confirmar;
+		}
+
+		private void GuardarEnCache(string clave, string valor)
+		{
+			if (!string.IsNullOrEmpty(valor))
+				App.FormCacheService.SetValue(clave, valor);
+		}
+
+		private void LimpiarCache()
+		{
+			App.FormCacheService.ClearAll();
+			txtNombre.Text = string.Empty;
+			txtCorreo.Text = string.Empty;
+			txtPassword.Password = string.Empty;
+			txtConfirmarPassword.Password = string.Empty;
+			OcultarMensajes();
 		}
 
 		private void BtnRegistrar_Click(object sender, RoutedEventArgs e)
@@ -150,10 +200,8 @@ using Vinoteca.Services;
 			txtExito.Text = "Cuenta creada correctamente, ahora puedes iniciar sesion";
 			txtExito.Visibility = Visibility.Visible;
 
-			txtNombre.Text = string.Empty;
-			txtCorreo.Text = string.Empty;
-			txtPassword.Password = string.Empty;
-			txtConfirmarPassword.Password = string.Empty;
+			// Limpiar el cache después de registrarse correctamente
+			LimpiarCache();
 		}
 
 		private bool EsContrasenaFuerte(string password)
@@ -193,12 +241,47 @@ using Vinoteca.Services;
 			txtError.Text = mensaje;
 			txtError.Visibility = Visibility.Visible;
 			txtExito.Visibility = Visibility.Collapsed;
-		}
 
-		private void OcultarMensajes()
+            btnRegistrar.IsEnabled = true;
+        }
+
+        private void OcultarMensajes()
 		{
 			txtError.Visibility = Visibility.Collapsed;
 			txtExito.Visibility = Visibility.Collapsed;
-		}
-	}
+
+            btnRegistrar.IsEnabled = true;
+        }
+
+        private void BtnVerPassword_Checked(object sender, RoutedEventArgs e)
+        {
+            txtPassword.PasswordRevealMode = PasswordRevealMode.Visible;
+            iconoOjoPassword.Glyph = "\uED1A";
+        }
+
+        private void BtnVerPassword_Unchecked(object sender, RoutedEventArgs e)
+        {
+            txtPassword.PasswordRevealMode = PasswordRevealMode.Hidden;
+            iconoOjoPassword.Glyph = "\uE7B3";
+        }
+
+        private void BtnVerConfirmar_Checked(object sender, RoutedEventArgs e)
+        {
+            txtConfirmarPassword.PasswordRevealMode = PasswordRevealMode.Visible;
+            iconoOjoConfirmar.Glyph = "\uED1A";
+        }
+
+        private void BtnVerConfirmar_Unchecked(object sender, RoutedEventArgs e)
+        {
+            txtConfirmarPassword.PasswordRevealMode = PasswordRevealMode.Hidden;
+            iconoOjoConfirmar.Glyph = "\uE7B3";
+        }
+
+        private void BtnLimpiarCache_Click(object sender, RoutedEventArgs e)
+        {
+            LimpiarCache();
+        }
+    }
+
 }
+

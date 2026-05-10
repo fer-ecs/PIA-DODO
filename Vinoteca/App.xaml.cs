@@ -3,12 +3,16 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using WinRT;
+using Vinoteca.Services;
 
 namespace Vinoteca
 {
 	public partial class App : Application
 	{
 		private Window? _window;
+		private static FormCacheService? _formCacheService;
+
+		public static FormCacheService FormCacheService => _formCacheService ??= new FormCacheService();
 
 		public App()
 		{

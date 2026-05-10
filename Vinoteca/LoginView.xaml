@@ -35,12 +35,14 @@
 				</StackPanel>
 
 				<StackPanel Spacing="4">
-					<TextBlock Text="Contrasena" Style="{StaticResource WineFieldLabelStyle}"/>
-					<PasswordBox x:Name="txtPassword" 
-                                 Style="{StaticResource WinePasswordBoxStyle}" 
-                                 MaxLength="20" 
-                                 PasswordRevealMode="Peek"
-                                 HorizontalAlignment="Stretch"/>
+					<TextBlock Text="Contraseña" Style="{StaticResource WineFieldLabelStyle}"/>
+					<PasswordBox x:Name="txtPassword"
+                                 Style="{StaticResource WinePasswordBoxStyle}"
+								 Height="36"
+                                 MaxLength="20"
+                                 PasswordRevealMode="Hidden"
+                                 HorizontalAlignment="Stretch"
+                                 VerticalContentAlignment="Center"/>
 				</StackPanel>
 
 				<TextBlock x:Name="txtError" Foreground="{StaticResource WineDangerBrush}" Visibility="Collapsed" TextWrapping="Wrap" FontSize="13" FontWeight="SemiBold"/>

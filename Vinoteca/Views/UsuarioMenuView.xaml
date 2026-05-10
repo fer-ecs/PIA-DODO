@@ -83,7 +83,7 @@
 					</Grid.ColumnDefinitions>
 
 					<StackPanel>
-						<TextBlock Text="Tu cava personal" FontSize="28" FontWeight="SemiBold" Foreground="{StaticResource WineTextBrush}"/>
+						<TextBlock Text="Tu cuenta personal" FontSize="28" FontWeight="SemiBold" Foreground="{StaticResource WineTextBrush}"/>
 						<TextBlock Text="Un espacio mas amable para revisar vinos, agregar botellas y consultar tus compras sin distraerte." Foreground="{StaticResource WineMutedBrush}" Margin="0,6,0,0"/>
 					</StackPanel>
 
