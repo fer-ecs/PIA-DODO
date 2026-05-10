@@ -53,7 +53,7 @@
 
 				<StackPanel Spacing="12">
 					<Button Content="Ingresar al sistema" Style="{StaticResource WinePrimaryButtonStyle}" Click="BtnLogin_Click" HorizontalAlignment="Stretch"/>
-					<Button Content="Solicitar cuenta" Style="{StaticResource WineSecondaryButtonStyle}" Click="BtnIrRegistro_Click" HorizontalAlignment="Stretch"/>
+					<Button Content="Crear cuenta" Style="{StaticResource WineSecondaryButtonStyle}" Click="BtnIrRegistro_Click" HorizontalAlignment="Stretch"/>
 				</StackPanel>
 
 			</StackPanel>

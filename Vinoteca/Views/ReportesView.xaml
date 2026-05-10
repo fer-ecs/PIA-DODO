@@ -10,69 +10,66 @@
 		<helpers:StringFormatConverter x:Key="LocalStringConverter"/>
 	</Page.Resources>
 
-	<Grid Background="{StaticResource WineBackgroundBrush}" Padding="12">
-		<Border Style="{StaticResource WineCardStyle}" Padding="24">
-			<Grid>
-				<Grid.RowDefinitions>
-					<RowDefinition Height="Auto"/>
-					<RowDefinition Height="*"/>
-				</Grid.RowDefinitions>
+	<Grid Background="{StaticResource WineBackgroundBrush}" Padding="24">
+		<Grid>
+			<Grid.RowDefinitions>
+				<RowDefinition Height="Auto"/>
+				<RowDefinition Height="*"/>
+			</Grid.RowDefinitions>
 
-				<StackPanel Grid.Row="0" Margin="0,0,0,20">
-					<TextBlock Text="Historial de ventas" FontSize="28" FontWeight="SemiBold" Foreground="{StaticResource WineTextBrush}"/>
-					<TextBlock x:Name="txtGananciasTotales" Text="Ganancias totales: $0.00" FontSize="18" Foreground="{StaticResource WineSuccessBrush}" FontWeight="SemiBold"/>
-					<TextBlock x:Name="txtResumenVentas" Text="Ventas registradas: 0 | Lineas vendidas: 0" Foreground="{StaticResource WineMutedBrush}"/>
-					<TextBlock x:Name="txtEstado" Visibility="Collapsed" Margin="0,8,0,0" TextWrapping="Wrap"/>
+			<StackPanel Grid.Row="0" Margin="0,0,0,24">
+				<TextBlock Text="Historial de ventas" FontSize="28" FontWeight="SemiBold" Foreground="{StaticResource WineTextBrush}"/>
+
+				<StackPanel Orientation="Horizontal" Spacing="16" Margin="0,8,0,0">
+					<TextBlock x:Name="txtGananciasTotales" Text="Ganancias: $0.00" FontSize="18" Foreground="{StaticResource WineSuccessBrush}" FontWeight="SemiBold"/>
+					<TextBlock x:Name="txtResumenVentas" Text="Ventas: 0 | Lineas: 0" Foreground="{StaticResource WineMutedBrush}" VerticalAlignment="Bottom"/>
 				</StackPanel>
 
-				<Grid Grid.Row="1">
-					<ListView x:Name="lvHistorialVentas" SelectionMode="None" Background="Transparent">
-						<ListView.ItemTemplate>
-							<DataTemplate x:DataType="models:Venta">
-								<Border Margin="0,0,0,10" Padding="16" CornerRadius="16" Background="#FFF8F2" BorderBrush="{StaticResource WineBorderBrush}" BorderThickness="1">
-									<Grid RowSpacing="10">
-										<Grid.RowDefinitions>
-											<RowDefinition Height="Auto"/>
-											<RowDefinition Height="Auto"/>
-										</Grid.RowDefinitions>
+				<TextBlock x:Name="txtEstado" Visibility="Collapsed" Margin="0,8,0,0" TextWrapping="Wrap" FontSize="13" FontWeight="SemiBold" Foreground="{StaticResource WineDangerBrush}"/>
+			</StackPanel>
 
+			<Grid Grid.Row="1">
+				<ListView x:Name="lvHistorialVentas" SelectionMode="None" Background="Transparent" BorderThickness="0">
+					<ListView.ItemTemplate>
+						<DataTemplate x:DataType="models:Venta">
+							<Border Margin="0,0,0,12" Padding="20" CornerRadius="8" Background="#FAFAFA" BorderBrush="{StaticResource WineBorderBrush}" BorderThickness="1">
+								<Grid RowSpacing="12">
+									<Grid.RowDefinitions>
+										<RowDefinition Height="Auto"/>
+										<RowDefinition Height="Auto"/>
+									</Grid.RowDefinitions>
+									<Grid>
+										<Grid.ColumnDefinitions>
+											<ColumnDefinition Width="*"/>
+											<ColumnDefinition Width="Auto"/>
+										</Grid.ColumnDefinitions>
+										<StackPanel>
+											<TextBlock Text="{x:Bind Id, Converter={StaticResource LocalStringConverter}, ConverterParameter='{}Ticket #{0}'}" FontWeight="SemiBold" Foreground="{StaticResource WineTextBrush}" FontSize="16"/>
+											<TextBlock Text="{x:Bind Fecha}" FontSize="13" Foreground="{StaticResource WineMutedBrush}"/>
+											<TextBlock Text="{x:Bind NombreCliente}" Foreground="{StaticResource WineLabelBrush}" Margin="0,4,0,0"/>
+										</StackPanel>
+										<TextBlock Grid.Column="1" Text="{x:Bind Total, Converter={StaticResource LocalStringConverter}, ConverterParameter='{}{0:C}'}" FontSize="22" FontWeight="Bold" Foreground="{StaticResource WineHeroBrush}"/>
+									</Grid>
+									<Border Grid.Row="1" BorderBrush="{StaticResource WineBorderBrush}" BorderThickness="0,1,0,0" Padding="0,12,0,0">
 										<Grid>
 											<Grid.ColumnDefinitions>
 												<ColumnDefinition Width="*"/>
 												<ColumnDefinition Width="Auto"/>
 											</Grid.ColumnDefinitions>
-
-											<StackPanel>
-												<TextBlock Text="{x:Bind Id, Converter={StaticResource LocalStringConverter}, ConverterParameter='{}Ticket: {0}'}" FontWeight="SemiBold" Foreground="{StaticResource WineTextBrush}"/>
-												<TextBlock Text="{x:Bind Fecha}" FontSize="12" Foreground="{StaticResource WineMutedBrush}"/>
-												<TextBlock Text="{x:Bind NombreCliente, Converter={StaticResource LocalStringConverter}, ConverterParameter='{}Cliente: {0}'}" Foreground="{StaticResource WineMutedBrush}"/>
-												<TextBlock Text="{x:Bind CorreoCliente}" Foreground="{StaticResource WineMutedBrush}" FontSize="12"/>
-											</StackPanel>
-
-											<TextBlock Grid.Column="1" Text="{x:Bind Total, Converter={StaticResource LocalStringConverter}, ConverterParameter='{}{0:C}'}" FontSize="18" FontWeight="Bold" VerticalAlignment="Center" Foreground="{StaticResource WineHeroBrush}"/>
-										</Grid>
-
-										<Grid Grid.Row="1">
-											<Grid.ColumnDefinitions>
-												<ColumnDefinition Width="*"/>
-												<ColumnDefinition Width="Auto"/>
-											</Grid.ColumnDefinitions>
-
-											<TextBlock Text="{x:Bind Productos.Count, Converter={StaticResource LocalStringConverter}, ConverterParameter='{}{0} producto(s) vendidos'}" VerticalAlignment="Center" Foreground="{StaticResource WineMutedBrush}"/>
+											<TextBlock Text="{x:Bind Productos.Count, Converter={StaticResource LocalStringConverter}, ConverterParameter='{}{0} producto(s)'}" Foreground="{StaticResource WineMutedBrush}"/>
 											<StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8">
 												<Button Content="Previsualizar" Tag="{x:Bind}" Style="{StaticResource WineSecondaryButtonStyle}" Click="btnPrevisualizar_Click"/>
-												<Button Content="Exportar PDF" Tag="{x:Bind}" Style="{StaticResource WineSecondaryButtonStyle}" Click="btnExportarPdf_Click"/>
+												<Button Content="Exportar PDF" Tag="{x:Bind}" Style="{StaticResource WinePrimaryButtonStyle}" Click="btnExportarPdf_Click"/>
 											</StackPanel>
 										</Grid>
-									</Grid>
-								</Border>
-							</DataTemplate>
-						</ListView.ItemTemplate>
-					</ListView>
-
-					<TextBlock x:Name="txtSinVentas" Text="Todavia no hay ventas registradas" Visibility="Collapsed" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{StaticResource WineEmptyStateStyle}"/>
-				</Grid>
+									</Border>
+								</Grid>
+							</Border>
+						</DataTemplate>
+					</ListView.ItemTemplate>
+				</ListView>
+				<TextBlock x:Name="txtSinVentas" Text="No hay ventas registradas" Visibility="Collapsed" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{StaticResource WineEmptyStateStyle}"/>
 			</Grid>
-		</Border>
+		</Grid>
 	</Grid>
 </Page>

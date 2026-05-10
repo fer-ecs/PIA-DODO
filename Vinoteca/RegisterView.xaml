@@ -19,94 +19,96 @@
 					<TextBlock Text="Vinoteca" FontSize="48" FontWeight="Bold" Foreground="White" CharacterSpacing="-20" VerticalAlignment="Center"/>
 				</StackPanel>
 
-				<TextBlock Text="Bienvenido, registrate para poder hacer compras, consultar nuestro inventario y ver tus pedidos." 
+				<TextBlock Text="Bienvenido. Registrate para poder hacer compras, consultar nuestro inventario y ver tus pedidos." 
                            TextWrapping="WrapWholeWords" FontSize="18" Foreground="#E9D5D5" LineHeight="26"/>
 
 			</StackPanel>
 		</Grid>
 
-		<Grid Grid.Column="1" Background="{StaticResource WinePanelBrush}" BorderBrush="{StaticResource WineBorderBrush}" BorderThickness="1,0,0,0" Padding="64">
-			<StackPanel VerticalAlignment="Center" MaxWidth="420" Spacing="24">
+		<Grid Grid.Column="1" Background="{StaticResource WinePanelBrush}" BorderBrush="{StaticResource WineBorderBrush}" BorderThickness="1,0,0,0">
 
-				<StackPanel Spacing="6" Margin="0,0,0,8">
-					<StackPanel Orientation="Horizontal" Spacing="10" Margin="0,0,0,10">
-						<Image Source="Assets/StoreLogo.png" Width="30" Height="30"/>
-						<TextBlock Text="Vinoteca" FontSize="18" FontWeight="SemiBold" Foreground="{StaticResource WineAccentBrush}" VerticalAlignment="Center"/>
+			<ScrollViewer VerticalScrollBarVisibility="Visible" Padding="24,64">
+
+				<StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" MaxWidth="480" Spacing="24">
+
+					<StackPanel Spacing="6" Margin="0,0,0,8">
+						<StackPanel Orientation="Horizontal" Spacing="10" Margin="0,0,0,10">
+							<Image Source="Assets/StoreLogo.png" Width="30" Height="30"/>
+							<TextBlock Text="Vinoteca" FontSize="18" FontWeight="SemiBold" Foreground="{StaticResource WineAccentBrush}" VerticalAlignment="Center"/>
+						</StackPanel>
+						<TextBlock Text="Crear cuenta" FontSize="32" FontWeight="SemiBold" Foreground="{StaticResource WineTextBrush}"/>
+						<TextBlock Text="Ingresa tus datos para registrarte en el sistema." Foreground="{StaticResource WineMutedBrush}" FontSize="15"/>
 					</StackPanel>
-					<TextBlock Text="Crear cuenta" FontSize="32" FontWeight="SemiBold" Foreground="{StaticResource WineTextBrush}"/>
-					<TextBlock Text="Ingresa tus datos para registrarte en el sistema." Foreground="{StaticResource WineMutedBrush}" FontSize="15"/>
+
+					<StackPanel Spacing="4">
+						<TextBlock Text="Nombre" Style="{StaticResource WineFieldLabelStyle}"/>
+						<TextBox x:Name="txtNombre" Style="{StaticResource WineTextBoxStyle}" MaxLength="50"/>
+					</StackPanel>
+
+					<StackPanel Spacing="4">
+						<TextBlock Text="Correo electronico" Style="{StaticResource WineFieldLabelStyle}"/>
+						<TextBox x:Name="txtCorreo" Style="{StaticResource WineTextBoxStyle}" MaxLength="80"/>
+					</StackPanel>
+
+					<StackPanel Spacing="4">
+						<TextBlock Text="Contraseña" Style="{StaticResource WineFieldLabelStyle}"/>
+						<Grid Height="36">
+							<PasswordBox x:Name="txtPassword"
+										Style="{StaticResource WinePasswordBoxStyle}"
+										MaxLength="20"
+										PasswordRevealMode="Hidden"
+										Padding="12,6,40,6"
+										HorizontalAlignment="Stretch"
+										VerticalContentAlignment="Center"
+										IsPasswordRevealButtonEnabled="False"/>
+							<ToggleButton x:Name="btnVerPassword"
+										Width="36" Height="36"
+										HorizontalAlignment="Right"
+										VerticalAlignment="Center"
+										Background="Transparent"
+										BorderThickness="0"
+										Checked="BtnVerPassword_Checked"
+										Unchecked="BtnVerPassword_Unchecked">
+								<FontIcon x:Name="iconoOjoPassword" Glyph="&#xE7B3;" Foreground="Black" FontSize="16" FontFamily="Segoe Fluent Icons"/>
+							</ToggleButton>
+						</Grid>
+					</StackPanel>
+
+					<StackPanel Spacing="4">
+						<TextBlock Text="Confirmar contraseña" Style="{StaticResource WineFieldLabelStyle}"/>
+						<Grid Height="36">
+							<PasswordBox x:Name="txtConfirmarPassword"
+										Style="{StaticResource WinePasswordBoxStyle}"
+										MaxLength="20"
+										PasswordRevealMode="Hidden"
+										Padding="12,6,40,6"
+										HorizontalAlignment="Stretch"
+										VerticalContentAlignment="Center"
+										IsPasswordRevealButtonEnabled="False"/>
+							<ToggleButton x:Name="btnVerConfirmar"
+										Width="36" Height="36"
+										HorizontalAlignment="Right"
+										VerticalAlignment="Center"
+										Background="Transparent"
+										BorderThickness="0"
+										Checked="BtnVerConfirmar_Checked"
+										Unchecked="BtnVerConfirmar_Unchecked">
+								<FontIcon x:Name="iconoOjoConfirmar" Glyph="&#xE7B3;" Foreground="Black" FontSize="16" FontFamily="Segoe Fluent Icons"/>
+							</ToggleButton>
+						</Grid>
+					</StackPanel>
+
+					<TextBlock x:Name="txtError" Foreground="{StaticResource WineDangerBrush}" Visibility="Collapsed" TextWrapping="Wrap" FontSize="13" FontWeight="SemiBold"/>
+					<TextBlock x:Name="txtExito" Foreground="{StaticResource WineSuccessBrush}" Visibility="Collapsed" TextWrapping="Wrap" FontSize="13" FontWeight="SemiBold"/>
+
+					<StackPanel Spacing="12" Margin="0,8,0,0">
+						<Button Content="Completar registro" Style="{StaticResource WinePrimaryButtonStyle}" Click="BtnRegistrar_Click"  x:Name="btnRegistrar" HorizontalAlignment="Stretch"/>
+						<Button Content="Volver al acceso" Style="{StaticResource WineSecondaryButtonStyle}" Click="BtnVolverLogin_Click" HorizontalAlignment="Stretch"/>
+						<Button Content="Limpiar todo" Style="{StaticResource WineDangerButtonStyle}" Click="BtnLimpiarCache_Click" HorizontalAlignment="Stretch"/>
+					</StackPanel>
+
 				</StackPanel>
-
-				<StackPanel Spacing="4">
-					<TextBlock Text="Nombre" Style="{StaticResource WineFieldLabelStyle}"/>
-					<TextBox x:Name="txtNombre" Style="{StaticResource WineTextBoxStyle}" MaxLength="50"/>
-				</StackPanel>
-
-				<StackPanel Spacing="4">
-					<TextBlock Text="Correo electronico" Style="{StaticResource WineFieldLabelStyle}"/>
-					<TextBox x:Name="txtCorreo" Style="{StaticResource WineTextBoxStyle}" MaxLength="80"/>
-				</StackPanel>
-
-			   <StackPanel Spacing="4">
-				   <TextBlock Text="Contraseña" Style="{StaticResource WineFieldLabelStyle}"/>
-				   <Grid Height="36">
-					   <PasswordBox x:Name="txtPassword"
-									Style="{StaticResource WinePasswordBoxStyle}"
-									MaxLength="20"
-									PasswordRevealMode="Hidden"
-									Padding="12,6,40,6"
-									HorizontalAlignment="Stretch"
-									VerticalContentAlignment="Center"
-									IsPasswordRevealButtonEnabled="False"/>
-					   <ToggleButton x:Name="btnVerPassword"
-									 Width="36" Height="36"
-									 HorizontalAlignment="Right"
-									 VerticalAlignment="Center"
-									 Margin="0,0,0,0"
-									 Background="Transparent"
-									 BorderThickness="0"
-									 Checked="BtnVerPassword_Checked"
-									 Unchecked="BtnVerPassword_Unchecked">
-						   <FontIcon x:Name="iconoOjoPassword" Glyph="&#xE7B3;" Foreground="Black" FontSize="16" FontFamily="Segoe Fluent Icons"/>
-					   </ToggleButton>
-				   </Grid>
-			   </StackPanel>
-
-			   <StackPanel Spacing="4">
-				   <TextBlock Text="Confirmar contraseña" Style="{StaticResource WineFieldLabelStyle}"/>
-				   <Grid Height="36">
-					   <PasswordBox x:Name="txtConfirmarPassword"
-									Style="{StaticResource WinePasswordBoxStyle}"
-									MaxLength="20"
-									PasswordRevealMode="Hidden"
-									Padding="12,6,40,6"
-									HorizontalAlignment="Stretch"
-									VerticalContentAlignment="Center"
-									IsPasswordRevealButtonEnabled="False"/>
-					   <ToggleButton x:Name="btnVerConfirmar"
-									 Width="36" Height="36"
-									 HorizontalAlignment="Right"
-									 VerticalAlignment="Center"
-									 Margin="0,0,0,0"
-									 Background="Transparent"
-									 BorderThickness="0"
-									 Checked="BtnVerConfirmar_Checked"
-									 Unchecked="BtnVerConfirmar_Unchecked">
-						   <FontIcon x:Name="iconoOjoConfirmar" Glyph="&#xE7B3;" Foreground="Black" FontSize="16" FontFamily="Segoe Fluent Icons"/>
-					   </ToggleButton>
-				   </Grid>
-			   </StackPanel>
-
-				<TextBlock x:Name="txtError" Foreground="{StaticResource WineDangerBrush}" Visibility="Collapsed" TextWrapping="Wrap" FontSize="13" FontWeight="SemiBold"/>
-				<TextBlock x:Name="txtExito" Foreground="{StaticResource WineSuccessBrush}" Visibility="Collapsed" TextWrapping="Wrap" FontSize="13" FontWeight="SemiBold"/>
-
-				<StackPanel Spacing="12" Margin="0,8,0,0">
-					<Button Content="Completar registro" Style="{StaticResource WinePrimaryButtonStyle}" Click="BtnRegistrar_Click"  x:Name="btnRegistrar" HorizontalAlignment="Stretch"/>
-					<Button Content="Volver al acceso" Style="{StaticResource WineSecondaryButtonStyle}" Click="BtnVolverLogin_Click" HorizontalAlignment="Stretch"/>
-					<Button Content="Limpiar todo" Style="{StaticResource WineDangerButtonStyle}" Click="BtnLimpiarCache_Click" HorizontalAlignment="Stretch"/>
-				</StackPanel>
-
-			</StackPanel>
+			</ScrollViewer>
 		</Grid>
 	</Grid>
 </Page>

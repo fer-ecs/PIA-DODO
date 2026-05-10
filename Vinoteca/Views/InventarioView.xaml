@@ -4,25 +4,25 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     Background="{StaticResource WineBackgroundBrush}">
 
-	<Grid Background="{StaticResource WineBackgroundBrush}" Padding="12">
+	<Grid Background="{StaticResource WineBackgroundBrush}" Padding="24">
 		<Grid.ColumnDefinitions>
-			<ColumnDefinition Width="440"/>
-			<ColumnDefinition Width="18"/>
+			<ColumnDefinition Width="460"/>
+			<ColumnDefinition Width="24"/>
 			<ColumnDefinition Width="*"/>
 		</Grid.ColumnDefinitions>
 
-		<Border Grid.Column="0" Style="{StaticResource WineCardStyle}" Padding="22">
-			<ScrollViewer>
-				<StackPanel Spacing="16">
-					<TextBlock Text="Gestion de productos" FontSize="28" FontWeight="SemiBold" Foreground="{StaticResource WineTextBrush}"/>
-					<TextBlock Text="Registra botellas, controla stock y conserva un catalogo claro para la tienda." Foreground="{StaticResource WineMutedBrush}" TextWrapping="Wrap"/>
+		<Border Grid.Column="0">
+			<ScrollViewer VerticalScrollBarVisibility="Auto" Padding="0,0,16,0">
+				<StackPanel Spacing="24">
+					<StackPanel Spacing="6">
+						<TextBlock Text="Gestion de productos" FontSize="28" FontWeight="SemiBold" Foreground="{StaticResource WineTextBrush}"/>
+						<TextBlock Text="Registra botellas, controla stock y conserva un catalogo claro para la tienda." Foreground="{StaticResource WineMutedBrush}" TextWrapping="Wrap"/>
+					</StackPanel>
 
 					<StackPanel Spacing="8">
 						<TextBlock Text="Datos principales" FontSize="16" FontWeight="SemiBold" Foreground="{StaticResource WineTextBrush}"/>
-
 						<TextBlock Text="Nombre del producto" Style="{StaticResource WineFieldLabelStyle}"/>
 						<TextBox x:Name="txtNombre" Style="{StaticResource WineTextBoxStyle}" PlaceholderText="Ej. Casillero del Diablo" MaxLength="60"/>
-
 						<TextBlock Text="Marca" Style="{StaticResource WineFieldLabelStyle}"/>
 						<TextBox x:Name="txtMarca" Style="{StaticResource WineTextBoxStyle}" PlaceholderText="Ej. Concha y Toro" MaxLength="40"/>
 					</StackPanel>
@@ -30,14 +30,12 @@
 					<StackPanel Spacing="8">
 						<TextBlock Text="Categoria" FontSize="16" FontWeight="SemiBold" Foreground="{StaticResource WineTextBrush}"/>
 						<ComboBox x:Name="cmbCategoria" Style="{StaticResource WineComboBoxStyle}" HorizontalAlignment="Stretch"/>
-
 						<Grid ColumnSpacing="8">
 							<Grid.ColumnDefinitions>
 								<ColumnDefinition Width="*"/>
 								<ColumnDefinition Width="Auto"/>
 								<ColumnDefinition Width="Auto"/>
 							</Grid.ColumnDefinitions>
-
 							<TextBox x:Name="txtNuevaCategoria" Grid.Column="0" Style="{StaticResource WineTextBoxStyle}" PlaceholderText="Nueva categoria" MaxLength="30"/>
 							<Button x:Name="btnAgregarCategoria" Grid.Column="1" Content="Agregar" Style="{StaticResource WineSecondaryButtonStyle}" Click="btnAgregarCategoria_Click"/>
 							<Button x:Name="btnEliminarCategoria" Grid.Column="2" Content="Quitar" Style="{StaticResource WineDangerButtonStyle}" Click="btnEliminarCategoria_Click"/>
@@ -46,18 +44,15 @@
 
 					<StackPanel Spacing="8">
 						<TextBlock Text="Venta y stock" FontSize="16" FontWeight="SemiBold" Foreground="{StaticResource WineTextBrush}"/>
-
-						<Grid ColumnSpacing="10">
+						<Grid ColumnSpacing="12">
 							<Grid.ColumnDefinitions>
 								<ColumnDefinition Width="*"/>
 								<ColumnDefinition Width="*"/>
 							</Grid.ColumnDefinitions>
-
 							<StackPanel Grid.Column="0">
 								<TextBlock Text="Precio de venta" Style="{StaticResource WineFieldLabelStyle}"/>
 								<TextBox x:Name="txtPrecioVenta" Style="{StaticResource WineTextBoxStyle}" Text="0" MaxLength="6" InputScope="Number"/>
 							</StackPanel>
-
 							<StackPanel Grid.Column="1">
 								<TextBlock Text="Stock" Style="{StaticResource WineFieldLabelStyle}"/>
 								<TextBox x:Name="txtStock" Style="{StaticResource WineTextBoxStyle}" Text="0" MaxLength="4" InputScope="Number"/>
@@ -72,59 +67,59 @@
 								<ColumnDefinition Width="*"/>
 								<ColumnDefinition Width="Auto"/>
 							</Grid.ColumnDefinitions>
-
-							<TextBox x:Name="txtImagen" Grid.Column="0" Style="{StaticResource WineTextBoxStyle}" PlaceholderText="https://... o C:\imagenes\vino.jpg" MaxLength="300"/>
+							<TextBox x:Name="txtImagen" Grid.Column="0" Style="{StaticResource WineTextBoxStyle}" PlaceholderText="URL o ruta de imagen" MaxLength="300"/>
 							<Button x:Name="btnSeleccionarImagen" Grid.Column="1" Content="Seleccionar" Style="{StaticResource WineSecondaryButtonStyle}" Click="btnSeleccionarImagen_Click"/>
 						</Grid>
 					</StackPanel>
 
-					<TextBlock x:Name="txtMensaje" Visibility="Collapsed" TextWrapping="Wrap"/>
+					<TextBlock x:Name="txtMensaje" Visibility="Collapsed" TextWrapping="Wrap" FontSize="13" FontWeight="SemiBold"/>
 
-					<StackPanel Orientation="Horizontal" Spacing="8" Margin="0,12,0,0">
-						<Button x:Name="btnGuardar" Content="Guardar" Style="{StaticResource WinePrimaryButtonStyle}" Click="btnGuardar_Click"/>
-						<Button x:Name="btnLimpiar" Content="Limpiar" Style="{StaticResource WineSecondaryButtonStyle}" Click="btnLimpiar_Click"/>
-						<Button x:Name="btnEliminar" Content="Eliminar" Style="{StaticResource WineDangerButtonStyle}" Click="btnEliminar_Click"/>
-					</StackPanel>
+					<Grid ColumnSpacing="8" Margin="0,12,0,24">
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="*"/>
+							<ColumnDefinition Width="*"/>
+							<ColumnDefinition Width="*"/>
+						</Grid.ColumnDefinitions>
+						<Button x:Name="btnGuardar" Grid.Column="0" Content="Guardar" Style="{StaticResource WinePrimaryButtonStyle}" Click="btnGuardar_Click" HorizontalAlignment="Stretch"/>
+						<Button x:Name="btnLimpiar" Grid.Column="1" Content="Limpiar" Style="{StaticResource WineSecondaryButtonStyle}" Click="btnLimpiar_Click" HorizontalAlignment="Stretch"/>
+						<Button x:Name="btnEliminar" Grid.Column="2" Content="Eliminar" Style="{StaticResource WineDangerButtonStyle}" Click="btnEliminar_Click" HorizontalAlignment="Stretch"/>
+					</Grid>
 				</StackPanel>
 			</ScrollViewer>
 		</Border>
 
-		<Border Grid.Column="2" Style="{StaticResource WineCardStyle}" Padding="22">
-			<Grid>
-				<Grid.RowDefinitions>
-					<RowDefinition Height="Auto"/>
-					<RowDefinition Height="*"/>
-				</Grid.RowDefinitions>
-
-				<StackPanel Margin="0,0,0,16">
-					<TextBlock Text="Catalogo registrado" FontSize="24" FontWeight="SemiBold" Foreground="{StaticResource WineTextBrush}"/>
-					<TextBlock Text="Buscar producto" Style="{StaticResource WineFieldLabelStyle}" Margin="0,10,0,0"/>
-					<TextBox x:Name="txtBuscar" Style="{StaticResource WineTextBoxStyle}" PlaceholderText="Nombre, marca o categoria" MaxLength="50" TextChanged="txtBuscar_TextChanged"/>
-				</StackPanel>
-
-				<ListView x:Name="lvProductos" Grid.Row="1" SelectionChanged="lvProductos_SelectionChanged" Background="Transparent" BorderBrush="{StaticResource WineBorderBrush}" BorderThickness="1" CornerRadius="16">
-					<ListView.ItemTemplate>
-						<DataTemplate>
-							<Border Background="#FFF8F2" CornerRadius="14" Padding="14" Margin="10,8">
-								<Grid>
-									<Grid.ColumnDefinitions>
-										<ColumnDefinition Width="2*"/>
-										<ColumnDefinition Width="*"/>
-										<ColumnDefinition Width="*"/>
-										<ColumnDefinition Width="*"/>
-										<ColumnDefinition Width="*"/>
-									</Grid.ColumnDefinitions>
-									<TextBlock Text="{Binding Nombre}" Grid.Column="0" FontWeight="SemiBold" Foreground="{StaticResource WineTextBrush}"/>
-									<TextBlock Text="{Binding Categoria}" Grid.Column="1" Foreground="{StaticResource WineMutedBrush}"/>
-									<TextBlock Text="{Binding PrecioTexto}" Grid.Column="2" Foreground="{StaticResource WineHeroBrush}" FontWeight="SemiBold"/>
-									<TextBlock Text="{Binding StockTexto}" Grid.Column="3" Foreground="{StaticResource WineMutedBrush}"/>
-									<TextBlock Text="{Binding EstadoTexto}" Grid.Column="4" Foreground="{StaticResource WineMutedBrush}"/>
-								</Grid>
-							</Border>
-						</DataTemplate>
-					</ListView.ItemTemplate>
-				</ListView>
-			</Grid>
-		</Border>
+		<Grid Grid.Column="2">
+			<Grid.RowDefinitions>
+				<RowDefinition Height="Auto"/>
+				<RowDefinition Height="*"/>
+			</Grid.RowDefinitions>
+			<StackPanel Margin="0,0,0,16">
+				<TextBlock Text="Catalogo registrado" FontSize="24" FontWeight="SemiBold" Foreground="{StaticResource WineTextBrush}"/>
+				<TextBlock Text="Buscar producto" Style="{StaticResource WineFieldLabelStyle}" Margin="0,10,0,0"/>
+				<TextBox x:Name="txtBuscar" Style="{StaticResource WineTextBoxStyle}" PlaceholderText="Nombre, marca o categoria" MaxLength="50" TextChanged="txtBuscar_TextChanged"/>
+			</StackPanel>
+			<ListView x:Name="lvProductos" Grid.Row="1" SelectionChanged="lvProductos_SelectionChanged" Background="Transparent" BorderThickness="0">
+				<ListView.ItemTemplate>
+					<DataTemplate>
+						<Border Background="#FAFAFA" BorderBrush="{StaticResource WineBorderBrush}" BorderThickness="1" CornerRadius="8" Padding="16" Margin="0,0,0,8">
+							<Grid>
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="2.5*"/>
+									<ColumnDefinition Width="1.5*"/>
+									<ColumnDefinition Width="*"/>
+									<ColumnDefinition Width="*"/>
+									<ColumnDefinition Width="*"/>
+								</Grid.ColumnDefinitions>
+								<TextBlock Text="{Binding Nombre}" Grid.Column="0" FontWeight="SemiBold" Foreground="{StaticResource WineTextBrush}" VerticalAlignment="Center"/>
+								<TextBlock Text="{Binding Categoria}" Grid.Column="1" Foreground="{StaticResource WineMutedBrush}" VerticalAlignment="Center"/>
+								<TextBlock Text="{Binding PrecioTexto}" Grid.Column="2" Foreground="{StaticResource WineHeroBrush}" FontWeight="SemiBold" VerticalAlignment="Center"/>
+								<TextBlock Text="{Binding StockTexto}" Grid.Column="3" Foreground="{StaticResource WineMutedBrush}" VerticalAlignment="Center"/>
+								<TextBlock Text="{Binding EstadoTexto}" Grid.Column="4" Foreground="{StaticResource WineMutedBrush}" VerticalAlignment="Center"/>
+							</Grid>
+						</Border>
+					</DataTemplate>
+				</ListView.ItemTemplate>
+			</ListView>
+		</Grid>
 	</Grid>
 </Page>

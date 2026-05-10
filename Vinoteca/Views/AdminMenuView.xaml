@@ -20,40 +20,40 @@
 
 				<StackPanel Grid.Row="0" Padding="10,18,10,24" Spacing="6">
 					<TextBlock Text="Vinoteca" FontSize="30" FontWeight="SemiBold" Foreground="White"/>
-					<TextBlock Text="Panel de administracion" Foreground="#DCC7B9"/>
+					<TextBlock Text="Panel de administracion" Foreground="{StaticResource WineHeroSoftBrush}"/>
 				</StackPanel>
 
 				<StackPanel Grid.Row="1" Padding="8,0">
-					<Border Background="#18FFFFFF" CornerRadius="18" Padding="16" Margin="0,0,0,18">
+					<Border Background="#1AFFFFFF" CornerRadius="12" Padding="16" Margin="0,0,0,18">
 						<StackPanel Spacing="4">
 							<TextBlock Text="Control del negocio" Foreground="White" FontWeight="SemiBold"/>
-							<TextBlock Text="Inventario, cuentas y reportes administrativos en un mismo lugar." TextWrapping="Wrap" Foreground="#E9D9CF" FontSize="12"/>
+							<TextBlock Text="Gestión de inventario, usuarios y reportes administrativos." TextWrapping="Wrap" Foreground="{StaticResource WineHeroSoftBrush}" FontSize="12"/>
 						</StackPanel>
 					</Border>
 
 					<Button Style="{StaticResource WineSidebarButtonStyle}" Click="btnNavInventario_Click">
 						<StackPanel Orientation="Horizontal" Spacing="12">
-							<SymbolIcon Symbol="Library"/>
-							<TextBlock Text="Inventario" VerticalAlignment="Center"/>
+							<SymbolIcon Symbol="Library" Foreground="White"/>
+							<TextBlock Text="Inventario" VerticalAlignment="Center" Foreground="White"/>
 						</StackPanel>
 					</Button>
 
 					<Button Style="{StaticResource WineSidebarButtonStyle}" Click="btnNavUsuarios_Click">
 						<StackPanel Orientation="Horizontal" Spacing="12">
-							<SymbolIcon Symbol="People"/>
-							<TextBlock Text="Usuarios" VerticalAlignment="Center"/>
+							<SymbolIcon Symbol="People" Foreground="White"/>
+							<TextBlock Text="Usuarios" VerticalAlignment="Center" Foreground="White"/>
 						</StackPanel>
 					</Button>
 
 					<Button Style="{StaticResource WineSidebarButtonStyle}" Click="btnNavReportes_Click">
 						<StackPanel Orientation="Horizontal" Spacing="12">
-							<SymbolIcon Symbol="Document"/>
-							<TextBlock Text="Reportes" VerticalAlignment="Center"/>
+							<SymbolIcon Symbol="Document" Foreground="White"/>
+							<TextBlock Text="Reportes" VerticalAlignment="Center" Foreground="White"/>
 						</StackPanel>
 					</Button>
 				</StackPanel>
 
-				<Border Grid.Row="2" Background="#1DFFFFFF" CornerRadius="18" Padding="16">
+				<Border Grid.Row="2" Background="#1AFFFFFF" CornerRadius="16" Padding="16">
 					<Grid>
 						<Grid.RowDefinitions>
 							<RowDefinition Height="Auto"/>
@@ -63,40 +63,17 @@
 
 						<StackPanel Grid.Row="0" Spacing="2">
 							<TextBlock x:Name="txtNombreAdminActivo" Text="Admin" FontWeight="SemiBold" Foreground="White"/>
-							<TextBlock x:Name="txtCorreoAdminActivo" Text="admin@vinoteca.com" Foreground="#E0CDC3" FontSize="12"/>
+							<TextBlock x:Name="txtCorreoAdminActivo" Text="admin@vinoteca.com" Foreground="{StaticResource WineHeroSoftBrush}" FontSize="12"/>
 						</StackPanel>
 
-						<Button Grid.Row="2" x:Name="btnCerrarSesionAdmin" Content="Cerrar sesion" Style="{StaticResource WineSecondaryButtonStyle}" Background="White" Foreground="{StaticResource WineAccentBrush}" BorderBrush="White" Click="btnCerrarSesionAdmin_Click"/>
+						<Button Grid.Row="2" x:Name="btnCerrarSesionAdmin" Content="Cerrar sesion" Style="{StaticResource WineSecondaryButtonStyle}" Background="White" Foreground="{StaticResource WineAccentBrush}" BorderBrush="White" Click="btnCerrarSesionAdmin_Click" HorizontalAlignment="Stretch"/>
 					</Grid>
 				</Border>
 			</Grid>
 		</Border>
 
 		<Grid Grid.Column="1" Margin="0,18,18,18">
-			<Grid.RowDefinitions>
-				<RowDefinition Height="Auto"/>
-				<RowDefinition Height="*"/>
-			</Grid.RowDefinitions>
-
-			<Border Style="{StaticResource WineCardStyle}" Padding="24" Margin="0,0,0,16">
-				<Grid>
-					<Grid.ColumnDefinitions>
-						<ColumnDefinition Width="*"/>
-						<ColumnDefinition Width="Auto"/>
-					</Grid.ColumnDefinitions>
-
-					<StackPanel>
-						<TextBlock Text="Operacion de la vinoteca" FontSize="28" FontWeight="SemiBold" Foreground="{StaticResource WineTextBrush}"/>
-						<TextBlock Text="Administra el negocio con un tablero mas calido y mas cercano al ambiente de una cava." Foreground="{StaticResource WineMutedBrush}" Margin="0,6,0,0"/>
-					</StackPanel>
-
-					<Border Grid.Column="1" Background="#F2E1D4" CornerRadius="16" Padding="16,10" VerticalAlignment="Center">
-						<TextBlock Text="Administracion activa" Foreground="{StaticResource WineHeroBrush}" FontWeight="SemiBold"/>
-					</Border>
-				</Grid>
-			</Border>
-
-			<Border Grid.Row="1" Style="{StaticResource WineCardStyle}" Padding="14">
+			<Border Style="{StaticResource WineCardStyle}" Padding="0">
 				<Frame x:Name="AdminContentFrame"/>
 			</Border>
 		</Grid>

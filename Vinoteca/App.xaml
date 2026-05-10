@@ -112,6 +112,7 @@
 				<Setter Property="Background" Value="#FAFAFA"/>
 				<Setter Property="BorderBrush" Value="{StaticResource WineBorderBrush}"/>
 				<Setter Property="Foreground" Value="Black"/>
+				<Setter Property="PlaceholderForeground" Value="#52525B"/>
 			</Style>
 
 			<Style x:Key="WinePasswordBoxStyle" TargetType="PasswordBox">
