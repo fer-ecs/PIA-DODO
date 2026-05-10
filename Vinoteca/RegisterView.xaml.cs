@@ -20,11 +20,12 @@ using Vinoteca.Services;
 		{
 			this.InitializeComponent();
 			InputRestrictionsHelper.AplicarSinEspaciosNiEnter(this);
+			InputRestrictionsHelper.AplicarSoloLetrasConEspacios(txtNombre);
 
-			// Cargar valores del cache
+			// Carga datos escritos antes
 			CargarValoresDelCache();
 
-			// Suscribirse a cambios de texto para guardar en cache
+			// Guarda cambios del formulario
 			txtNombre.TextChanged += (s, e) => GuardarEnCache(CACHE_KEY_NOMBRE, txtNombre.Text);
 			txtCorreo.TextChanged += (s, e) => GuardarEnCache(CACHE_KEY_CORREO, txtCorreo.Text);
 			txtPassword.PasswordChanged += (s, e) => GuardarEnCache(CACHE_KEY_PASSWORD, txtPassword.Password);
@@ -101,6 +102,12 @@ using Vinoteca.Services;
 				return;
 			}
 
+			if (!FormValidationHelper.EsTextoConLetrasYEspacios(nombre))
+			{
+				MostrarError("El nombre solo debe contener letras y espacios entre palabras");
+				return;
+			}
+
 			if (string.IsNullOrWhiteSpace(correo))
 			{
 				MostrarError("El correo es obligatorio");
@@ -125,8 +132,7 @@ using Vinoteca.Services;
 				return;
 			}
 
-			string patternEmail = @"^[^@\s]+@[^@\s]+\.[^@\s]+$";
-			if (!Regex.IsMatch(correo, patternEmail))
+			if (!FormValidationHelper.EsCorreoValido(correo))
 			{
 				MostrarError("Ingresa un formato valido para el correo electronico");
 				return;
@@ -197,11 +203,8 @@ using Vinoteca.Services;
 				return;
 			}
 
-			txtExito.Text = "Cuenta creada correctamente, ahora puedes iniciar sesion";
-			txtExito.Visibility = Visibility.Visible;
-
-			// Limpiar el cache después de registrarse correctamente
 			LimpiarCache();
+			Frame.Navigate(typeof(LoginView));
 		}
 
 		private bool EsContrasenaFuerte(string password)
@@ -218,7 +221,7 @@ using Vinoteca.Services;
 
 		public string ObtenerMensajeCambiosPendientes()
 		{
-			return "Hay datos del registro sin terminar.";
+			return "Hay datos del registro sin terminar";
 		}
 
 		private async void BtnVolverLogin_Click(object sender, RoutedEventArgs e)

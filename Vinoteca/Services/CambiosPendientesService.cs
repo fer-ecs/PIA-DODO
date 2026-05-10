@@ -91,7 +91,7 @@ namespace Vinoteca.Services
 
 			if (incluirCarrito && CarritoService.ObtenerCarrito().Count > 0)
 			{
-				return "Hay productos agregados al carrito.";
+				return "Hay productos agregados al carrito";
 			}
 
 			return null;

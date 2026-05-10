@@ -51,6 +51,10 @@
 			<SolidColorBrush x:Key="AccentButtonBackgroundPointerOver" Color="#8F2D3B"/>
 			<SolidColorBrush x:Key="AccentButtonBackgroundPressed" Color="#5C1824"/>
 			<SolidColorBrush x:Key="AccentButtonForeground" Color="#FFFFFF"/>
+			<SolidColorBrush x:Key="AccentButtonForegroundPointerOver" Color="#FFFFFF"/>
+			<SolidColorBrush x:Key="AccentButtonForegroundPressed" Color="#FFFFFF"/>
+			<SolidColorBrush x:Key="AccentButtonBorderBrush" Color="#7A2030"/>
+			<SolidColorBrush x:Key="AccentButtonBorderBrushPointerOver" Color="#8F2D3B"/>
 
 			<Style x:Key="WinePageRootStyle" TargetType="Grid">
 				<Setter Property="Background" Value="{StaticResource WineBackgroundBrush}"/>
@@ -67,6 +71,9 @@
 				<Setter Property="CornerRadius" Value="6"/>
 				<Setter Property="Padding" Value="20,10"/>
 				<Setter Property="FontWeight" Value="SemiBold"/>
+				<Setter Property="Background" Value="{StaticResource WineAccentBrush}"/>
+				<Setter Property="Foreground" Value="White"/>
+				<Setter Property="BorderBrush" Value="{StaticResource WineAccentBrush}"/>
 			</Style>
 
 			<Style x:Key="WineSecondaryButtonStyle" TargetType="Button">
@@ -86,6 +93,7 @@
 				<Setter Property="Foreground" Value="{StaticResource WineDangerBrush}"/>
 				<Setter Property="BorderBrush" Value="#FFD6D6"/>
 				<Setter Property="BorderThickness" Value="1"/>
+				<Setter Property="FontWeight" Value="SemiBold"/>
 			</Style>
 
 			<Style x:Key="WineSidebarButtonStyle" TargetType="Button">
@@ -95,7 +103,7 @@
 				<Setter Property="Padding" Value="14,10"/>
 				<Setter Property="Margin" Value="0,0,0,4"/>
 				<Setter Property="Background" Value="Transparent"/>
-				<Setter Property="Foreground" Value="{StaticResource WineTextBrush}"/>
+				<Setter Property="Foreground" Value="White"/>
 				<Setter Property="BorderThickness" Value="0"/>
 			</Style>
 

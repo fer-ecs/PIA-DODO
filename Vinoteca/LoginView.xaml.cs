@@ -53,8 +53,7 @@ namespace Vinoteca.Views
 					return;
 				}
 
-				string patternEmail = @"^[^@\s]+@[^@\s]+\.[^@\s]+$";
-				if (!Regex.IsMatch(correo, patternEmail))
+				if (!FormValidationHelper.EsCorreoValido(correo))
 				{
 					MostrarError("Ingresa un formato valido para el correo electronico");
 					return;
@@ -105,7 +104,7 @@ namespace Vinoteca.Views
 				{
 					intentosFallidos++;
 					ultimoIntento = DateTime.Now;
-					MostrarError($"Credenciales incorrectas. Intento {intentosFallidos}/{maxIntentos}");
+					MostrarError($"Credenciales incorrectas intento {intentosFallidos}/{maxIntentos}");
 					return;
 				}
 

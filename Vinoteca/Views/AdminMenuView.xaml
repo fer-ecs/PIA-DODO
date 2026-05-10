@@ -10,7 +10,7 @@
 			<ColumnDefinition Width="*"/>
 		</Grid.ColumnDefinitions>
 
-		<Border Grid.Column="0" Background="{StaticResource WineSidebarBrush}" Margin="18" CornerRadius="24">
+		<Border Grid.Column="0" Background="{StaticResource WineAccentBrush}" Margin="18" CornerRadius="24">
 			<Grid Padding="18">
 				<Grid.RowDefinitions>
 					<RowDefinition Height="Auto"/>
@@ -66,7 +66,7 @@
 							<TextBlock x:Name="txtCorreoAdminActivo" Text="admin@vinoteca.com" Foreground="#E0CDC3" FontSize="12"/>
 						</StackPanel>
 
-						<Button Grid.Row="2" x:Name="btnCerrarSesionAdmin" Content="Cerrar sesion" Style="{StaticResource WineSecondaryButtonStyle}" Click="btnCerrarSesionAdmin_Click"/>
+						<Button Grid.Row="2" x:Name="btnCerrarSesionAdmin" Content="Cerrar sesion" Style="{StaticResource WineSecondaryButtonStyle}" Background="White" Foreground="{StaticResource WineAccentBrush}" BorderBrush="White" Click="btnCerrarSesionAdmin_Click"/>
 					</Grid>
 				</Border>
 			</Grid>

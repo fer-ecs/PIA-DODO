@@ -34,7 +34,7 @@ namespace Vinoteca.Views
 			txtSinTickets.Visibility = tickets.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
 		}
 
-		private void btnDescargarPdf_Click(object sender, RoutedEventArgs e)
+		private async void btnDescargarPdf_Click(object sender, RoutedEventArgs e)
 		{
 			if (!SessionService.PuedeComprar)
 			{
@@ -48,8 +48,24 @@ namespace Vinoteca.Views
 				return;
 			}
 
-			string ruta = TicketPdfService.ExportarVentaPdf(venta);
-			txtEstado.Text = $"Ticket exportado en: {ruta}";
+			if (App.VentanaPrincipal == null)
+			{
+				txtEstado.Text = "No se pudo abrir el explorador de archivos";
+				txtEstado.Foreground = new SolidColorBrush(Microsoft.UI.Colors.Red);
+				txtEstado.Visibility = Visibility.Visible;
+				return;
+			}
+
+			string? ruta = await TicketPdfService.ExportarVentaPdfAsync(venta, App.VentanaPrincipal);
+			if (string.IsNullOrWhiteSpace(ruta))
+			{
+				txtEstado.Text = "Guardado cancelado";
+				txtEstado.Foreground = new SolidColorBrush(Microsoft.UI.Colors.Red);
+				txtEstado.Visibility = Visibility.Visible;
+				return;
+			}
+
+			txtEstado.Text = $"Ticket guardado en: {ruta}";
 			txtEstado.Foreground = new SolidColorBrush(Microsoft.UI.Colors.Green);
 			txtEstado.Visibility = Visibility.Visible;
 		}

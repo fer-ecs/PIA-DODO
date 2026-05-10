@@ -29,6 +29,7 @@ namespace Vinoteca.Views
 			}
 
 			InputRestrictionsHelper.AplicarSinEspaciosNiEnter(this);
+			InputRestrictionsHelper.AplicarSoloLetrasConEspacios(txtBuscar);
 			CargarCatalogo();
 			RefrescarCarritoVisual();
 			CarritoService.CarritoActualizado += RefrescarCarritoVisual;

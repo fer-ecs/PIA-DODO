@@ -4,24 +4,39 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
+using Microsoft.UI.Xaml;
 using Vinoteca.Models;
+using Windows.Storage.Pickers;
+using WinRT.Interop;
 
 namespace Vinoteca.Services
 {
 	public static class TicketPdfService
 	{
-		public static string ExportarVentaPdf(Venta venta)
+		public static async Task<string?> ExportarVentaPdfAsync(Venta venta, Window ventana)
 		{
-			string carpetaTickets = Path.Combine(
-				Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
-				"Vinoteca",
-				"Tickets");
+			var picker = new FileSavePicker
+			{
+				SuggestedStartLocation = PickerLocationId.DocumentsLibrary,
+				DefaultFileExtension = ".pdf",
+				SuggestedFileName = ObtenerNombreTicket(venta)
+			};
+			picker.FileTypeChoices.Add("Archivo PDF", new List<string> { ".pdf" });
+			InitializeWithWindow.Initialize(picker, WindowNative.GetWindowHandle(ventana));
 
-			Directory.CreateDirectory(carpetaTickets);
+			var archivo = await picker.PickSaveFileAsync();
+			if (archivo == null)
+			{
+				return null;
+			}
 
-			string nombreSeguro = string.IsNullOrWhiteSpace(venta.Id) ? Guid.NewGuid().ToString("N") : venta.Id;
-			string ruta = Path.Combine(carpetaTickets, $"Ticket-{nombreSeguro}.pdf");
+			ExportarVentaPdf(venta, archivo.Path);
+			return archivo.Path;
+		}
 
+		public static void ExportarVentaPdf(Venta venta, string ruta)
+		{
 			string contenido = ConstruirContenido(venta);
 			byte[] contenidoBytes = Encoding.ASCII.GetBytes(contenido);
 
@@ -36,7 +51,6 @@ namespace Vinoteca.Services
 			};
 
 			EscribirPdf(ruta, objetos);
-			return ruta;
 		}
 
 		private static string ConstruirContenido(Venta venta)
@@ -115,6 +129,12 @@ namespace Vinoteca.Services
 
 		private static void EscribirPdf(string ruta, List<string> objetos)
 		{
+			string? carpeta = Path.GetDirectoryName(ruta);
+			if (!string.IsNullOrWhiteSpace(carpeta))
+			{
+				Directory.CreateDirectory(carpeta);
+			}
+
 			using var stream = new FileStream(ruta, FileMode.Create, FileAccess.Write, FileShare.None);
 			using var writer = new StreamWriter(stream, new ASCIIEncoding());
 
@@ -158,6 +178,12 @@ namespace Vinoteca.Services
 		private static string FormatearNumero(double valor)
 		{
 			return valor.ToString("0.##", CultureInfo.InvariantCulture);
+		}
+
+		private static string ObtenerNombreTicket(Venta venta)
+		{
+			string nombreSeguro = string.IsNullOrWhiteSpace(venta.Id) ? Guid.NewGuid().ToString("N") : venta.Id;
+			return $"Ticket-{nombreSeguro}";
 		}
 	}
 }

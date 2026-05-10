@@ -13,6 +13,7 @@ namespace Vinoteca
 		private static FormCacheService? _formCacheService;
 
 		public static FormCacheService FormCacheService => _formCacheService ??= new FormCacheService();
+		public static Window? VentanaPrincipal { get; private set; }
 
 		public App()
 		{
@@ -22,7 +23,7 @@ namespace Vinoteca
 
 		private void App_UnhandledException(object sender, Microsoft.UI.Xaml.UnhandledExceptionEventArgs e)
 		{
-			// Centralized crash logging to reveal the real source exception.
+			// Registra errores inesperados
 			string detalle = e.Exception?.ToString() ?? e.Message;
 			Debug.WriteLine($"[UNHANDLED] {detalle}");
 			RegistrarError("UNHANDLED", detalle);
@@ -43,13 +44,14 @@ namespace Vinoteca
 			}
 			catch
 			{
-				// Ignore logging failures to avoid secondary crashes.
+				// Evita errores secundarios
 			}
 		}
 
 		protected override void OnLaunched(LaunchActivatedEventArgs args)
 		{
 			_window = new MainWindow();
+			VentanaPrincipal = _window;
 			_window.Activate();
 		}
 	}

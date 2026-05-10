@@ -38,15 +38,31 @@ namespace Vinoteca.Views
 			txtSinVentas.Visibility = ventas.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
 		}
 
-		private void btnExportarPdf_Click(object sender, RoutedEventArgs e)
+		private async void btnExportarPdf_Click(object sender, RoutedEventArgs e)
 		{
 			if (sender is not Button button || button.Tag is not Venta venta)
 			{
 				return;
 			}
 
-			string ruta = TicketPdfService.ExportarVentaPdf(venta);
-			txtEstado.Text = $"Ticket exportado en: {ruta}";
+			if (App.VentanaPrincipal == null)
+			{
+				txtEstado.Text = "No se pudo abrir el explorador de archivos";
+				txtEstado.Foreground = new SolidColorBrush(Microsoft.UI.Colors.Red);
+				txtEstado.Visibility = Visibility.Visible;
+				return;
+			}
+
+			string? ruta = await TicketPdfService.ExportarVentaPdfAsync(venta, App.VentanaPrincipal);
+			if (string.IsNullOrWhiteSpace(ruta))
+			{
+				txtEstado.Text = "Guardado cancelado";
+				txtEstado.Foreground = new SolidColorBrush(Microsoft.UI.Colors.Red);
+				txtEstado.Visibility = Visibility.Visible;
+				return;
+			}
+
+			txtEstado.Text = $"Ticket guardado en: {ruta}";
 			txtEstado.Foreground = new SolidColorBrush(Microsoft.UI.Colors.Green);
 			txtEstado.Visibility = Visibility.Visible;
 		}

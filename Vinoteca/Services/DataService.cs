@@ -20,11 +20,13 @@ namespace Vinoteca.Services
 		private static readonly string usuariosFile = Path.Combine(dataFolder, "usuarios.json");
 		private static readonly string productosFile = Path.Combine(dataFolder, "productos.json");
 		private static readonly string ventasFile = Path.Combine(dataFolder, "ventas.json");
+		private static readonly string categoriasFile = Path.Combine(dataFolder, "categorias.json");
 
 		private static readonly string legacyDataFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Data");
 		private static readonly string legacyUsuariosFile = Path.Combine(legacyDataFolder, "usuarios.json");
 		private static readonly string legacyProductosFile = Path.Combine(legacyDataFolder, "productos.json");
 		private static readonly string legacyVentasFile = Path.Combine(legacyDataFolder, "ventas.json");
+		private static readonly string legacyCategoriasFile = Path.Combine(legacyDataFolder, "categorias.json");
 
 		public static void InicializarArchivos()
 		{
@@ -52,8 +54,14 @@ namespace Vinoteca.Services
 					GuardarJson(ventasFile, new List<Venta>());
 				}
 
+				if (!File.Exists(categoriasFile))
+				{
+					GuardarJson(categoriasFile, CrearCategoriasBase());
+				}
+
 				ActualizarUsuariosSistema();
 				AsegurarDatosMuestra();
+				AsegurarCategoriasDeProductos();
 			}
 			catch (Exception ex)
 			{
@@ -66,6 +74,7 @@ namespace Vinoteca.Services
 			CopiarArchivoSiHaceFalta(legacyUsuariosFile, usuariosFile);
 			CopiarArchivoSiHaceFalta(legacyProductosFile, productosFile);
 			CopiarArchivoSiHaceFalta(legacyVentasFile, ventasFile);
+			CopiarArchivoSiHaceFalta(legacyCategoriasFile, categoriasFile);
 		}
 
 		private static void CopiarArchivoSiHaceFalta(string origen, string destino)
@@ -97,6 +106,17 @@ namespace Vinoteca.Services
 					Rol = RolesSistema.Administrador,
 					Activo = true
 				}
+			};
+		}
+
+		private static List<string> CrearCategoriasBase()
+		{
+			return new List<string>
+			{
+				"Tinto",
+				"Blanco",
+				"Rosado",
+				"Espumoso"
 			};
 		}
 
@@ -275,6 +295,44 @@ namespace Vinoteca.Services
 			}
 		}
 
+		private static List<string> ObtenerCategoriasSinInicializar()
+		{
+			try
+			{
+				string json = File.ReadAllText(categoriasFile);
+				return JsonSerializer.Deserialize<List<string>>(json) ?? CrearCategoriasBase();
+			}
+			catch
+			{
+				return CrearCategoriasBase();
+			}
+		}
+
+		private static void AsegurarCategoriasDeProductos()
+		{
+			var categorias = ObtenerCategoriasSinInicializar()
+				.Where(c => !string.IsNullOrWhiteSpace(c))
+				.Select(c => c.Trim())
+				.Distinct(StringComparer.OrdinalIgnoreCase)
+				.ToList();
+
+			foreach (var producto in ObtenerProductosSinInicializar())
+			{
+				if (!string.IsNullOrWhiteSpace(producto.Categoria) &&
+					!categorias.Any(c => c.Equals(producto.Categoria, StringComparison.OrdinalIgnoreCase)))
+				{
+					categorias.Add(producto.Categoria.Trim());
+				}
+			}
+
+			if (categorias.Count == 0)
+			{
+				categorias.AddRange(CrearCategoriasBase());
+			}
+
+			GuardarJson(categoriasFile, categorias.OrderBy(c => c).ToList());
+		}
+
 		public static List<Usuario> ObtenerUsuarios()
 		{
 			InicializarArchivos();
@@ -343,6 +401,48 @@ namespace Vinoteca.Services
 		{
 			InicializarArchivos();
 			return ObtenerProductosSinInicializar();
+		}
+
+		public static List<string> ObtenerCategorias()
+		{
+			InicializarArchivos();
+			return ObtenerCategoriasSinInicializar()
+				.Where(c => !string.IsNullOrWhiteSpace(c))
+				.Select(c => c.Trim())
+				.Distinct(StringComparer.OrdinalIgnoreCase)
+				.OrderBy(c => c)
+				.ToList();
+		}
+
+		public static bool GuardarCategoria(string categoria)
+		{
+			var categorias = ObtenerCategorias();
+			string categoriaLimpia = categoria.Trim();
+
+			if (categorias.Any(c => c.Equals(categoriaLimpia, StringComparison.OrdinalIgnoreCase)))
+			{
+				return false;
+			}
+
+			categorias.Add(categoriaLimpia);
+			GuardarJson(categoriasFile, categorias.OrderBy(c => c).ToList());
+			return true;
+		}
+
+		public static bool EliminarCategoria(string categoria)
+		{
+			var categorias = ObtenerCategorias();
+			string categoriaLimpia = categoria.Trim();
+			var categoriaActual = categorias.FirstOrDefault(c => c.Equals(categoriaLimpia, StringComparison.OrdinalIgnoreCase));
+
+			if (categoriaActual == null)
+			{
+				return false;
+			}
+
+			categorias.Remove(categoriaActual);
+			GuardarJson(categoriasFile, categorias);
+			return true;
 		}
 
 		public static void GuardarProducto(Producto producto)

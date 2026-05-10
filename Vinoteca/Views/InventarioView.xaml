@@ -24,12 +24,19 @@
 					<TextBox x:Name="txtMarca" Style="{StaticResource WineTextBoxStyle}" PlaceholderText="Ej. Concha y Toro" MaxLength="40"/>
 
 					<TextBlock Text="Categoria" Style="{StaticResource WineFieldLabelStyle}"/>
-					<ComboBox x:Name="cmbCategoria" Style="{StaticResource WineComboBoxStyle}" HorizontalAlignment="Stretch">
-						<ComboBoxItem Content="Tinto"/>
-						<ComboBoxItem Content="Blanco"/>
-						<ComboBoxItem Content="Rosado"/>
-						<ComboBoxItem Content="Espumoso"/>
-					</ComboBox>
+					<ComboBox x:Name="cmbCategoria" Style="{StaticResource WineComboBoxStyle}" HorizontalAlignment="Stretch"/>
+
+					<Grid ColumnSpacing="8">
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="*"/>
+							<ColumnDefinition Width="Auto"/>
+							<ColumnDefinition Width="Auto"/>
+						</Grid.ColumnDefinitions>
+
+						<TextBox x:Name="txtNuevaCategoria" Grid.Column="0" Style="{StaticResource WineTextBoxStyle}" PlaceholderText="Nueva categoria" MaxLength="30"/>
+						<Button x:Name="btnAgregarCategoria" Grid.Column="1" Content="Agregar" Style="{StaticResource WineSecondaryButtonStyle}" Click="btnAgregarCategoria_Click"/>
+						<Button x:Name="btnEliminarCategoria" Grid.Column="2" Content="Quitar" Style="{StaticResource WineDangerButtonStyle}" Click="btnEliminarCategoria_Click"/>
+					</Grid>
 
 					<Grid ColumnSpacing="8">
 						<Grid.ColumnDefinitions>
@@ -39,12 +46,12 @@
 
 						<StackPanel Grid.Column="0">
 							<TextBlock Text="Precio de venta" Style="{StaticResource WineFieldLabelStyle}"/>
-							<NumberBox x:Name="numPrecioVenta" Style="{StaticResource WineNumberBoxStyle}" Value="0" Minimum="0" Maximum="100000" SmallChange="1" SpinButtonPlacementMode="Compact"/>
+							<TextBox x:Name="txtPrecioVenta" Style="{StaticResource WineTextBoxStyle}" Text="0" MaxLength="6" InputScope="Number"/>
 						</StackPanel>
 
 						<StackPanel Grid.Column="1">
 							<TextBlock Text="Stock" Style="{StaticResource WineFieldLabelStyle}"/>
-							<NumberBox x:Name="numStock" Style="{StaticResource WineNumberBoxStyle}" Value="0" Minimum="0" Maximum="5000" SmallChange="1" SpinButtonPlacementMode="Compact"/>
+							<TextBox x:Name="txtStock" Style="{StaticResource WineTextBoxStyle}" Text="0" MaxLength="4" InputScope="Number"/>
 						</StackPanel>
 					</Grid>
 

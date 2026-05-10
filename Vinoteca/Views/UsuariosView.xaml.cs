@@ -24,6 +24,7 @@ namespace Vinoteca.Views
 		{
 			InitializeComponent();
 			InputRestrictionsHelper.AplicarSinEspaciosNiEnter(this);
+			InputRestrictionsHelper.AplicarSoloLetrasConEspacios(txtNombre);
 			lvUsuarios.ItemsSource = Usuarios;
 			ConfigurarRoles();
 
@@ -47,8 +48,8 @@ namespace Vinoteca.Views
 		public string ObtenerMensajeCambiosPendientes()
 		{
 			return usuarioSeleccionado == null
-				? "Hay un usuario nuevo sin guardar."
-				: "Hay cambios sin guardar en el usuario seleccionado.";
+				? "Hay un usuario nuevo sin guardar"
+				: "Hay cambios sin guardar en el usuario seleccionado";
 		}
 
 		private void ConfigurarRoles()
@@ -239,6 +240,12 @@ namespace Vinoteca.Views
 				return false;
 			}
 
+			if (!FormValidationHelper.EsTextoConLetrasYEspacios(nombre))
+			{
+				MostrarError("El nombre solo debe contener letras y espacios entre palabras");
+				return false;
+			}
+
 			if (string.IsNullOrWhiteSpace(correo))
 			{
 				MostrarError("El correo es obligatorio");
@@ -257,8 +264,7 @@ namespace Vinoteca.Views
 				return false;
 			}
 
-			string patternEmail = @"^[^@\s]+@[^@\s]+\.[^@\s]+$";
-			if (!Regex.IsMatch(correo, patternEmail, RegexOptions.IgnoreCase))
+			if (!FormValidationHelper.EsCorreoValido(correo))
 			{
 				MostrarError("Ingresa un correo valido");
 				return false;

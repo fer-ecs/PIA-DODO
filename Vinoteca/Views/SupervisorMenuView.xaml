@@ -28,7 +28,7 @@
 					<Button Style="{StaticResource WineSidebarButtonStyle}" Click="btnNavAnalisis_Click">
 						<StackPanel Orientation="Horizontal" Spacing="12">
 							<SymbolIcon Symbol="ViewAll"/>
-							<TextBlock Text="Analisis de datos" VerticalAlignment="Center" Foreground="#FFFFFF"/>
+							<TextBlock Text="Analisis de datos" VerticalAlignment="Center"/>
 						</StackPanel>
 					</Button>
 				</StackPanel>
@@ -46,7 +46,7 @@
 							<TextBlock x:Name="txtCorreoSupervisorActivo" Text="supervisor@vinoteca.com" Foreground="#E5D5CC" FontSize="12"/>
 						</StackPanel>
 
-						<Button Grid.Row="2" x:Name="btnCerrarSesionSupervisor" Content="Cerrar sesion" Style="{StaticResource WineSecondaryButtonStyle}" Click="btnCerrarSesionSupervisor_Click"/>
+						<Button Grid.Row="2" x:Name="btnCerrarSesionSupervisor" Content="Cerrar sesion" Style="{StaticResource WineSecondaryButtonStyle}" Background="White" Foreground="{StaticResource WineAccentBrush}" BorderBrush="White" Click="btnCerrarSesionSupervisor_Click"/>
 					</Grid>
 				</Border>
 			</Grid>

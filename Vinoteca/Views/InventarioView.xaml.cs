@@ -23,6 +23,9 @@ namespace Vinoteca.Views
 		{
 			InitializeComponent();
 			InputRestrictionsHelper.AplicarSinEspaciosNiEnter(this);
+			InputRestrictionsHelper.AplicarSoloLetrasConEspacios(txtNombre, txtMarca, txtBuscar, txtNuevaCategoria);
+			InputRestrictionsHelper.AplicarSoloNumeros(txtPrecioVenta, txtStock);
+			InputRestrictionsHelper.AplicarSinEspacios(txtImagen);
 			lvProductos.ItemsSource = ProductosMostrados;
 
 			if (!SessionService.PuedeVerInformacionOperativa)
@@ -36,6 +39,7 @@ namespace Vinoteca.Views
 				ConfigurarModoSoloLectura();
 			}
 
+			CargarCategorias();
 			CargarDatos();
 		}
 
@@ -44,8 +48,8 @@ namespace Vinoteca.Views
 		public string ObtenerMensajeCambiosPendientes()
 		{
 			return productoSeleccionado == null
-				? "Hay un producto nuevo sin guardar."
-				: "Hay cambios sin guardar en el producto seleccionado.";
+				? "Hay un producto nuevo sin guardar"
+				: "Hay cambios sin guardar en el producto seleccionado";
 		}
 
 		private void BloquearAcceso()
@@ -53,8 +57,11 @@ namespace Vinoteca.Views
 			txtNombre.IsEnabled = false;
 			txtMarca.IsEnabled = false;
 			cmbCategoria.IsEnabled = false;
-			numPrecioVenta.IsEnabled = false;
-			numStock.IsEnabled = false;
+			txtNuevaCategoria.IsEnabled = false;
+			btnAgregarCategoria.IsEnabled = false;
+			btnEliminarCategoria.IsEnabled = false;
+			txtPrecioVenta.IsEnabled = false;
+			txtStock.IsEnabled = false;
 			txtImagen.IsEnabled = false;
 			btnGuardar.IsEnabled = false;
 			btnEliminar.IsEnabled = false;
@@ -69,8 +76,11 @@ namespace Vinoteca.Views
 			txtNombre.IsEnabled = false;
 			txtMarca.IsEnabled = false;
 			cmbCategoria.IsEnabled = false;
-			numPrecioVenta.IsEnabled = false;
-			numStock.IsEnabled = false;
+			txtNuevaCategoria.IsEnabled = false;
+			btnAgregarCategoria.IsEnabled = false;
+			btnEliminarCategoria.IsEnabled = false;
+			txtPrecioVenta.IsEnabled = false;
+			txtStock.IsEnabled = false;
 			txtImagen.IsEnabled = false;
 			btnGuardar.IsEnabled = false;
 			btnEliminar.IsEnabled = false;
@@ -82,6 +92,22 @@ namespace Vinoteca.Views
 		{
 			todosLosProductos = DataService.ObtenerProductos().OrderBy(p => p.Nombre).ToList();
 			AplicarFiltro();
+		}
+
+		private void CargarCategorias(string? categoriaSeleccionada = null)
+		{
+			cmbCategoria.Items.Clear();
+			foreach (var categoria in DataService.ObtenerCategorias())
+			{
+				cmbCategoria.Items.Add(categoria);
+			}
+
+			if (!string.IsNullOrWhiteSpace(categoriaSeleccionada))
+			{
+				cmbCategoria.SelectedItem = cmbCategoria.Items
+					.Cast<string>()
+					.FirstOrDefault(c => c.Equals(categoriaSeleccionada, StringComparison.OrdinalIgnoreCase));
+			}
 		}
 
 		private void AplicarFiltro()
@@ -138,8 +164,10 @@ namespace Vinoteca.Views
 			marca = txtMarca.Text?.Trim() ?? string.Empty;
 			categoria = ObtenerCategoriaActual();
 			imagen = txtImagen.Text?.Trim() ?? string.Empty;
-			precio = numPrecioVenta.Value;
-			stock = (int)numStock.Value;
+			string precioTexto = txtPrecioVenta.Text?.Trim() ?? string.Empty;
+			string stockTexto = txtStock.Text?.Trim() ?? string.Empty;
+			precio = 0;
+			stock = 0;
 
 			if (string.IsNullOrWhiteSpace(nombre))
 			{
@@ -150,6 +178,12 @@ namespace Vinoteca.Views
 			if (nombre.Length < 3 || nombre.Length > 60)
 			{
 				MostrarMensaje("El nombre debe tener entre 3 y 60 caracteres", false);
+				return false;
+			}
+
+			if (!FormValidationHelper.EsTextoConLetrasYEspacios(nombre))
+			{
+				MostrarMensaje("El nombre solo debe contener letras y espacios entre palabras", false);
 				return false;
 			}
 
@@ -165,23 +199,32 @@ namespace Vinoteca.Views
 				return false;
 			}
 
+			if (!FormValidationHelper.EsTextoConLetrasYEspacios(marca))
+			{
+				MostrarMensaje("La marca solo debe contener letras y espacios entre palabras", false);
+				return false;
+			}
+
 			if (string.IsNullOrWhiteSpace(categoria))
 			{
 				MostrarMensaje("Selecciona una categoria", false);
 				return false;
 			}
 
-			if (precio <= 0 || precio > 100000)
+			if (!int.TryParse(precioTexto, out int precioEntero) || precioEntero <= 0 || precioEntero > 100000)
 			{
-				MostrarMensaje("El precio debe ser mayor a 0 y menor o igual a 100000", false);
+				MostrarMensaje("El precio solo debe contener numeros entre 1 y 100000", false);
 				return false;
 			}
 
-			if (stock < 0 || stock > 5000)
+			if (!int.TryParse(stockTexto, out int stockValor) || stockValor < 0 || stockValor > 5000)
 			{
-				MostrarMensaje("El stock debe estar entre 0 y 5000", false);
+				MostrarMensaje("El stock solo debe contener numeros entre 0 y 5000", false);
 				return false;
 			}
+
+			precio = precioEntero;
+			stock = stockValor;
 
 			if (!string.IsNullOrWhiteSpace(imagen))
 			{
@@ -310,8 +353,9 @@ namespace Vinoteca.Views
 			txtNombre.Text = string.Empty;
 			txtMarca.Text = string.Empty;
 			cmbCategoria.SelectedIndex = -1;
-			numPrecioVenta.Value = 0;
-			numStock.Value = 0;
+			txtNuevaCategoria.Text = string.Empty;
+			txtPrecioVenta.Text = "0";
+			txtStock.Text = "0";
 			txtImagen.Text = string.Empty;
 
 			ignorarCambioSeleccion = true;
@@ -324,19 +368,10 @@ namespace Vinoteca.Views
 			productoSeleccionado = producto;
 			txtNombre.Text = producto.Nombre ?? string.Empty;
 			txtMarca.Text = producto.Marca ?? string.Empty;
-			numPrecioVenta.Value = producto.PrecioVenta;
-			numStock.Value = producto.Stock;
+			txtPrecioVenta.Text = producto.PrecioVenta.ToString("0");
+			txtStock.Text = producto.Stock.ToString();
 			txtImagen.Text = producto.ImagenPath ?? string.Empty;
-
-			cmbCategoria.SelectedIndex = -1;
-			foreach (ComboBoxItem comboItem in cmbCategoria.Items)
-			{
-				if (comboItem.Content?.ToString() == producto.Categoria)
-				{
-					cmbCategoria.SelectedItem = comboItem;
-					break;
-				}
-			}
+			CargarCategorias(producto.Categoria);
 		}
 
 		private void RestaurarSeleccionAnterior()
@@ -363,8 +398,8 @@ namespace Vinoteca.Views
 			return string.IsNullOrWhiteSpace(txtNombre.Text) &&
 				string.IsNullOrWhiteSpace(txtMarca.Text) &&
 				string.IsNullOrWhiteSpace(ObtenerCategoriaActual()) &&
-				numPrecioVenta.Value == 0 &&
-				numStock.Value == 0 &&
+				ObtenerNumeroFormulario(txtPrecioVenta.Text) == 0 &&
+				ObtenerNumeroFormulario(txtStock.Text) == 0 &&
 				string.IsNullOrWhiteSpace(txtImagen.Text);
 		}
 
@@ -373,14 +408,90 @@ namespace Vinoteca.Views
 			return string.Equals((txtNombre.Text ?? string.Empty).Trim(), producto.Nombre ?? string.Empty, StringComparison.Ordinal) &&
 				string.Equals((txtMarca.Text ?? string.Empty).Trim(), producto.Marca ?? string.Empty, StringComparison.Ordinal) &&
 				string.Equals(ObtenerCategoriaActual(), producto.Categoria ?? string.Empty, StringComparison.Ordinal) &&
-				numPrecioVenta.Value == producto.PrecioVenta &&
-				(int)numStock.Value == producto.Stock &&
+				ObtenerNumeroFormulario(txtPrecioVenta.Text) == (int)producto.PrecioVenta &&
+				ObtenerNumeroFormulario(txtStock.Text) == producto.Stock &&
 				string.Equals((txtImagen.Text ?? string.Empty).Trim(), producto.ImagenPath ?? string.Empty, StringComparison.Ordinal);
 		}
 
 		private string ObtenerCategoriaActual()
 		{
-			return (cmbCategoria.SelectedItem as ComboBoxItem)?.Content?.ToString() ?? string.Empty;
+			return cmbCategoria.SelectedItem?.ToString() ?? string.Empty;
+		}
+
+		private static int ObtenerNumeroFormulario(string? texto)
+		{
+			return int.TryParse(texto?.Trim(), out int valor) ? valor : -1;
+		}
+
+		private void btnAgregarCategoria_Click(object sender, RoutedEventArgs e)
+		{
+			if (!SessionService.PuedeGestionarInventario)
+			{
+				MostrarMensaje("Solo el administrador puede crear categorias", false);
+				return;
+			}
+
+			string categoria = txtNuevaCategoria.Text?.Trim() ?? string.Empty;
+			if (string.IsNullOrWhiteSpace(categoria))
+			{
+				MostrarMensaje("Escribe el nombre de la categoria", false);
+				return;
+			}
+
+			if (categoria.Length < 3 || categoria.Length > 30)
+			{
+				MostrarMensaje("La categoria debe tener entre 3 y 30 caracteres", false);
+				return;
+			}
+
+			if (!FormValidationHelper.EsTextoConLetrasYEspacios(categoria))
+			{
+				MostrarMensaje("La categoria solo debe contener letras y espacios entre palabras", false);
+				return;
+			}
+
+			if (!DataService.GuardarCategoria(categoria))
+			{
+				MostrarMensaje("Ya existe una categoria con ese nombre", false);
+				return;
+			}
+
+			txtNuevaCategoria.Text = string.Empty;
+			CargarCategorias(categoria);
+			MostrarMensaje("Categoria creada correctamente", true);
+		}
+
+		private void btnEliminarCategoria_Click(object sender, RoutedEventArgs e)
+		{
+			if (!SessionService.PuedeGestionarInventario)
+			{
+				MostrarMensaje("Solo el administrador puede quitar categorias", false);
+				return;
+			}
+
+			string categoria = ObtenerCategoriaActual();
+			if (string.IsNullOrWhiteSpace(categoria))
+			{
+				MostrarMensaje("Selecciona una categoria para quitar", false);
+				return;
+			}
+
+			bool tieneProductos = DataService.ObtenerProductos().Any(p =>
+				string.Equals(p.Categoria, categoria, StringComparison.OrdinalIgnoreCase));
+			if (tieneProductos)
+			{
+				MostrarMensaje("No puedes quitar una categoria usada por productos", false);
+				return;
+			}
+
+			if (!DataService.EliminarCategoria(categoria))
+			{
+				MostrarMensaje("No se pudo quitar la categoria seleccionada", false);
+				return;
+			}
+
+			CargarCategorias();
+			MostrarMensaje("Categoria eliminada correctamente", true);
 		}
 
 		private void txtBuscar_TextChanged(object sender, TextChangedEventArgs e)
