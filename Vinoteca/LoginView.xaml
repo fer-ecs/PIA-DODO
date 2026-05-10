@@ -9,66 +9,47 @@
 			<ColumnDefinition Width="4.5*"/>
 		</Grid.ColumnDefinitions>
 
-		<Grid Grid.Column="0" Padding="64">
+		<Grid Grid.Column="0" Background="{StaticResource WineAccentBrush}" Padding="64">
 			<StackPanel VerticalAlignment="Center" MaxWidth="520" Spacing="24">
-
-				<Border Width="64" Height="64" CornerRadius="8" Background="{StaticResource WineSidebarBrush}" HorizontalAlignment="Left">
-					<TextBlock Text="V" Foreground="White" FontSize="28" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-				</Border>
-
-				<StackPanel Spacing="8">
-					<TextBlock Text="Vinoteca" FontSize="48" FontWeight="Bold" Foreground="{StaticResource WineTextBrush}" CharacterSpacing="-20"/>
-					<TextBlock Text="Sistema de gestion de inventario y punto de venta. Optimizado para operaciones rapidas y control administrativo." TextWrapping="WrapWholeWords" FontSize="16" Foreground="{StaticResource WineMutedBrush}" LineHeight="24"/>
-				</StackPanel>
-
-				<StackPanel Orientation="Horizontal" Spacing="16" Margin="0,16,0,0">
-					<Border BorderBrush="{StaticResource WineBorderBrush}" BorderThickness="1" CornerRadius="6" Padding="16,12" Background="Transparent">
-						<StackPanel>
-							<TextBlock Text="Catalogo activo" FontWeight="SemiBold" Foreground="{StaticResource WineTextBrush}" FontSize="13"/>
-							<TextBlock Text="Visual limpio para compras" Foreground="{StaticResource WineMutedBrush}" FontSize="12" Margin="0,2,0,0"/>
-						</StackPanel>
+				<StackPanel Orientation="Horizontal" Spacing="16" VerticalAlignment="Center">
+					<Border Width="64" Height="64" CornerRadius="8" Background="#5C1824">
+						<TextBlock Text="V" Foreground="White" FontSize="28" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center"/>
 					</Border>
-					<Border BorderBrush="{StaticResource WineBorderBrush}" BorderThickness="1" CornerRadius="6" Padding="16,12" Background="Transparent">
-						<StackPanel>
-							<TextBlock Text="Control de cuentas" FontWeight="SemiBold" Foreground="{StaticResource WineTextBrush}" FontSize="13"/>
-							<TextBlock Text="Gestion de roles y tickets" Foreground="{StaticResource WineMutedBrush}" FontSize="12" Margin="0,2,0,0"/>
-						</StackPanel>
-					</Border>
+					<TextBlock Text="Vinoteca" FontSize="48" FontWeight="Bold" Foreground="White" CharacterSpacing="-20" VerticalAlignment="Center"/>
 				</StackPanel>
+				<TextBlock Text="Bienvenido al sistema de gestion de inventario y punto de venta. Optimizado para operaciones rapidas y control administrativo." TextWrapping="WrapWholeWords" FontSize="18" Foreground="#E9D5D5" LineHeight="26"/>
 			</StackPanel>
 		</Grid>
 
 		<Grid Grid.Column="1" Background="{StaticResource WinePanelBrush}" BorderBrush="{StaticResource WineBorderBrush}" BorderThickness="1,0,0,0">
-			<StackPanel VerticalAlignment="Center" MaxWidth="380" Spacing="20">
+			<StackPanel VerticalAlignment="Center" MaxWidth="380" Spacing="24">
 
 				<StackPanel Spacing="6" Margin="0,0,0,8">
-					<Border BorderBrush="{StaticResource WineBorderBrush}" BorderThickness="1" CornerRadius="4" Padding="8,4" HorizontalAlignment="Left" Margin="0,0,0,8">
-						<TextBlock Text="ACCESO SEGURO" Foreground="{StaticResource WineLabelBrush}" FontSize="10" FontWeight="Bold" CharacterSpacing="50"/>
-					</Border>
-					<TextBlock Text="Iniciar Sesion" FontSize="28" FontWeight="SemiBold" Foreground="{StaticResource WineTextBrush}"/>
-					<TextBlock Text="Ingresa tus credenciales operativas." Foreground="{StaticResource WineMutedBrush}"/>
+					<TextBlock Text="Iniciar Sesion" FontSize="32" FontWeight="SemiBold" Foreground="{StaticResource WineTextBrush}"/>
+					<TextBlock Text="Ingresa tus credenciales operativas." Foreground="{StaticResource WineMutedBrush}" FontSize="15"/>
 				</StackPanel>
 
 				<StackPanel Spacing="4">
 					<TextBlock Text="Correo electronico" Style="{StaticResource WineFieldLabelStyle}"/>
-					<TextBox x:Name="txtCorreo" Style="{StaticResource WineTextBoxStyle}" MaxLength="80" PlaceholderText="admin@vinoteca.com"/>
+					<TextBox x:Name="txtCorreo" Style="{StaticResource WineTextBoxStyle}" MaxLength="80"/>
 				</StackPanel>
 
 				<StackPanel Spacing="4">
 					<TextBlock Text="Contrasena" Style="{StaticResource WineFieldLabelStyle}"/>
-					<PasswordBox x:Name="txtPassword" Style="{StaticResource WinePasswordBoxStyle}" MaxLength="20" PlaceholderText="••••••••"/>
+					<PasswordBox x:Name="txtPassword" 
+                                 Style="{StaticResource WinePasswordBoxStyle}" 
+                                 MaxLength="20" 
+                                 PasswordRevealMode="Peek"
+                                 HorizontalAlignment="Stretch"/>
 				</StackPanel>
 
 				<TextBlock x:Name="txtError" Foreground="{StaticResource WineDangerBrush}" Visibility="Collapsed" TextWrapping="Wrap" FontSize="13" FontWeight="SemiBold"/>
 
-				<StackPanel Spacing="12" Margin="0,8,0,0">
+				<StackPanel Spacing="12">
 					<Button Content="Ingresar al sistema" Style="{StaticResource WinePrimaryButtonStyle}" Click="BtnLogin_Click" HorizontalAlignment="Stretch"/>
 					<Button Content="Solicitar cuenta" Style="{StaticResource WineSecondaryButtonStyle}" Click="BtnIrRegistro_Click" HorizontalAlignment="Stretch"/>
 				</StackPanel>
 
-				<Border Background="#FAFAFA" BorderBrush="{StaticResource WineBorderBrush}" BorderThickness="1" CornerRadius="6" Padding="12" Margin="0,16,0,0">
-					<TextBlock Text="Niveles de acceso: Cliente, Supervisor y Administrador. Las acciones quedan registradas en el log." TextWrapping="Wrap" Foreground="{StaticResource WineMutedBrush}" FontSize="12" LineHeight="18"/>
-				</Border>
 			</StackPanel>
 		</Grid>
 	</Grid>

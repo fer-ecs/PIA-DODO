@@ -30,13 +30,27 @@
 			<SolidColorBrush x:Key="WineDangerBrush" Color="#DC2626"/>
 			<SolidColorBrush x:Key="WineSuccessBrush" Color="#16A34A"/>
 
+			<SolidColorBrush x:Key="TextControlBackgroundPointerOver" Color="#FAFAFA"/>
+			<SolidColorBrush x:Key="TextControlBackgroundFocused" Color="#FAFAFA"/>
+			<SolidColorBrush x:Key="TextControlForegroundPointerOver" Color="#18181B"/>
+			<SolidColorBrush x:Key="TextControlForegroundFocused" Color="#18181B"/>
+			<SolidColorBrush x:Key="TextControlBorderBrushPointerOver" Color="#7A2030"/>
+			<SolidColorBrush x:Key="TextControlBorderBrushFocused" Color="#7A2030"/>
+
+			<SolidColorBrush x:Key="PasswordBoxRevealButtonForeground" Color="Black"/>
+			<SolidColorBrush x:Key="PasswordBoxRevealButtonForegroundPointerOver" Color="#7A2030"/>
+			<SolidColorBrush x:Key="PasswordBoxRevealButtonForegroundPressed" Color="#18181B"/>
+			<SolidColorBrush x:Key="PasswordBoxRevealButtonBackground" Color="Transparent"/>
+			<SolidColorBrush x:Key="PasswordBoxRevealButtonBackgroundPointerOver" Color="#F4F4F5"/>
+
+			<SolidColorBrush x:Key="ButtonForegroundPointerOver" Color="#7A2030"/>
+			<SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="#F3E8E8"/>
+			<SolidColorBrush x:Key="ButtonBorderBrushPointerOver" Color="#7A2030"/>
+
 			<SolidColorBrush x:Key="AccentButtonBackground" Color="#7A2030"/>
 			<SolidColorBrush x:Key="AccentButtonBackgroundPointerOver" Color="#8F2D3B"/>
 			<SolidColorBrush x:Key="AccentButtonBackgroundPressed" Color="#5C1824"/>
 			<SolidColorBrush x:Key="AccentButtonForeground" Color="#FFFFFF"/>
-			<SolidColorBrush x:Key="AccentButtonForegroundPointerOver" Color="#FFFFFF"/>
-			<SolidColorBrush x:Key="AccentButtonForegroundPressed" Color="#E4E4E7"/>
-			<SolidColorBrush x:Key="AccentButtonBorderBrush" Color="Transparent"/>
 
 			<Style x:Key="WinePageRootStyle" TargetType="Grid">
 				<Setter Property="Background" Value="{StaticResource WineBackgroundBrush}"/>
@@ -58,10 +72,11 @@
 			<Style x:Key="WineSecondaryButtonStyle" TargetType="Button">
 				<Setter Property="CornerRadius" Value="6"/>
 				<Setter Property="Padding" Value="18,9"/>
-				<Setter Property="Background" Value="#F5F5F5"/>
-				<Setter Property="Foreground" Value="{StaticResource WineTextBrush}"/>
-				<Setter Property="BorderBrush" Value="{StaticResource WineBorderBrush}"/>
+				<Setter Property="Background" Value="Transparent"/>
+				<Setter Property="Foreground" Value="{StaticResource WineAccentBrush}"/>
+				<Setter Property="BorderBrush" Value="{StaticResource WineAccentBrush}"/>
 				<Setter Property="BorderThickness" Value="1"/>
+				<Setter Property="FontWeight" Value="SemiBold"/>
 			</Style>
 
 			<Style x:Key="WineDangerButtonStyle" TargetType="Button">
@@ -88,14 +103,15 @@
 				<Setter Property="CornerRadius" Value="6"/>
 				<Setter Property="Background" Value="#FAFAFA"/>
 				<Setter Property="BorderBrush" Value="{StaticResource WineBorderBrush}"/>
-				<Setter Property="Foreground" Value="{StaticResource WineTextBrush}"/>
+				<Setter Property="Foreground" Value="Black"/>
 			</Style>
 
 			<Style x:Key="WinePasswordBoxStyle" TargetType="PasswordBox">
 				<Setter Property="CornerRadius" Value="6"/>
 				<Setter Property="Background" Value="#FAFAFA"/>
 				<Setter Property="BorderBrush" Value="{StaticResource WineBorderBrush}"/>
-				<Setter Property="Foreground" Value="{StaticResource WineTextBrush}"/>
+				<Setter Property="Foreground" Value="Black"/>
+				<Setter Property="HorizontalContentAlignment" Value="Left"/>
 			</Style>
 
 			<Style x:Key="WineComboBoxStyle" TargetType="ComboBox">
