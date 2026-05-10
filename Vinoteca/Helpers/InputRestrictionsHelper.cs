@@ -13,6 +13,7 @@ namespace Vinoteca.Helpers
 		private const string ModoSinEspacios = "SinEspacios";
 		private const string ModoLetrasConEspacios = "LetrasConEspacios";
 		private const string ModoSoloNumeros = "SoloNumeros";
+		private const string ModoTextoLibre = "TextoLibre";
 
 		public static void AplicarSinEspaciosNiEnter(DependencyObject parent)
 		{
@@ -91,6 +92,18 @@ namespace Vinoteca.Helpers
 			}
 		}
 
+		public static void AplicarTextoLibreSinEnter(params TextBox[] textBoxes)
+		{
+			foreach (var textBox in textBoxes)
+			{
+				textBox.Tag = ModoTextoLibre;
+				textBox.KeyDown -= TextBox_KeyDown;
+				textBox.KeyDown += TextBox_KeyDown;
+				textBox.TextChanged -= TextBox_TextChanged;
+				textBox.TextChanged += TextBox_TextChanged;
+			}
+		}
+
 		private static void TextBox_KeyDown(object sender, KeyRoutedEventArgs e)
 		{
 			if (sender is not TextBox textBox)
@@ -125,6 +138,7 @@ namespace Vinoteca.Helpers
 			{
 				ModoLetrasConEspacios => LimpiarLetrasConEspacios(textBox.Text),
 				ModoSoloNumeros => LimpiarSoloNumeros(textBox.Text),
+				ModoTextoLibre => textBox.Text,
 				_ => QuitarEspaciosEnBlanco(textBox.Text)
 			};
 			if (limpio == textBox.Text)

@@ -69,5 +69,15 @@ namespace Vinoteca.Views
 			txtEstado.Foreground = new SolidColorBrush(Microsoft.UI.Colors.Green);
 			txtEstado.Visibility = Visibility.Visible;
 		}
+
+		private async void btnPrevisualizar_Click(object sender, RoutedEventArgs e)
+		{
+			if (sender is not Button button || button.Tag is not Venta venta)
+			{
+				return;
+			}
+
+			await TicketPreviewService.MostrarAsync(venta, XamlRoot);
+		}
 	}
 }

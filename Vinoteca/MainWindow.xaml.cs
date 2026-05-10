@@ -18,25 +18,32 @@ namespace Vinoteca
 		{
 			InitializeComponent();
 
-			// 1. Material Mica para estética técnica en Windows 11
+			// Fondo nativo de Windows
 			SystemBackdrop = new MicaBackdrop();
 
-			// 2. Extender contenido a la barra de título
+			// Barra superior integrada
 			ExtendsContentIntoTitleBar = true;
 			SetTitleBar(AppTitleBar);
 
-			// 3. Obtener AppWindow para modificar icono de la barra de tareas
 			IntPtr hWnd = WindowNative.GetWindowHandle(this);
 			WindowId wndId = Win32Interop.GetWindowIdFromWindow(hWnd);
 			_appWindow = AppWindow.GetFromWindowId(wndId);
 
-			// Carga el icono a nivel de proceso de Windows
 			_appWindow.SetIcon("Assets/StoreLogo.png");
+			AbrirVentanaCompleta();
 
 			DataService.InicializarArchivos();
 			RootFrame.Navigate(typeof(LoginView));
 
 			_appWindow.Closing += AppWindowClosing;
+		}
+
+		private void AbrirVentanaCompleta()
+		{
+			if (_appWindow.Presenter is OverlappedPresenter presenter)
+			{
+				presenter.Maximize();
+			}
 		}
 
 		private async void AppWindowClosing(AppWindow sender, AppWindowClosingEventArgs args)

@@ -9,6 +9,8 @@ using System.Text.RegularExpressions;
 using Vinoteca.Helpers;
 using Vinoteca.Models;
 using Vinoteca.Services;
+using Windows.Storage.Pickers;
+using WinRT.Interop;
 
 namespace Vinoteca.Views
 {
@@ -25,7 +27,7 @@ namespace Vinoteca.Views
 			InputRestrictionsHelper.AplicarSinEspaciosNiEnter(this);
 			InputRestrictionsHelper.AplicarSoloLetrasConEspacios(txtNombre, txtMarca, txtBuscar, txtNuevaCategoria);
 			InputRestrictionsHelper.AplicarSoloNumeros(txtPrecioVenta, txtStock);
-			InputRestrictionsHelper.AplicarSinEspacios(txtImagen);
+			InputRestrictionsHelper.AplicarTextoLibreSinEnter(txtImagen);
 			lvProductos.ItemsSource = ProductosMostrados;
 
 			if (!SessionService.PuedeVerInformacionOperativa)
@@ -63,6 +65,7 @@ namespace Vinoteca.Views
 			txtPrecioVenta.IsEnabled = false;
 			txtStock.IsEnabled = false;
 			txtImagen.IsEnabled = false;
+			btnSeleccionarImagen.IsEnabled = false;
 			btnGuardar.IsEnabled = false;
 			btnEliminar.IsEnabled = false;
 			btnLimpiar.IsEnabled = false;
@@ -82,6 +85,7 @@ namespace Vinoteca.Views
 			txtPrecioVenta.IsEnabled = false;
 			txtStock.IsEnabled = false;
 			txtImagen.IsEnabled = false;
+			btnSeleccionarImagen.IsEnabled = false;
 			btnGuardar.IsEnabled = false;
 			btnEliminar.IsEnabled = false;
 			btnLimpiar.IsEnabled = false;
@@ -497,6 +501,40 @@ namespace Vinoteca.Views
 		private void txtBuscar_TextChanged(object sender, TextChangedEventArgs e)
 		{
 			AplicarFiltro();
+		}
+
+		private async void btnSeleccionarImagen_Click(object sender, RoutedEventArgs e)
+		{
+			if (!SessionService.PuedeGestionarInventario)
+			{
+				MostrarMensaje("Solo el administrador puede seleccionar imagenes", false);
+				return;
+			}
+
+			if (App.VentanaPrincipal == null)
+			{
+				MostrarMensaje("No se pudo abrir el explorador de archivos", false);
+				return;
+			}
+
+			var picker = new FileOpenPicker
+			{
+				SuggestedStartLocation = PickerLocationId.PicturesLibrary
+			};
+			picker.FileTypeFilter.Add(".jpg");
+			picker.FileTypeFilter.Add(".jpeg");
+			picker.FileTypeFilter.Add(".png");
+			picker.FileTypeFilter.Add(".webp");
+
+			InitializeWithWindow.Initialize(picker, WindowNative.GetWindowHandle(App.VentanaPrincipal));
+			var archivo = await picker.PickSingleFileAsync();
+			if (archivo == null)
+			{
+				return;
+			}
+
+			txtImagen.Text = archivo.Path;
+			MostrarMensaje("Imagen seleccionada correctamente", true);
 		}
 
 		private void MostrarMensaje(string mensaje, bool esExito)

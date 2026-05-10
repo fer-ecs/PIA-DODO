@@ -56,7 +56,10 @@
 											</Grid.ColumnDefinitions>
 
 											<TextBlock Text="{x:Bind Productos.Count, Converter={StaticResource LocalStringConverter}, ConverterParameter='{}{0} producto(s) en este ticket'}" Foreground="{StaticResource WineMutedBrush}" VerticalAlignment="Center"/>
-											<Button Grid.Column="1" Content="Descargar PDF" Tag="{x:Bind}" Style="{StaticResource WineSecondaryButtonStyle}" Click="btnDescargarPdf_Click"/>
+											<StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8">
+												<Button Content="Previsualizar" Tag="{x:Bind}" Style="{StaticResource WineSecondaryButtonStyle}" Click="btnPrevisualizar_Click"/>
+												<Button Content="Descargar PDF" Tag="{x:Bind}" Style="{StaticResource WineSecondaryButtonStyle}" Click="btnDescargarPdf_Click"/>
+											</StackPanel>
 										</Grid>
 									</Grid>
 								</Border>
