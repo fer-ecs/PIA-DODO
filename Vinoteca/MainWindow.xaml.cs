@@ -29,7 +29,7 @@ namespace Vinoteca
 			WindowId wndId = Win32Interop.GetWindowIdFromWindow(hWnd);
 			_appWindow = AppWindow.GetFromWindowId(wndId);
 
-			_appWindow.SetIcon("Assets/StoreLogo.png");
+			_appWindow.SetIcon("Assets/Vinoteca.ico");
 			AbrirVentanaCompleta();
 
 			DataService.InicializarArchivos();

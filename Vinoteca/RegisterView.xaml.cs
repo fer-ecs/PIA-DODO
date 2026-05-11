@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Microsoft.UI.Xaml;
@@ -16,15 +17,7 @@ using Vinoteca.Services;
 		private const string CACHE_KEY_DOMINIO = "Register_DominioCorreo";
 		private const string CACHE_KEY_PASSWORD = "Register_Password";
 		private const string CACHE_KEY_CONFIRMAR = "Register_ConfirmarPassword";
-		private static readonly string[] DominiosCorreoPermitidos =
-		{
-			"gmail.com",
-			"outlook.com",
-			"yahoo.com",
-			"hotmail.com",
-			"live.com",
-			"icloud.com"
-		};
+		private List<string> dominiosCorreoPermitidos = new();
 
 		public RegisterView()
 		{
@@ -32,6 +25,7 @@ using Vinoteca.Services;
 			ConfigurarDominiosCorreo();
 			InputRestrictionsHelper.AplicarSinEspaciosNiEnter(this);
 			InputRestrictionsHelper.AplicarSoloLetrasConEspacios(txtNombre);
+			InputRestrictionsHelper.AplicarCorreoLocal(txtCorreo);
 
 			// Recupera lo que el usuario ya habia escrito
 			CargarValoresDelCache();
@@ -167,13 +161,13 @@ using Vinoteca.Services;
 				return;
 			}
 
-			if (!Regex.IsMatch(correoLocal, @"^[A-Za-z0-9](?:[A-Za-z0-9._%+-]{0,38}[A-Za-z0-9])?$") || correoLocal.Contains(".."))
+			if (!Regex.IsMatch(correoLocal, @"^[A-Za-z0-9](?:[A-Za-z0-9._-]{0,38}[A-Za-z0-9])?$") || correoLocal.Contains(".."))
 			{
-				MostrarError("El nombre del correo contiene caracteres invalidos");
+				MostrarError("El nombre del correo solo permite letras, numeros, punto, guion y guion bajo");
 				return;
 			}
 
-			if (!DominiosCorreoPermitidos.Contains(dominioCorreo))
+			if (!dominiosCorreoPermitidos.Any(d => d.Equals(dominioCorreo, StringComparison.OrdinalIgnoreCase)))
 			{
 				MostrarError("Selecciona un dominio de correo valido");
 				return;
@@ -261,18 +255,20 @@ using Vinoteca.Services;
 
 		private void ConfigurarDominiosCorreo()
 		{
+			dominiosCorreoPermitidos = DataService.ObtenerDominiosCorreo();
 			cmbDominioCorreo.Items.Clear();
-			foreach (string dominio in DominiosCorreoPermitidos)
+			foreach (string dominio in dominiosCorreoPermitidos)
 			{
 				cmbDominioCorreo.Items.Add("@" + dominio);
 			}
 
-			cmbDominioCorreo.SelectedIndex = 0;
+			cmbDominioCorreo.SelectedIndex = cmbDominioCorreo.Items.Count > 0 ? 0 : -1;
 		}
 
 		private string ObtenerDominioCorreoActual()
 		{
-			string seleccionado = cmbDominioCorreo.SelectedItem?.ToString() ?? "@" + DominiosCorreoPermitidos[0];
+			string dominioDefault = dominiosCorreoPermitidos.FirstOrDefault() ?? "gmail.com";
+			string seleccionado = cmbDominioCorreo.SelectedItem?.ToString() ?? "@" + dominioDefault;
 			return seleccionado.TrimStart('@');
 		}
 
@@ -290,14 +286,14 @@ using Vinoteca.Services;
 			}
 
 			string dominio = dominioCorreo.Trim().TrimStart('@');
-			int indice = Array.IndexOf(DominiosCorreoPermitidos, dominio);
+			int indice = dominiosCorreoPermitidos.FindIndex(d => d.Equals(dominio, StringComparison.OrdinalIgnoreCase));
 			cmbDominioCorreo.SelectedIndex = indice >= 0 ? indice : 0;
 		}
 
 		private void SepararCorreo(string correo, out string correoLocal, out string dominioCorreo)
 		{
 			correoLocal = correo;
-			dominioCorreo = DominiosCorreoPermitidos[0];
+			dominioCorreo = dominiosCorreoPermitidos.FirstOrDefault() ?? "gmail.com";
 
 			if (string.IsNullOrWhiteSpace(correo))
 			{

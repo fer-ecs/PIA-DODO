@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Text.Json;
 using Vinoteca.Models;
 
@@ -21,12 +22,15 @@ namespace Vinoteca.Services
 		private static readonly string productosFile = Path.Combine(dataFolder, "productos.json");
 		private static readonly string ventasFile = Path.Combine(dataFolder, "ventas.json");
 		private static readonly string categoriasFile = Path.Combine(dataFolder, "categorias.json");
+		private static readonly string dominiosCorreoFile = Path.Combine(dataFolder, "dominios_correo.json");
+		private static readonly string ventaBorradorFile = Path.Combine(dataFolder, "ventas_borrador.json");
 
 		private static readonly string legacyDataFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Data");
 		private static readonly string legacyUsuariosFile = Path.Combine(legacyDataFolder, "usuarios.json");
 		private static readonly string legacyProductosFile = Path.Combine(legacyDataFolder, "productos.json");
 		private static readonly string legacyVentasFile = Path.Combine(legacyDataFolder, "ventas.json");
 		private static readonly string legacyCategoriasFile = Path.Combine(legacyDataFolder, "categorias.json");
+		private static readonly string legacyDominiosCorreoFile = Path.Combine(legacyDataFolder, "dominios_correo.json");
 
 		public static void InicializarArchivos()
 		{
@@ -59,6 +63,16 @@ namespace Vinoteca.Services
 					GuardarJson(categoriasFile, CrearCategoriasBase());
 				}
 
+				if (!File.Exists(dominiosCorreoFile))
+				{
+					GuardarJson(dominiosCorreoFile, CrearDominiosCorreoBase());
+				}
+
+				if (!File.Exists(ventaBorradorFile))
+				{
+					GuardarJson(ventaBorradorFile, new List<VentaBorrador>());
+				}
+
 				ActualizarUsuariosSistema();
 				AsegurarDatosMuestra();
 				AsegurarIdentificadores();
@@ -76,6 +90,7 @@ namespace Vinoteca.Services
 			CopiarArchivoSiHaceFalta(legacyProductosFile, productosFile);
 			CopiarArchivoSiHaceFalta(legacyVentasFile, ventasFile);
 			CopiarArchivoSiHaceFalta(legacyCategoriasFile, categoriasFile);
+			CopiarArchivoSiHaceFalta(legacyDominiosCorreoFile, dominiosCorreoFile);
 		}
 
 		private static void CopiarArchivoSiHaceFalta(string origen, string destino)
@@ -115,6 +130,8 @@ namespace Vinoteca.Services
 		}
 
 		private static string NormalizarCorreo(string? valor) => (valor ?? string.Empty).Trim().ToLowerInvariant();
+
+		private static string NormalizarDominioCorreo(string? valor) => (valor ?? string.Empty).Trim().TrimStart('@').ToLowerInvariant();
 
 		private static string NormalizarTextoTecnico(string? valor) => (valor ?? string.Empty).Trim();
 
@@ -242,6 +259,20 @@ namespace Vinoteca.Services
 				"Blanco",
 				"Rosado",
 				"Espumoso"
+			};
+		}
+
+		private static List<string> CrearDominiosCorreoBase()
+		{
+			return new List<string>
+			{
+				"gmail.com",
+				"outlook.com",
+				"yahoo.com",
+				"hotmail.com",
+				"live.com",
+				"icloud.com",
+				"vinoteca.com"
 			};
 		}
 
@@ -407,6 +438,32 @@ namespace Vinoteca.Services
 			catch
 			{
 				return CrearCategoriasBase();
+			}
+		}
+
+		private static List<string> ObtenerDominiosCorreoSinInicializar()
+		{
+			try
+			{
+				string json = File.ReadAllText(dominiosCorreoFile);
+				return JsonSerializer.Deserialize<List<string>>(json) ?? CrearDominiosCorreoBase();
+			}
+			catch
+			{
+				return CrearDominiosCorreoBase();
+			}
+		}
+
+		private static List<VentaBorrador> ObtenerVentasBorradorSinInicializar()
+		{
+			try
+			{
+				string json = File.ReadAllText(ventaBorradorFile);
+				return JsonSerializer.Deserialize<List<VentaBorrador>>(json) ?? new List<VentaBorrador>();
+			}
+			catch
+			{
+				return new List<VentaBorrador>();
 			}
 		}
 
@@ -823,6 +880,66 @@ namespace Vinoteca.Services
 			return true;
 		}
 
+		public static List<string> ObtenerDominiosCorreo()
+		{
+			InicializarArchivos();
+			return ObtenerDominiosCorreoSinInicializar()
+				.Concat(CrearDominiosCorreoBase())
+				.Select(NormalizarDominioCorreo)
+				.Where(EsDominioCorreoValido)
+				.Distinct(StringComparer.OrdinalIgnoreCase)
+				.OrderBy(d => d)
+				.ToList();
+		}
+
+		public static bool GuardarDominioCorreo(string dominio)
+		{
+			var dominios = ObtenerDominiosCorreo();
+			string dominioLimpio = NormalizarDominioCorreo(dominio);
+
+			if (!EsDominioCorreoValido(dominioLimpio) ||
+				dominios.Any(d => d.Equals(dominioLimpio, StringComparison.OrdinalIgnoreCase)))
+			{
+				return false;
+			}
+
+			dominios.Add(dominioLimpio);
+			GuardarJson(dominiosCorreoFile, dominios.OrderBy(d => d).ToList());
+			return true;
+		}
+
+		public static bool EliminarDominioCorreo(string dominio)
+		{
+			var dominios = ObtenerDominiosCorreo();
+			string dominioLimpio = NormalizarDominioCorreo(dominio);
+			var dominioActual = dominios.FirstOrDefault(d => d.Equals(dominioLimpio, StringComparison.OrdinalIgnoreCase));
+
+			if (dominioActual == null ||
+				CrearDominiosCorreoBase().Any(d => d.Equals(dominioActual, StringComparison.OrdinalIgnoreCase)))
+			{
+				return false;
+			}
+
+			dominios.Remove(dominioActual);
+			GuardarJson(dominiosCorreoFile, dominios);
+			return true;
+		}
+
+		public static bool DominioCorreoEnUso(string dominio)
+		{
+			string dominioLimpio = NormalizarDominioCorreo(dominio);
+			return ObtenerUsuarios().Any(u =>
+				!string.IsNullOrWhiteSpace(u.Correo) &&
+				u.Correo.EndsWith("@" + dominioLimpio, StringComparison.OrdinalIgnoreCase));
+		}
+
+		public static bool EsDominioCorreoValido(string dominio)
+		{
+			string limpio = NormalizarDominioCorreo(dominio);
+			return limpio.Length is >= 4 and <= 80 &&
+				Regex.IsMatch(limpio, @"^[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?(?:\.[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?)+$");
+		}
+
 		public static void GuardarProducto(Producto producto)
 		{
 			var productos = ObtenerProductos();
@@ -898,6 +1015,36 @@ namespace Vinoteca.Services
 			ventas.Add(nuevaVenta);
 			GuardarJson(ventasFile, ventas);
 			AsegurarIdentificadores();
+		}
+
+		public static VentaBorrador? ObtenerVentaBorrador(string usuarioId)
+		{
+			InicializarArchivos();
+			return ObtenerVentasBorradorSinInicializar()
+				.FirstOrDefault(v => v.UsuarioId == usuarioId);
+		}
+
+		public static void GuardarVentaBorrador(VentaBorrador borrador)
+		{
+			if (string.IsNullOrWhiteSpace(borrador.UsuarioId) || borrador.Productos.Count == 0)
+			{
+				return;
+			}
+
+			var borradores = ObtenerVentasBorradorSinInicializar();
+			borradores.RemoveAll(v => v.UsuarioId == borrador.UsuarioId);
+			borrador.FechaActualizacion = DateTime.Now;
+			borradores.Add(borrador);
+			GuardarJson(ventaBorradorFile, borradores);
+		}
+
+		public static void EliminarVentaBorrador(string usuarioId)
+		{
+			var borradores = ObtenerVentasBorradorSinInicializar();
+			if (borradores.RemoveAll(v => v.UsuarioId == usuarioId) > 0)
+			{
+				GuardarJson(ventaBorradorFile, borradores);
+			}
 		}
 	}
 }

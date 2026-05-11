@@ -10,9 +10,8 @@ namespace Vinoteca.Views
 {
 	public sealed partial class LoginView : Page
 	{
-		private int intentosFallidos = 0;
-		private int maxIntentos = 3;
-		private DateTime? ultimoIntento;
+		private const int MaxIntentos = 3;
+		private const int MinutosBloqueo = 5;
 
 		public LoginView()
 		{
@@ -29,17 +28,6 @@ namespace Vinoteca.Views
 
 				string correo = txtCorreo.Text;
 				string password = txtPassword.Password;
-
-				if (intentosFallidos >= maxIntentos)
-				{
-					if (ultimoIntento.HasValue && DateTime.Now.Subtract(ultimoIntento.Value).TotalMinutes < 5)
-					{
-						MostrarError("Demasiados intentos, espere 5 minutos");
-						return;
-					}
-
-					intentosFallidos = 0;
-				}
 
 				if (string.IsNullOrWhiteSpace(correo))
 				{
@@ -102,10 +90,20 @@ namespace Vinoteca.Views
 
 				if (usuario == null || usuario.Contrasena != password)
 				{
-					intentosFallidos++;
-					ultimoIntento = DateTime.Now;
-					MostrarError($"Credenciales incorrectas intento {intentosFallidos}/{maxIntentos}");
+					RegistrarIntentoFallido(usuario);
 					return;
+				}
+
+				if (usuario.BloqueadoHasta.HasValue)
+				{
+					if (usuario.BloqueadoHasta.Value > DateTime.Now)
+					{
+						int minutos = Math.Max(1, (int)Math.Ceiling((usuario.BloqueadoHasta.Value - DateTime.Now).TotalMinutes));
+						MostrarError($"Cuenta bloqueada temporalmente, espere {minutos} minuto(s)");
+						return;
+					}
+
+					LimpiarBloqueo(usuario);
 				}
 
 				if (!usuario.Activo)
@@ -114,7 +112,7 @@ namespace Vinoteca.Views
 					return;
 				}
 
-				intentosFallidos = 0;
+				LimpiarBloqueo(usuario);
 				SessionService.IniciarSesion(usuario);
 
 				if (usuario.Rol == RolesSistema.Administrador)
@@ -141,6 +139,52 @@ namespace Vinoteca.Views
 		{
 			string patron = @"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z\d\s])[^\s]{6,}$";
 			return Regex.IsMatch(password, patron);
+		}
+
+		private void RegistrarIntentoFallido(Models.Usuario? usuario)
+		{
+			if (usuario == null)
+			{
+				MostrarError("Credenciales incorrectas");
+				return;
+			}
+
+			if (usuario.BloqueadoHasta.HasValue && usuario.BloqueadoHasta.Value > DateTime.Now)
+			{
+				int minutos = Math.Max(1, (int)Math.Ceiling((usuario.BloqueadoHasta.Value - DateTime.Now).TotalMinutes));
+				MostrarError($"Cuenta bloqueada temporalmente, espere {minutos} minuto(s)");
+				return;
+			}
+
+			if (usuario.BloqueadoHasta.HasValue && usuario.BloqueadoHasta.Value <= DateTime.Now)
+			{
+				usuario.IntentosFallidosLogin = 0;
+				usuario.BloqueadoHasta = null;
+			}
+
+			usuario.IntentosFallidosLogin++;
+			if (usuario.IntentosFallidosLogin >= MaxIntentos)
+			{
+				usuario.BloqueadoHasta = DateTime.Now.AddMinutes(MinutosBloqueo);
+				DataService.ActualizarUsuario(usuario);
+				MostrarError("Demasiados intentos, espere 5 minutos");
+				return;
+			}
+
+			DataService.ActualizarUsuario(usuario);
+			MostrarError($"Credenciales incorrectas intento {usuario.IntentosFallidosLogin}/{MaxIntentos}");
+		}
+
+		private void LimpiarBloqueo(Models.Usuario usuario)
+		{
+			if (usuario.IntentosFallidosLogin == 0 && usuario.BloqueadoHasta == null)
+			{
+				return;
+			}
+
+			usuario.IntentosFallidosLogin = 0;
+			usuario.BloqueadoHasta = null;
+			DataService.ActualizarUsuario(usuario);
 		}
 
 		private void MostrarError(string mensaje)

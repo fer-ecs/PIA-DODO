@@ -16,6 +16,8 @@ namespace Vinoteca.Helpers
 		private const string ModoSoloNumeros = "SoloNumeros";
 		private const string ModoSoloDecimal = "SoloDecimal";
 		private const string ModoTextoLibre = "TextoLibre";
+		private const string ModoCorreoLocal = "CorreoLocal";
+		private const string ModoDominioCorreo = "DominioCorreo";
 
 		public static void AplicarSinEspaciosNiEnter(DependencyObject parent)
 		{
@@ -118,6 +120,30 @@ namespace Vinoteca.Helpers
 			}
 		}
 
+		public static void AplicarCorreoLocal(params TextBox[] textBoxes)
+		{
+			foreach (var textBox in textBoxes)
+			{
+				textBox.Tag = ModoCorreoLocal;
+				textBox.KeyDown -= TextBox_KeyDown;
+				textBox.KeyDown += TextBox_KeyDown;
+				textBox.TextChanged -= TextBox_TextChanged;
+				textBox.TextChanged += TextBox_TextChanged;
+			}
+		}
+
+		public static void AplicarDominioCorreo(params TextBox[] textBoxes)
+		{
+			foreach (var textBox in textBoxes)
+			{
+				textBox.Tag = ModoDominioCorreo;
+				textBox.KeyDown -= TextBox_KeyDown;
+				textBox.KeyDown += TextBox_KeyDown;
+				textBox.TextChanged -= TextBox_TextChanged;
+				textBox.TextChanged += TextBox_TextChanged;
+			}
+		}
+
 		private static void TextBox_KeyDown(object sender, KeyRoutedEventArgs e)
 		{
 			if (sender is not TextBox textBox)
@@ -126,7 +152,7 @@ namespace Vinoteca.Helpers
 			}
 
 			string modo = textBox.Tag?.ToString() ?? ModoSinEspacios;
-			if (e.Key == VirtualKey.Enter || ((modo == ModoSinEspacios || modo == ModoSoloNumeros || modo == ModoSoloDecimal) && e.Key == VirtualKey.Space))
+			if (e.Key == VirtualKey.Enter || ((modo == ModoSinEspacios || modo == ModoSoloNumeros || modo == ModoSoloDecimal || modo == ModoCorreoLocal || modo == ModoDominioCorreo) && e.Key == VirtualKey.Space))
 			{
 				e.Handled = true;
 			}
@@ -153,6 +179,8 @@ namespace Vinoteca.Helpers
 				ModoLetrasConEspacios => LimpiarLetrasConEspacios(textBox.Text),
 				ModoSoloNumeros => LimpiarSoloNumeros(textBox.Text),
 				ModoSoloDecimal => LimpiarSoloDecimal(textBox.Text),
+				ModoCorreoLocal => LimpiarCorreoLocal(textBox.Text),
+				ModoDominioCorreo => LimpiarDominioCorreo(textBox.Text),
 				ModoTextoLibre => textBox.Text,
 				_ => QuitarEspaciosEnBlanco(textBox.Text)
 			};
@@ -215,6 +243,23 @@ namespace Vinoteca.Helpers
 			}
 
 			return resultado.ToString();
+		}
+
+		private static string LimpiarCorreoLocal(string texto)
+		{
+			return string.Concat(texto.Where(c =>
+				char.IsLetterOrDigit(c) ||
+				c == '.' ||
+				c == '_' ||
+				c == '-'));
+		}
+
+		private static string LimpiarDominioCorreo(string texto)
+		{
+			return string.Concat(texto.ToLowerInvariant().Where(c =>
+				char.IsLetterOrDigit(c) ||
+				c == '.' ||
+				c == '-'));
 		}
 	}
 }

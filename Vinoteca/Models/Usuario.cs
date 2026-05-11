@@ -1,3 +1,4 @@
+using System;
 using Vinoteca.Services;
 
 namespace Vinoteca.Models
@@ -25,5 +26,7 @@ namespace Vinoteca.Models
 			}
 		}
 		public bool Activo { get; set; }
+		public int IntentosFallidosLogin { get; set; }
+		public DateTime? BloqueadoHasta { get; set; }
 	}
 }

@@ -169,6 +169,34 @@ namespace Vinoteca.Services
 			NotificarCambio();
 		}
 
+		public static void ReemplazarCarrito(IEnumerable<CarritoItem> items)
+		{
+			carrito.Clear();
+
+			foreach (var item in items)
+			{
+				if (item?.Producto == null || item.Cantidad <= 0)
+				{
+					continue;
+				}
+
+				var productoActual = DataService.ObtenerProductos()
+					.FirstOrDefault(p => p.Id == item.Producto.Id && p.Activo);
+				if (productoActual == null)
+				{
+					continue;
+				}
+
+				carrito.Add(new CarritoItem
+				{
+					Producto = productoActual,
+					Cantidad = Math.Min(item.Cantidad, productoActual.Stock)
+				});
+			}
+
+			NotificarCambio();
+		}
+
 		public static double ObtenerTotal()
 		{
 			return carrito.Sum(c => c.Subtotal);

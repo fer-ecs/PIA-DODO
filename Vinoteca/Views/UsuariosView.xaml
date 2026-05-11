@@ -38,6 +38,20 @@
 					</StackPanel>
 
 					<StackPanel Spacing="4">
+						<TextBlock Text="Dominio personalizado" Style="{StaticResource WineFieldLabelStyle}"/>
+						<Grid ColumnSpacing="8">
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="*"/>
+								<ColumnDefinition Width="Auto"/>
+								<ColumnDefinition Width="Auto"/>
+							</Grid.ColumnDefinitions>
+							<TextBox x:Name="txtNuevoDominio" Grid.Column="0" Style="{StaticResource WineTextBoxStyle}" MaxLength="80" PlaceholderText="empresa.com"/>
+							<Button x:Name="btnAgregarDominio" Grid.Column="1" Content="Agregar" Style="{StaticResource WineSecondaryButtonStyle}" Click="btnAgregarDominio_Click"/>
+							<Button x:Name="btnEliminarDominio" Grid.Column="2" Content="Eliminar" Style="{StaticResource WineDangerButtonStyle}" Click="btnEliminarDominio_Click"/>
+						</Grid>
+					</StackPanel>
+
+					<StackPanel Spacing="4">
 						<TextBlock Text="Contrasena" Style="{StaticResource WineFieldLabelStyle}"/>
 						<PasswordBox x:Name="txtPassword" Style="{StaticResource WinePasswordBoxStyle}" MaxLength="20" PlaceholderText="********"/>
 					</StackPanel>

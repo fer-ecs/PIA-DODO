@@ -15,20 +15,11 @@ namespace Vinoteca.Views
 	public sealed partial class UsuariosView : Page, ICambiosPendientes
 	{
 		private const string CorreoAdminPrincipal = "admin@vinoteca.com";
-		private static readonly string[] DominiosCorreoPermitidos =
-		{
-			"gmail.com",
-			"outlook.com",
-			"yahoo.com",
-			"hotmail.com",
-			"live.com",
-			"icloud.com",
-			"vinoteca.com"
-		};
 
 		private Usuario? usuarioSeleccionado;
 		private bool ignorarCambioSeleccion;
 		private List<Usuario> todosLosUsuarios = new();
+		private List<string> dominiosCorreoPermitidos = new();
 
 		public ObservableCollection<UsuarioItemViewModel> Usuarios { get; } = new();
 
@@ -37,6 +28,8 @@ namespace Vinoteca.Views
 			InitializeComponent();
 			InputRestrictionsHelper.AplicarSinEspaciosNiEnter(this);
 			InputRestrictionsHelper.AplicarSoloLetrasConEspacios(txtNombre);
+			InputRestrictionsHelper.AplicarCorreoLocal(txtCorreo);
+			InputRestrictionsHelper.AplicarDominioCorreo(txtNuevoDominio);
 			InputRestrictionsHelper.AplicarTextoLibreSinEnter(txtBuscarUsuario);
 			lvUsuarios.ItemsSource = Usuarios;
 			ConfigurarRoles();
@@ -78,6 +71,9 @@ namespace Vinoteca.Views
 			txtNombre.IsEnabled = false;
 			txtCorreo.IsEnabled = false;
 			cmbDominioCorreo.IsEnabled = false;
+			txtNuevoDominio.IsEnabled = false;
+			btnAgregarDominio.IsEnabled = false;
+			btnEliminarDominio.IsEnabled = false;
 			txtPassword.IsEnabled = false;
 			txtConfirmarPassword.IsEnabled = false;
 			cmbRol.IsEnabled = false;
@@ -100,6 +96,9 @@ namespace Vinoteca.Views
 			txtNombre.IsEnabled = false;
 			txtCorreo.IsEnabled = false;
 			cmbDominioCorreo.IsEnabled = false;
+			txtNuevoDominio.IsEnabled = false;
+			btnAgregarDominio.IsEnabled = false;
+			btnEliminarDominio.IsEnabled = false;
 			txtPassword.IsEnabled = false;
 			txtConfirmarPassword.IsEnabled = false;
 			cmbRol.IsEnabled = false;
@@ -124,13 +123,14 @@ namespace Vinoteca.Views
 
 		private void ConfigurarDominiosCorreo()
 		{
+			dominiosCorreoPermitidos = DataService.ObtenerDominiosCorreo();
 			cmbDominioCorreo.Items.Clear();
-			foreach (string dominio in DominiosCorreoPermitidos)
+			foreach (string dominio in dominiosCorreoPermitidos)
 			{
 				cmbDominioCorreo.Items.Add(dominio);
 			}
 
-			cmbDominioCorreo.SelectedIndex = 0;
+			cmbDominioCorreo.SelectedIndex = cmbDominioCorreo.Items.Count > 0 ? 0 : -1;
 		}
 
 		private void AplicarFiltroUsuarios()
@@ -355,7 +355,7 @@ namespace Vinoteca.Views
 				return false;
 			}
 
-			if (!DominiosCorreoPermitidos.Any(d => d.Equals(dominioCorreo, StringComparison.OrdinalIgnoreCase)))
+			if (!dominiosCorreoPermitidos.Any(d => d.Equals(dominioCorreo, StringComparison.OrdinalIgnoreCase)))
 			{
 				MostrarError("Selecciona un dominio de correo valido");
 				return false;
@@ -563,7 +563,7 @@ namespace Vinoteca.Views
 			txtConfirmarPassword.Password = string.Empty;
 			SeleccionarRol(RolesSistema.Empleado);
 			chkActivo.IsChecked = true;
-			SeleccionarDominioCorreo(DominiosCorreoPermitidos[0]);
+			SeleccionarDominioCorreo(dominiosCorreoPermitidos.FirstOrDefault() ?? "gmail.com");
 
 			ignorarCambioSeleccion = true;
 			lvUsuarios.SelectedItem = null;
@@ -646,7 +646,7 @@ namespace Vinoteca.Views
 
 		private string ObtenerDominioCorreoActual()
 		{
-			return cmbDominioCorreo.SelectedItem?.ToString() ?? DominiosCorreoPermitidos[0];
+			return cmbDominioCorreo.SelectedItem?.ToString() ?? dominiosCorreoPermitidos.FirstOrDefault() ?? "gmail.com";
 		}
 
 		private static string ConstruirCorreo(string correoLocal, string dominioCorreo)
@@ -658,13 +658,13 @@ namespace Vinoteca.Views
 		{
 			string nombre = correoLocal.Trim();
 			return !nombre.Contains("..") &&
-				Regex.IsMatch(nombre, @"^[A-Za-z0-9](?:[A-Za-z0-9._%+-]{0,38}[A-Za-z0-9])?$");
+				Regex.IsMatch(nombre, @"^[A-Za-z0-9](?:[A-Za-z0-9._-]{0,38}[A-Za-z0-9])?$");
 		}
 
-		private static void SepararCorreo(string correo, out string correoLocal, out string dominioCorreo)
+		private void SepararCorreo(string correo, out string correoLocal, out string dominioCorreo)
 		{
 			correoLocal = string.Empty;
-			dominioCorreo = DominiosCorreoPermitidos[0];
+			dominioCorreo = dominiosCorreoPermitidos.FirstOrDefault() ?? "gmail.com";
 
 			int indiceArroba = correo.IndexOf('@');
 			if (indiceArroba <= 0 || indiceArroba >= correo.Length - 1)
@@ -678,9 +678,61 @@ namespace Vinoteca.Views
 
 		private void SeleccionarDominioCorreo(string dominio)
 		{
-			string dominioNormalizado = DominiosCorreoPermitidos
-				.FirstOrDefault(d => d.Equals(dominio, StringComparison.OrdinalIgnoreCase)) ?? DominiosCorreoPermitidos[0];
+			string dominioNormalizado = dominiosCorreoPermitidos
+				.FirstOrDefault(d => d.Equals(dominio, StringComparison.OrdinalIgnoreCase)) ?? dominiosCorreoPermitidos.FirstOrDefault() ?? "gmail.com";
 			cmbDominioCorreo.SelectedItem = dominioNormalizado;
+		}
+
+		private void btnAgregarDominio_Click(object sender, RoutedEventArgs e)
+		{
+			if (!SessionService.PuedeGestionarUsuarios)
+			{
+				MostrarError("Solo el administrador puede agregar dominios");
+				return;
+			}
+
+			string dominio = txtNuevoDominio.Text?.Trim().TrimStart('@').ToLowerInvariant() ?? string.Empty;
+			if (!DataService.EsDominioCorreoValido(dominio))
+			{
+				MostrarError("Ingresa un dominio valido, por ejemplo empresa.com");
+				return;
+			}
+
+			if (!DataService.GuardarDominioCorreo(dominio))
+			{
+				MostrarError("No se pudo agregar el dominio");
+				return;
+			}
+
+			txtNuevoDominio.Text = string.Empty;
+			ConfigurarDominiosCorreo();
+			SeleccionarDominioCorreo(dominio);
+			MostrarExito("Dominio agregado correctamente");
+		}
+
+		private void btnEliminarDominio_Click(object sender, RoutedEventArgs e)
+		{
+			if (!SessionService.PuedeGestionarUsuarios)
+			{
+				MostrarError("Solo el administrador puede eliminar dominios");
+				return;
+			}
+
+			string dominio = ObtenerDominioCorreoActual();
+			if (DataService.DominioCorreoEnUso(dominio))
+			{
+				MostrarError("No se puede eliminar un dominio usado por cuentas existentes");
+				return;
+			}
+
+			if (!DataService.EliminarDominioCorreo(dominio))
+			{
+				MostrarError("No se pudo eliminar el dominio seleccionado");
+				return;
+			}
+
+			ConfigurarDominiosCorreo();
+			MostrarExito("Dominio eliminado correctamente");
 		}
 
 		private void ActualizarModoFormulario()

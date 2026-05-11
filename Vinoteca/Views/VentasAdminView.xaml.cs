@@ -11,10 +11,11 @@ using Vinoteca.Services;
 
 namespace Vinoteca.Views
 {
-	public sealed partial class VentasAdminView : Page
+	public sealed partial class VentasAdminView : Page, IVentaTemporal
 	{
 		public ObservableCollection<CarritoItem> ItemsCarrito { get; } = new();
 		private bool actualizandoPago;
+		private bool pagoVerificado;
 
 		public VentasAdminView()
 		{
@@ -35,17 +36,80 @@ namespace Vinoteca.Views
 			cmbMetodoPago.SelectedIndex = 0;
 			ActualizarInterfaz();
 			CarritoService.CarritoActualizado += ActualizarInterfaz;
+			Loaded += VentasAdminView_Loaded;
 			Unloaded += VentasAdminView_Unloaded;
+		}
+
+		public bool TieneVentaTemporal => CarritoService.ObtenerCarrito().Count > 0;
+
+		public VentaBorrador CrearVentaBorrador()
+		{
+			return new VentaBorrador
+			{
+				UsuarioId = SessionService.UsuarioActivo?.Id ?? string.Empty,
+				MetodoPago = ObtenerMetodoPago(),
+				MontoRecibido = ObtenerMontoRecibido(),
+				ReferenciaPago = txtReferenciaPago.Text?.Trim() ?? string.Empty,
+				Productos = CarritoService.ObtenerCarrito(),
+				FechaActualizacion = DateTime.Now
+			};
+		}
+
+		private async void VentasAdminView_Loaded(object sender, RoutedEventArgs e)
+		{
+			string usuarioId = SessionService.UsuarioActivo?.Id ?? string.Empty;
+			if (string.IsNullOrWhiteSpace(usuarioId) || CarritoService.ObtenerCarrito().Count > 0)
+			{
+				return;
+			}
+
+			var borrador = DataService.ObtenerVentaBorrador(usuarioId);
+			if (borrador == null || borrador.Productos.Count == 0)
+			{
+				return;
+			}
+
+			var dialog = new ContentDialog
+			{
+				Title = "Venta en borrador",
+				Content = $"Hay una venta guardada temporalmente del {borrador.FechaActualizacion:g}. Deseas retomarla?",
+				PrimaryButtonText = "Retomar",
+				SecondaryButtonText = "Descartar",
+				CloseButtonText = "Despues",
+				XamlRoot = XamlRoot,
+				DefaultButton = ContentDialogButton.Primary
+			};
+
+			var resultado = await dialog.ShowAsync();
+			if (resultado == ContentDialogResult.Primary)
+			{
+				CarritoService.ReemplazarCarrito(borrador.Productos);
+				SeleccionarMetodoPago(borrador.MetodoPago);
+				txtMontoRecibido.Text = borrador.MontoRecibido > 0
+					? borrador.MontoRecibido.ToString("0.00", CultureInfo.InvariantCulture)
+					: string.Empty;
+				txtReferenciaPago.Text = borrador.ReferenciaPago ?? string.Empty;
+				pagoVerificado = false;
+				MostrarEstado("Venta recuperada, verifica el pago antes de cobrar");
+				ActualizarPago();
+			}
+			else if (resultado == ContentDialogResult.Secondary)
+			{
+				DataService.EliminarVentaBorrador(usuarioId);
+				MostrarEstado("Borrador descartado");
+			}
 		}
 
 		private void VentasAdminView_Unloaded(object sender, RoutedEventArgs e)
 		{
 			CarritoService.CarritoActualizado -= ActualizarInterfaz;
+			Loaded -= VentasAdminView_Loaded;
 			Unloaded -= VentasAdminView_Unloaded;
 		}
 
 		private void ActualizarInterfaz()
 		{
+			pagoVerificado = false;
 			var carrito = CarritoService.ObtenerCarrito();
 			ItemsCarrito.Clear();
 			foreach (var item in carrito)
@@ -103,11 +167,23 @@ namespace Vinoteca.Views
 				return;
 			}
 
+			if (!pagoVerificado)
+			{
+				MostrarEstado("Verifica el pago antes de cobrar");
+				return;
+			}
+
 			double total = CarritoService.ObtenerTotal();
 			string metodoPago = ObtenerMetodoPago();
 			bool pagoEfectivo = metodoPago == "Efectivo";
 			double montoRecibido = pagoEfectivo ? ObtenerMontoRecibido() : total;
 			string referenciaPago = txtReferenciaPago.Text?.Trim() ?? string.Empty;
+
+			if (montoRecibido <= 0)
+			{
+				MostrarEstado("Ingresa un monto mayor a 0");
+				return;
+			}
 
 			if (pagoEfectivo && montoRecibido < total)
 			{
@@ -195,6 +271,7 @@ namespace Vinoteca.Views
 			}
 
 			CarritoService.LimpiarCarrito();
+			DataService.EliminarVentaBorrador(SessionService.UsuarioActivo?.Id ?? string.Empty);
 
 			if (alertasStock.Count > 0)
 			{
@@ -207,6 +284,7 @@ namespace Vinoteca.Views
 
 		private void cmbMetodoPago_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
+			ResetearVerificacion();
 			ActualizarPago();
 		}
 
@@ -217,6 +295,22 @@ namespace Vinoteca.Views
 				return;
 			}
 
+			ResetearVerificacion();
+			ActualizarPago();
+		}
+
+		private void btnVerificarPago_Click(object sender, RoutedEventArgs e)
+		{
+			if (ValidarPago(out string mensaje))
+			{
+				pagoVerificado = true;
+				MostrarEstado("Pago verificado, ya puedes confirmar la venta");
+				ActualizarPago();
+				return;
+			}
+
+			pagoVerificado = false;
+			MostrarEstado(mensaje);
 			ActualizarPago();
 		}
 
@@ -232,6 +326,7 @@ namespace Vinoteca.Views
 			bool pagoEfectivo = metodoPago == "Efectivo";
 			double recibido = pagoEfectivo ? ObtenerMontoRecibido() : total;
 			double cambio = pagoEfectivo ? Math.Max(0, recibido - total) : 0;
+			bool hayProductos = CarritoService.ObtenerCarrito().Count > 0;
 
 			actualizandoPago = true;
 			txtMontoRecibido.IsEnabled = pagoEfectivo;
@@ -269,7 +364,65 @@ namespace Vinoteca.Views
 				txtPagoDetalle.Text = "Confirma el deposito en la cuenta del negocio y captura la referencia antes de emitir el ticket";
 				txtCambio.Visibility = Visibility.Collapsed;
 			}
+			btnVaciar.IsEnabled = hayProductos && SessionService.PuedeComprar;
+			btnVerificarPago.IsEnabled = hayProductos && SessionService.PuedeComprar && cmbMetodoPago.SelectedIndex >= 0;
+			btnFinalizarVenta.IsEnabled = hayProductos && SessionService.PuedeComprar && pagoVerificado;
 			actualizandoPago = false;
+		}
+
+		private bool ValidarPago(out string mensaje)
+		{
+			mensaje = string.Empty;
+			if (CarritoService.ObtenerCarrito().Count == 0)
+			{
+				mensaje = "No hay productos para procesar";
+				return false;
+			}
+
+			if (cmbMetodoPago.SelectedIndex < 0)
+			{
+				mensaje = "Selecciona un metodo de pago";
+				return false;
+			}
+
+			double total = CarritoService.ObtenerTotal();
+			if (total <= 0)
+			{
+				mensaje = "La venta debe tener un total mayor a 0";
+				return false;
+			}
+
+			string metodoPago = ObtenerMetodoPago();
+			bool pagoEfectivo = metodoPago == "Efectivo";
+			double montoRecibido = pagoEfectivo ? ObtenerMontoRecibido() : total;
+			string referenciaPago = txtReferenciaPago.Text?.Trim() ?? string.Empty;
+
+			if (montoRecibido <= 0)
+			{
+				mensaje = "Ingresa un monto mayor a 0";
+				return false;
+			}
+
+			if (pagoEfectivo && montoRecibido < total)
+			{
+				mensaje = "El efectivo recibido no cubre el total de la venta";
+				return false;
+			}
+
+			if (!pagoEfectivo && string.IsNullOrWhiteSpace(referenciaPago))
+			{
+				mensaje = metodoPago == "Tarjeta"
+					? "Ingresa el folio de autorizacion de la terminal"
+					: "Ingresa la referencia bancaria de la transferencia";
+				return false;
+			}
+
+			return true;
+		}
+
+		private void ResetearVerificacion()
+		{
+			pagoVerificado = false;
 		}
 
 		private string ObtenerMetodoPago()
@@ -289,6 +442,20 @@ namespace Vinoteca.Views
 		{
 			txtEstado.Text = mensaje;
 			txtEstado.Visibility = Visibility.Visible;
+		}
+
+		private void SeleccionarMetodoPago(string metodoPago)
+		{
+			foreach (ComboBoxItem item in cmbMetodoPago.Items)
+			{
+				if (item.Content?.ToString()?.Equals(metodoPago, StringComparison.OrdinalIgnoreCase) == true)
+				{
+					cmbMetodoPago.SelectedItem = item;
+					return;
+				}
+			}
+
+			cmbMetodoPago.SelectedIndex = 0;
 		}
 	}
 }

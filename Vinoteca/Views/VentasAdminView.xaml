@@ -100,8 +100,9 @@
 					</Grid>
 
 					<StackPanel Orientation="Horizontal" Spacing="10" HorizontalAlignment="Right">
-						<Button Content="Vaciar" Style="{StaticResource WineSecondaryButtonStyle}" Click="btnVaciar_Click"/>
-						<Button Content="Cobrar y emitir ticket" Style="{StaticResource WinePrimaryButtonStyle}" Click="btnFinalizarVenta_Click"/>
+						<Button x:Name="btnVaciar" Content="Vaciar" Style="{StaticResource WineSecondaryButtonStyle}" Click="btnVaciar_Click"/>
+						<Button x:Name="btnVerificarPago" Content="Verificar pago" Style="{StaticResource WineSecondaryButtonStyle}" Click="btnVerificarPago_Click"/>
+						<Button x:Name="btnFinalizarVenta" Content="Cobrar y emitir ticket" Style="{StaticResource WinePrimaryButtonStyle}" Click="btnFinalizarVenta_Click"/>
 					</StackPanel>
 				</StackPanel>
 			</Grid>
