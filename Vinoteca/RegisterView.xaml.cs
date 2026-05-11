@@ -33,10 +33,10 @@ using Vinoteca.Services;
 			InputRestrictionsHelper.AplicarSinEspaciosNiEnter(this);
 			InputRestrictionsHelper.AplicarSoloLetrasConEspacios(txtNombre);
 
-			// Carga datos escritos antes
+			// Recupera lo que el usuario ya habia escrito
 			CargarValoresDelCache();
 
-			// Guarda cambios del formulario
+			// Va guardando cada cambio para no perder el formulario
 			txtNombre.TextChanged += (s, e) => GuardarEnCache(CACHE_KEY_NOMBRE, txtNombre.Text);
 			txtCorreo.TextChanged += (s, e) => GuardarEnCache(CACHE_KEY_CORREO, txtCorreo.Text);
 			cmbDominioCorreo.SelectionChanged += (s, e) => GuardarEnCache(CACHE_KEY_DOMINIO, ObtenerDominioCorreoActual());

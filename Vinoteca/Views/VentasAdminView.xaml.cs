@@ -251,7 +251,7 @@ namespace Vinoteca.Views
 			{
 				txtReferenciaPago.PlaceholderText = "Opcional";
 				txtPagoAyuda.Text = "Efectivo";
-				txtPagoDetalle.Text = "Captura el dinero recibido. El sistema calcula el cambio y registra el ticket.";
+				txtPagoDetalle.Text = "Captura el dinero recibido para calcular el cambio y registrar el ticket";
 				txtCambio.Visibility = Visibility.Visible;
 				txtCambio.Text = $"Cambio: {cambio.ToString("C")}";
 			}
@@ -259,14 +259,14 @@ namespace Vinoteca.Views
 			{
 				txtReferenciaPago.PlaceholderText = "Folio de autorizacion";
 				txtPagoAyuda.Text = "Tarjeta";
-				txtPagoDetalle.Text = "Primero cobra en la terminal externa. Si el pago fue aprobado, captura el folio y emite el ticket.";
+				txtPagoDetalle.Text = "Primero cobra en la terminal externa y despues captura el folio para emitir el ticket";
 				txtCambio.Visibility = Visibility.Collapsed;
 			}
 			else
 			{
 				txtReferenciaPago.PlaceholderText = "Referencia bancaria";
 				txtPagoAyuda.Text = "Transferencia";
-				txtPagoDetalle.Text = "Confirma el deposito en la cuenta del negocio. Captura la referencia bancaria antes de emitir el ticket.";
+				txtPagoDetalle.Text = "Confirma el deposito en la cuenta del negocio y captura la referencia antes de emitir el ticket";
 				txtCambio.Visibility = Visibility.Collapsed;
 			}
 			actualizandoPago = false;

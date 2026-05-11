@@ -17,7 +17,7 @@
 					<StackPanel Spacing="6">
 						<TextBlock Text="Gestion de usuarios" FontSize="28" FontWeight="SemiBold" Foreground="{StaticResource WineTextBrush}"/>
 						<TextBlock x:Name="txtModoFormulario" Text="Nuevo usuario" Foreground="{StaticResource WineHeroBrush}" FontWeight="SemiBold"/>
-						<TextBlock x:Name="txtDescripcionFormulario" Text="Administra cuentas del negocio y empleados registrados desde un mismo panel." TextWrapping="Wrap" Foreground="{StaticResource WineMutedBrush}"/>
+						<TextBlock x:Name="txtDescripcionFormulario" Text="Administra cuentas del negocio y empleados registrados desde un mismo panel" TextWrapping="Wrap" Foreground="{StaticResource WineMutedBrush}"/>
 					</StackPanel>
 
 					<StackPanel Spacing="4">
@@ -81,7 +81,7 @@
 			</Grid.RowDefinitions>
 			<StackPanel Margin="0,0,0,16" Spacing="12">
 				<TextBlock Text="Cuentas registradas" FontSize="24" FontWeight="SemiBold" Foreground="{StaticResource WineTextBrush}"/>
-				<TextBlock x:Name="txtDescripcionLista" Text="Selecciona una cuenta para editarla o revisar su informacion." Foreground="{StaticResource WineMutedBrush}" Margin="0,4,0,0"/>
+				<TextBlock x:Name="txtDescripcionLista" Text="Selecciona una cuenta para editarla o revisar su informacion" Foreground="{StaticResource WineMutedBrush}" Margin="0,4,0,0"/>
 				<Border Style="{StaticResource WineFilterPillStyle}">
 					<Grid ColumnSpacing="10" RowSpacing="8">
 						<Grid.ColumnDefinitions>

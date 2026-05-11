@@ -1,5 +1,6 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -91,8 +92,14 @@ namespace Vinoteca.Views
 			AplicarFiltro();
 		}
 
-		private void AplicarFiltro()
+		private void AplicarFiltro(bool conservarDesplazamiento = false)
 		{
+			double? desplazamientoActual = null;
+			if (conservarDesplazamiento && BuscarScrollViewer(gvTienda) is ScrollViewer scrollActual)
+			{
+				desplazamientoActual = scrollActual.VerticalOffset;
+			}
+
 			string busqueda = txtBuscar.Text?.Trim().ToLowerInvariant() ?? string.Empty;
 			string categoria = cmbFiltroCategoria.SelectedItem?.ToString() ?? "Todas";
 			string stock = ObtenerContenidoCombo(cmbFiltroStock);
@@ -140,6 +147,17 @@ namespace Vinoteca.Views
 				ProductosCatalogo.Add(producto);
 			}
 
+			if (desplazamientoActual.HasValue)
+			{
+				DispatcherQueue.TryEnqueue(() =>
+				{
+					if (BuscarScrollViewer(gvTienda) is ScrollViewer scrollRestaurado)
+					{
+						scrollRestaurado.ChangeView(null, desplazamientoActual.Value, null, true);
+					}
+				});
+			}
+
 			txtConteoCatalogo.Text = $"{filtrados.Count} de {todosLosProductos.Count} disponibles";
 			if (filtrados.Count == 0)
 			{
@@ -162,6 +180,30 @@ namespace Vinoteca.Views
 		private static int ObtenerIdNumerico(string? id)
 		{
 			return int.TryParse(id, out int valor) ? valor : int.MaxValue;
+		}
+
+		private static ScrollViewer? BuscarScrollViewer(DependencyObject? origen)
+		{
+			if (origen is null)
+			{
+				return null;
+			}
+
+			if (origen is ScrollViewer scrollViewer)
+			{
+				return scrollViewer;
+			}
+
+			for (int i = 0; i < VisualTreeHelper.GetChildrenCount(origen); i++)
+			{
+				var encontrado = BuscarScrollViewer(VisualTreeHelper.GetChild(origen, i));
+				if (encontrado is not null)
+				{
+					return encontrado;
+				}
+			}
+
+			return null;
 		}
 
 		private void Filtros_Changed(object sender, object e)
@@ -245,7 +287,7 @@ namespace Vinoteca.Views
 			{
 				txtEstado.Text = string.IsNullOrWhiteSpace(mensaje) ? $"{producto.Nombre} agregado a la venta" : mensaje;
 				txtEstado.Visibility = Visibility.Visible;
-				AplicarFiltro();
+				AplicarFiltro(true);
 				return;
 			}
 
@@ -261,7 +303,7 @@ namespace Vinoteca.Views
 			txtCantidadRapida.Text = $"{CarritoService.ObtenerCantidadTotalArticulos()} articulo(s)";
 			if (todosLosProductos.Count > 0)
 			{
-				AplicarFiltro();
+				AplicarFiltro(true);
 			}
 		}
 

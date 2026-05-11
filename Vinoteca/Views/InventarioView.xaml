@@ -16,7 +16,7 @@
 				<StackPanel Spacing="24">
 					<StackPanel Spacing="6">
 						<TextBlock Text="Gestion de productos" FontSize="28" FontWeight="SemiBold" Foreground="{StaticResource WineTextBrush}"/>
-						<TextBlock Text="Registra botellas, controla stock y conserva un catalogo claro para la tienda." Foreground="{StaticResource WineMutedBrush}" TextWrapping="Wrap"/>
+						<TextBlock Text="Registra botellas, controla stock y conserva un catalogo claro para la tienda" Foreground="{StaticResource WineMutedBrush}" TextWrapping="Wrap"/>
 					</StackPanel>
 
 					<StackPanel Spacing="8">

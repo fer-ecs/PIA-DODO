@@ -18,10 +18,10 @@ namespace Vinoteca
 		{
 			InitializeComponent();
 
-			// Fondo nativo de Windows
+			// Mantiene la ventana alineada con el estilo del sistema
 			SystemBackdrop = new MicaBackdrop();
 
-			// Barra superior integrada
+			// Usa la franja superior como barra real de la app
 			ExtendsContentIntoTitleBar = true;
 			SetTitleBar(AppTitleBar);
 

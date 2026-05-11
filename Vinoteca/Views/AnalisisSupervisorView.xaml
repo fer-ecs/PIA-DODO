@@ -22,17 +22,16 @@
 
 					<StackPanel Spacing="4">
 						<TextBlock Text="Analisis de datos" FontSize="28" FontWeight="SemiBold" Foreground="{StaticResource WineTextBrush}"/>
-						<TextBlock Text="Supervision de ventas, rendimiento, inventario y tendencias sin permisos de edicion." Foreground="{StaticResource WineMutedBrush}"/>
+						<TextBlock Text="Supervision de ventas, rendimiento, inventario y tendencias sin permisos de edicion" Foreground="{StaticResource WineMutedBrush}"/>
 					</StackPanel>
 
 					<Button Grid.Column="1" Content="Exportar Excel" Style="{StaticResource WinePrimaryButtonStyle}" Click="btnExportarExcel_Click"/>
 				</Grid>
 
-				<Border Grid.Row="1" Style="{StaticResource WineFilterPillStyle}">
-					<Grid ColumnSpacing="10" RowSpacing="8">
+				<Border Grid.Row="1" Style="{StaticResource WineFilterPillStyle}" Padding="14">
+					<Grid ColumnSpacing="10" RowSpacing="6">
 						<Grid.ColumnDefinitions>
-							<ColumnDefinition Width="1.8*"/>
-							<ColumnDefinition Width="*"/>
+							<ColumnDefinition Width="1.9*"/>
 							<ColumnDefinition Width="*"/>
 							<ColumnDefinition Width="*"/>
 							<ColumnDefinition Width="1.2*"/>
@@ -41,13 +40,16 @@
 						<Grid.RowDefinitions>
 							<RowDefinition Height="Auto"/>
 							<RowDefinition Height="Auto"/>
+							<RowDefinition Height="Auto"/>
+							<RowDefinition Height="Auto"/>
 						</Grid.RowDefinitions>
 
 						<TextBlock Grid.Column="0" Text="Buscar" Style="{StaticResource WineFieldLabelStyle}"/>
 						<TextBlock Grid.Column="1" Text="Periodo" Style="{StaticResource WineFieldLabelStyle}"/>
 						<TextBlock Grid.Column="2" Text="Categoria" Style="{StaticResource WineFieldLabelStyle}"/>
-						<TextBlock Grid.Column="3" Text="Empleado" Style="{StaticResource WineFieldLabelStyle}"/>
-						<TextBlock Grid.Column="4" Text="Orden productos" Style="{StaticResource WineFieldLabelStyle}"/>
+						<TextBlock Grid.Column="3" Text="Limpiar" Style="{StaticResource WineFieldLabelStyle}"/>
+						<TextBlock Grid.Row="2" Grid.Column="0" Text="Empleado" Style="{StaticResource WineFieldLabelStyle}"/>
+						<TextBlock Grid.Row="2" Grid.Column="1" Text="Orden productos" Style="{StaticResource WineFieldLabelStyle}"/>
 
 						<TextBox x:Name="txtBuscarAnalisis" Grid.Row="1" Grid.Column="0" Style="{StaticResource WineTextBoxStyle}" PlaceholderText="Producto, marca, empleado o pago" MaxLength="80" TextChanged="FiltroAnalisis_Changed"/>
 
@@ -59,16 +61,16 @@
 						</ComboBox>
 
 						<ComboBox x:Name="cmbCategoria" Grid.Row="1" Grid.Column="2" Style="{StaticResource WineComboBoxStyle}" HorizontalAlignment="Stretch" SelectionChanged="FiltroAnalisis_Changed"/>
-						<ComboBox x:Name="cmbEmpleado" Grid.Row="1" Grid.Column="3" Style="{StaticResource WineComboBoxStyle}" HorizontalAlignment="Stretch" SelectionChanged="FiltroAnalisis_Changed"/>
+						<Button Grid.Row="1" Grid.Column="3" Content="Limpiar filtros" Style="{StaticResource WineSecondaryButtonStyle}" Click="btnLimpiarFiltros_Click"/>
 
-						<ComboBox x:Name="cmbOrdenProductos" Grid.Row="1" Grid.Column="4" Style="{StaticResource WineComboBoxStyle}" HorizontalAlignment="Stretch" SelectionChanged="FiltroAnalisis_Changed">
+						<ComboBox x:Name="cmbEmpleado" Grid.Row="3" Grid.Column="0" Style="{StaticResource WineComboBoxStyle}" HorizontalAlignment="Stretch" SelectionChanged="FiltroAnalisis_Changed"/>
+
+						<ComboBox x:Name="cmbOrdenProductos" Grid.Row="3" Grid.Column="1" Style="{StaticResource WineComboBoxStyle}" HorizontalAlignment="Stretch" SelectionChanged="FiltroAnalisis_Changed">
 							<ComboBoxItem Content="Mas vendidos"/>
 							<ComboBoxItem Content="Mas ingresos"/>
 							<ComboBoxItem Content="Menor stock"/>
 							<ComboBoxItem Content="Nombre A-Z"/>
 						</ComboBox>
-
-						<Button Grid.Row="1" Grid.Column="5" Content="Limpiar filtros" Style="{StaticResource WineSecondaryButtonStyle}" Click="btnLimpiarFiltros_Click"/>
 					</Grid>
 				</Border>
 

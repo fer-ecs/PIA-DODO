@@ -23,7 +23,7 @@ namespace Vinoteca
 
 		private void App_UnhandledException(object sender, Microsoft.UI.Xaml.UnhandledExceptionEventArgs e)
 		{
-			// Registra errores inesperados
+			// Deja rastro del error para poder revisarlo despues
 			string detalle = e.Exception?.ToString() ?? e.Message;
 			Debug.WriteLine($"[UNHANDLED] {detalle}");
 			RegistrarError("UNHANDLED", detalle);
@@ -44,7 +44,7 @@ namespace Vinoteca
 			}
 			catch
 			{
-				// Evita errores secundarios
+				// Si falla el log no conviene romper tambien el cierre
 			}
 		}
 

@@ -67,7 +67,7 @@
 
 					<StackPanel>
 						<TextBlock Text="Analisis de datos" FontSize="28" FontWeight="SemiBold" Foreground="{StaticResource WineTextBrush}"/>
-						<TextBlock Text="Modulo exclusivo para supervision, auditoria y reportes estadisticos." Foreground="{StaticResource WineMutedBrush}" Margin="0,6,0,0"/>
+						<TextBlock Text="Modulo exclusivo para supervision, auditoria y reportes estadisticos" Foreground="{StaticResource WineMutedBrush}" Margin="0,6,0,0"/>
 					</StackPanel>
 
 					<Border Grid.Column="1" Background="{StaticResource WineAccentSoftBrush}" CornerRadius="16" Padding="16,10" VerticalAlignment="Center">

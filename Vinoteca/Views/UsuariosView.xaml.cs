@@ -95,8 +95,8 @@ namespace Vinoteca.Views
 
 		private void ConfigurarModoSoloLectura()
 		{
-			txtDescripcionFormulario.Text = "Vista de solo lectura para supervision de cuentas.";
-			txtDescripcionLista.Text = "Selecciona una cuenta para revisar su informacion.";
+			txtDescripcionFormulario.Text = "Vista de solo lectura para supervision de cuentas";
+			txtDescripcionLista.Text = "Selecciona una cuenta para revisar su informacion";
 			txtNombre.IsEnabled = false;
 			txtCorreo.IsEnabled = false;
 			cmbDominioCorreo.IsEnabled = false;

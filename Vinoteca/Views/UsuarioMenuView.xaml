@@ -84,7 +84,7 @@
 
 					<StackPanel>
 						<TextBlock Text="Caja de venta" FontSize="28" FontWeight="SemiBold" Foreground="{StaticResource WineTextBrush}"/>
-						<TextBlock Text="Selecciona productos, ajusta cantidades, cobra y genera tickets desde el flujo de empleado." Foreground="{StaticResource WineMutedBrush}" Margin="0,6,0,0"/>
+						<TextBlock Text="Selecciona productos, ajusta cantidades, cobra y genera tickets desde el flujo de empleado" Foreground="{StaticResource WineMutedBrush}" Margin="0,6,0,0"/>
 					</StackPanel>
 
 					<Border Grid.Column="1" Background="{StaticResource WineAccentSoftBrush}" CornerRadius="16" Padding="16,10" VerticalAlignment="Center">

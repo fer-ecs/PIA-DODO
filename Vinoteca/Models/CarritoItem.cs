@@ -5,7 +5,7 @@
 		public Producto Producto { get; set; } = new Producto();
 		public int Cantidad { get; set; }
 
-		// Propiedad calculada: multiplica el precio por la cantidad
+		// Este total se recalcula cada vez para reflejar cantidad por precio
 		public double Subtotal => Producto.PrecioVenta * Cantidad;
 	}
 }
