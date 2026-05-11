@@ -54,15 +54,53 @@
 					<TextBlock x:Name="txtVacio" Text="No hay productos en esta venta" Visibility="Collapsed" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{ThemeResource SubtitleTextBlockStyle}"/>
 				</Grid>
 
-				<StackPanel Grid.Row="2" HorizontalAlignment="Right" Spacing="15">
-					<StackPanel Orientation="Horizontal" Spacing="10">
-						<TextBlock Text="Total:" FontSize="20" VerticalAlignment="Center" Foreground="{StaticResource WineTextBrush}"/>
-						<TextBlock x:Name="txtTotalCarrito" Text="$0.00" FontSize="32" FontWeight="Bold" Foreground="{StaticResource WineHeroBrush}"/>
-					</StackPanel>
+				<StackPanel Grid.Row="2" Spacing="14">
+					<Border Style="{StaticResource WineFilterPillStyle}" Padding="14">
+						<Grid ColumnSpacing="12" RowSpacing="8">
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="1.1*"/>
+								<ColumnDefinition Width="1*"/>
+								<ColumnDefinition Width="1.2*"/>
+							</Grid.ColumnDefinitions>
+							<Grid.RowDefinitions>
+								<RowDefinition Height="Auto"/>
+								<RowDefinition Height="Auto"/>
+							</Grid.RowDefinitions>
+
+							<TextBlock Text="Metodo de pago" Foreground="{StaticResource WineLabelBrush}" FontWeight="SemiBold"/>
+							<TextBlock Grid.Column="1" Text="Monto recibido" Foreground="{StaticResource WineLabelBrush}" FontWeight="SemiBold"/>
+							<TextBlock Grid.Column="2" Text="Referencia" Foreground="{StaticResource WineLabelBrush}" FontWeight="SemiBold"/>
+
+							<ComboBox x:Name="cmbMetodoPago" Grid.Row="1" Style="{StaticResource WineComboBoxStyle}" SelectionChanged="cmbMetodoPago_SelectionChanged">
+								<ComboBoxItem Content="Efectivo"/>
+								<ComboBoxItem Content="Tarjeta"/>
+								<ComboBoxItem Content="Transferencia"/>
+							</ComboBox>
+							<TextBox x:Name="txtMontoRecibido" Grid.Row="1" Grid.Column="1" Style="{StaticResource WineTextBoxStyle}" PlaceholderText="0.00" TextChanged="txtPago_TextChanged"/>
+							<TextBox x:Name="txtReferenciaPago" Grid.Row="1" Grid.Column="2" Style="{StaticResource WineTextBoxStyle}" PlaceholderText="Autorizacion o folio" MaxLength="40" TextChanged="txtPago_TextChanged"/>
+						</Grid>
+					</Border>
+
+					<Grid>
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="*"/>
+							<ColumnDefinition Width="Auto"/>
+						</Grid.ColumnDefinitions>
+
+						<StackPanel>
+							<TextBlock x:Name="txtPagoAyuda" Text="Ingresa el efectivo recibido para calcular el cambio" Foreground="{StaticResource WineMutedBrush}"/>
+							<TextBlock x:Name="txtCambio" Text="Cambio: $0.00" FontSize="20" FontWeight="SemiBold" Foreground="{StaticResource WineTextBrush}"/>
+						</StackPanel>
+
+						<StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="10">
+							<TextBlock Text="Total:" FontSize="20" VerticalAlignment="Center" Foreground="{StaticResource WineTextBrush}"/>
+							<TextBlock x:Name="txtTotalCarrito" Text="$0.00" FontSize="32" FontWeight="Bold" Foreground="{StaticResource WineHeroBrush}"/>
+						</StackPanel>
+					</Grid>
 
 					<StackPanel Orientation="Horizontal" Spacing="10" HorizontalAlignment="Right">
 						<Button Content="Vaciar" Style="{StaticResource WineSecondaryButtonStyle}" Click="btnVaciar_Click"/>
-						<Button Content="Confirmar" Style="{StaticResource WinePrimaryButtonStyle}" Click="btnFinalizarVenta_Click"/>
+						<Button Content="Cobrar y emitir ticket" Style="{StaticResource WinePrimaryButtonStyle}" Click="btnFinalizarVenta_Click"/>
 					</StackPanel>
 				</StackPanel>
 			</Grid>

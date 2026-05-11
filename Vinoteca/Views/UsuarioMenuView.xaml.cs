@@ -9,7 +9,7 @@ namespace Vinoteca.Views
 		{
 			InitializeComponent();
 
-			if (SessionService.UsuarioActivo == null || !SessionService.EsClienteActivo)
+			if (SessionService.UsuarioActivo == null || !SessionService.EsEmpleadoActivo)
 			{
 				Frame?.Navigate(typeof(LoginView));
 				return;

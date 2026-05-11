@@ -44,10 +44,10 @@ namespace Vinoteca.Views
 				.OrderByDescending(x => x.Cantidad)
 				.FirstOrDefault();
 
-			var clienteTop = ventas
-				.GroupBy(v => string.IsNullOrWhiteSpace(v.NombreCliente) ? "Cliente sin nombre" : v.NombreCliente)
-				.Select(g => new { Nombre = g.Key, Compras = g.Count(), Total = g.Sum(v => v.Total) })
-				.OrderByDescending(x => x.Compras)
+			var empleadoTop = ventas
+				.GroupBy(v => string.IsNullOrWhiteSpace(v.NombreEmpleado) ? "Empleado sin nombre" : v.NombreEmpleado)
+				.Select(g => new { Nombre = g.Key, Ventas = g.Count(), Total = g.Sum(v => v.Total) })
+				.OrderByDescending(x => x.Ventas)
 				.ThenByDescending(x => x.Total)
 				.FirstOrDefault();
 
@@ -62,7 +62,7 @@ namespace Vinoteca.Views
 			txtProductosVendidos.Text = totalProductos.ToString();
 			txtTicketPromedio.Text = ticketPromedio.ToString("C");
 			txtProductoTop.Text = productoTop == null ? "Sin datos" : $"{productoTop.Nombre} ({productoTop.Cantidad} unidad(es))";
-			txtClienteTop.Text = clienteTop == null ? "Sin datos" : $"{clienteTop.Nombre} ({clienteTop.Compras} compra(s), {clienteTop.Total:C})";
+			txtEmpleadoTop.Text = empleadoTop == null ? "Sin datos" : $"{empleadoTop.Nombre} ({empleadoTop.Ventas} venta(s), {empleadoTop.Total:C})";
 			lvCategorias.ItemsSource = categorias.Count == 0 ? new[] { "Sin ventas registradas" } : categorias;
 
 			reporteActual = ConstruirReporte(
@@ -71,7 +71,7 @@ namespace Vinoteca.Views
 				totalProductos,
 				ticketPromedio,
 				txtProductoTop.Text,
-				txtClienteTop.Text,
+				txtEmpleadoTop.Text,
 				categorias);
 		}
 
@@ -81,7 +81,7 @@ namespace Vinoteca.Views
 			int totalProductos,
 			double ticketPromedio,
 			string productoTop,
-			string clienteTop,
+			string empleadoTop,
 			System.Collections.Generic.IEnumerable<string> categorias)
 		{
 			var sb = new StringBuilder();
@@ -93,7 +93,7 @@ namespace Vinoteca.Views
 			sb.AppendLine($"Productos vendidos: {totalProductos}");
 			sb.AppendLine($"Ticket promedio: {ticketPromedio:C}");
 			sb.AppendLine($"Producto mas vendido: {productoTop}");
-			sb.AppendLine($"Cliente con mas compras: {clienteTop}");
+			sb.AppendLine($"Empleado con mas ventas: {empleadoTop}");
 			sb.AppendLine();
 			sb.AppendLine("Ventas por categoria:");
 

@@ -19,7 +19,7 @@ namespace Vinoteca.Views
 		{
 			if (!SessionService.PuedeComprar || SessionService.UsuarioActivo == null)
 			{
-				txtEstado.Text = "Solo clientes pueden consultar tickets de compra";
+				txtEstado.Text = "Solo empleados pueden consultar tickets emitidos";
 				txtEstado.Visibility = Visibility.Visible;
 				lvTickets.IsEnabled = false;
 				return;
@@ -29,8 +29,8 @@ namespace Vinoteca.Views
 			lvTickets.ItemsSource = tickets;
 
 			txtResumenTickets.Text = tickets.Count == 0
-				? "Todavia no tienes compras registradas"
-				: $"Tienes {tickets.Count} ticket(s) registrados";
+				? "Todavia no tienes tickets emitidos"
+				: $"Tienes {tickets.Count} ticket(s) emitidos";
 			txtSinTickets.Visibility = tickets.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
 		}
 
@@ -38,7 +38,7 @@ namespace Vinoteca.Views
 		{
 			if (!SessionService.PuedeComprar)
 			{
-				txtEstado.Text = "Solo clientes pueden descargar sus tickets";
+				txtEstado.Text = "Solo empleados pueden descargar tickets";
 				txtEstado.Visibility = Visibility.Visible;
 				return;
 			}

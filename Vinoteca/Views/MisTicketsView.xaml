@@ -19,8 +19,8 @@
 				</Grid.RowDefinitions>
 
 				<StackPanel Grid.Row="0" Margin="0,0,0,20">
-					<TextBlock Text="Mis Tickets" FontSize="28" FontWeight="SemiBold" Foreground="{StaticResource WineTextBrush}"/>
-					<TextBlock x:Name="txtResumenTickets" Text="Todavia no tienes compras registradas" Foreground="{StaticResource WineMutedBrush}"/>
+					<TextBlock Text="Tickets emitidos" FontSize="28" FontWeight="SemiBold" Foreground="{StaticResource WineTextBrush}"/>
+					<TextBlock x:Name="txtResumenTickets" Text="Todavia no tienes tickets emitidos" Foreground="{StaticResource WineMutedBrush}"/>
 					<TextBlock x:Name="txtEstado" Visibility="Collapsed" Margin="0,8,0,0" TextWrapping="Wrap"/>
 				</StackPanel>
 
@@ -67,7 +67,7 @@
 						</ListView.ItemTemplate>
 					</ListView>
 
-					<TextBlock x:Name="txtSinTickets" Text="Aun no hay tickets para mostrar" Visibility="Collapsed" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{StaticResource WineEmptyStateStyle}"/>
+					<TextBlock x:Name="txtSinTickets" Text="Aun no hay tickets emitidos" Visibility="Collapsed" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{StaticResource WineEmptyStateStyle}"/>
 				</Grid>
 			</Grid>
 		</Border>

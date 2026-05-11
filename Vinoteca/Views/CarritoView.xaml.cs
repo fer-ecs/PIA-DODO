@@ -17,8 +17,8 @@ namespace Vinoteca.Views
 
 			if (!SessionService.PuedeComprar)
 			{
-				txtResumen.Text = "Solo clientes pueden consultar el carrito";
-				txtEstado.Text = "Acceso restringido para compras de cliente";
+				txtResumen.Text = "Solo empleados pueden consultar la venta";
+				txtEstado.Text = "Acceso restringido para caja";
 				txtEstado.Visibility = Visibility.Visible;
 				lvCarrito.IsEnabled = false;
 				return;
@@ -46,7 +46,7 @@ namespace Vinoteca.Views
 
 			lvCarrito.ItemsSource = ItemsCarrito;
 			txtTotal.Text = CarritoService.ObtenerTotal().ToString("C");
-			txtResumen.Text = $"{CarritoService.ObtenerCantidadTotalArticulos()} articulo(s) en el carrito";
+			txtResumen.Text = $"{CarritoService.ObtenerCantidadTotalArticulos()} articulo(s) en la venta";
 			txtEstado.Visibility = Visibility.Collapsed;
 			txtVacio.Visibility = ItemsCarrito.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
 		}
@@ -55,7 +55,7 @@ namespace Vinoteca.Views
 		{
 			if (!SessionService.PuedeComprar)
 			{
-				MostrarEstado("Solo clientes pueden modificar el carrito");
+				MostrarEstado("Solo empleados pueden modificar la venta");
 				return;
 			}
 
@@ -75,7 +75,7 @@ namespace Vinoteca.Views
 		{
 			if (!SessionService.PuedeComprar)
 			{
-				MostrarEstado("Solo clientes pueden modificar el carrito");
+				MostrarEstado("Solo empleados pueden modificar la venta");
 				return;
 			}
 
@@ -91,7 +91,7 @@ namespace Vinoteca.Views
 		{
 			if (!SessionService.PuedeComprar)
 			{
-				MostrarEstado("Solo clientes pueden modificar el carrito");
+				MostrarEstado("Solo empleados pueden modificar la venta");
 				return;
 			}
 
@@ -107,7 +107,7 @@ namespace Vinoteca.Views
 		{
 			if (!SessionService.PuedeComprar)
 			{
-				MostrarEstado("Solo clientes pueden vaciar el carrito");
+				MostrarEstado("Solo empleados pueden vaciar la venta");
 				return;
 			}
 
@@ -118,8 +118,8 @@ namespace Vinoteca.Views
 
 			bool confirmarVaciado = await CambiosPendientesService.MostrarConfirmacionAsync(
 				XamlRoot,
-				"Vaciar carrito",
-				"Deseas quitar todos los productos del carrito?",
+				"Vaciar venta",
+				"Deseas quitar todos los productos de la venta?",
 				"Vaciar");
 			if (!confirmarVaciado)
 			{
@@ -133,13 +133,13 @@ namespace Vinoteca.Views
 		{
 			if (!SessionService.PuedeComprar)
 			{
-				MostrarEstado("Solo clientes pueden finalizar compras");
+				MostrarEstado("Solo empleados pueden cobrar ventas");
 				return;
 			}
 
 			if (CarritoService.ObtenerCarrito().Count == 0)
 			{
-				MostrarEstado("El carrito esta vacio");
+				MostrarEstado("La venta esta vacia");
 				return;
 			}
 

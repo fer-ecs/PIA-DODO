@@ -17,7 +17,7 @@
 					<StackPanel Spacing="6">
 						<TextBlock Text="Gestion de usuarios" FontSize="28" FontWeight="SemiBold" Foreground="{StaticResource WineTextBrush}"/>
 						<TextBlock x:Name="txtModoFormulario" Text="Nuevo usuario" Foreground="{StaticResource WineHeroBrush}" FontWeight="SemiBold"/>
-						<TextBlock x:Name="txtDescripcionFormulario" Text="Administra cuentas del negocio y clientes registrados desde un mismo panel." TextWrapping="Wrap" Foreground="{StaticResource WineMutedBrush}"/>
+						<TextBlock x:Name="txtDescripcionFormulario" Text="Administra cuentas del negocio y empleados registrados desde un mismo panel." TextWrapping="Wrap" Foreground="{StaticResource WineMutedBrush}"/>
 					</StackPanel>
 
 					<StackPanel Spacing="4">
@@ -45,7 +45,7 @@
 						<ComboBox x:Name="cmbRol" Style="{StaticResource WineComboBoxStyle}" HorizontalAlignment="Stretch">
 							<ComboBoxItem Content="Administrador"/>
 							<ComboBoxItem Content="Supervisor"/>
-							<ComboBoxItem Content="Cliente"/>
+							<ComboBoxItem Content="Empleado"/>
 						</ComboBox>
 					</StackPanel>
 
@@ -98,7 +98,7 @@
 							<ComboBoxItem Content="Todos"/>
 							<ComboBoxItem Content="Administrador"/>
 							<ComboBoxItem Content="Supervisor"/>
-							<ComboBoxItem Content="Cliente"/>
+							<ComboBoxItem Content="Empleado"/>
 						</ComboBox>
 						<ComboBox x:Name="cmbFiltroEstado" Grid.Row="1" Grid.Column="2" Style="{StaticResource WineComboBoxStyle}" HorizontalAlignment="Stretch" SelectionChanged="FiltroUsuarios_Changed">
 							<ComboBoxItem Content="Todos"/>

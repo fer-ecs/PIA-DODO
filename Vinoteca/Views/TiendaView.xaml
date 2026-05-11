@@ -25,9 +25,12 @@
 
 			<Border Grid.Row="0" Style="{StaticResource WineCardStyle}" Padding="22" Margin="0,0,0,18">
 				<StackPanel Spacing="10">
-					<TextBlock Text="Catalogo de Vinos" FontSize="28" FontWeight="SemiBold" Foreground="{StaticResource WineTextBrush}"/>
-					<TextBlock Text="Botellas pensadas para una compra facil, visual y agradable." Foreground="{StaticResource WineMutedBrush}"/>
-					<TextBox x:Name="txtBuscar" Style="{StaticResource WineTextBoxStyle}" PlaceholderText="Buscar por nombre, marca o categoria" Foreground="Black" PlaceholderForeground="Black" Width="340" MaxLength="50" HorizontalAlignment="Left" TextChanged="txtBuscar_TextChanged"/>
+					<TextBlock Text="Punto de venta" FontSize="28" FontWeight="SemiBold" Foreground="{StaticResource WineTextBrush}"/>
+					<TextBlock Text="Busca por ID, nombre, marca o categoria. El escaneo es simulado para operar rapido sin lector fisico." Foreground="{StaticResource WineMutedBrush}" TextWrapping="Wrap"/>
+					<StackPanel Orientation="Horizontal" Spacing="8">
+						<TextBox x:Name="txtBuscar" Style="{StaticResource WineTextBoxStyle}" PlaceholderText="ID, nombre, marca o categoria" Foreground="Black" PlaceholderForeground="Black" Width="340" MaxLength="50" TextChanged="txtBuscar_TextChanged"/>
+						<Button Content="Escanear" Style="{StaticResource WineSecondaryButtonStyle}" Click="btnEscanear_Click"/>
+					</StackPanel>
 					<TextBlock x:Name="txtEstado" Visibility="Collapsed" TextWrapping="Wrap"/>
 				</StackPanel>
 			</Border>
@@ -45,7 +48,7 @@
 								<TextBlock Text="{x:Bind Categoria}" FontSize="12" Foreground="{StaticResource WineMutedBrush}"/>
 								<TextBlock Text="{x:Bind Stock, Converter={StaticResource LocalStringConverter}, ConverterParameter='{}Stock disponible: {0}'}" FontSize="12" Foreground="{StaticResource WineMutedBrush}"/>
 								<TextBlock Text="{x:Bind PrecioVenta, Converter={StaticResource LocalStringConverter}, ConverterParameter='{}{0:C}'}" Foreground="{StaticResource WineHeroBrush}" FontSize="18" FontWeight="Bold"/>
-								<Button Content="Agregar al carrito" HorizontalAlignment="Stretch" Style="{StaticResource WinePrimaryButtonStyle}" Click="btnAgregar_Click" Tag="{x:Bind}"/>
+								<Button Content="Agregar a venta" HorizontalAlignment="Stretch" Style="{StaticResource WinePrimaryButtonStyle}" Click="btnAgregar_Click" Tag="{x:Bind}"/>
 							</StackPanel>
 						</Border>
 					</DataTemplate>
@@ -62,8 +65,8 @@
 				</Grid.RowDefinitions>
 
 				<StackPanel Grid.Row="0" Margin="0,0,0,12">
-					<TextBlock Text="Carrito rapido" FontWeight="SemiBold" FontSize="22" Foreground="{StaticResource WineTextBrush}"/>
-					<TextBlock Text="Resumen de tu seleccion actual." Foreground="{StaticResource WineMutedBrush}"/>
+					<TextBlock Text="Venta actual" FontWeight="SemiBold" FontSize="22" Foreground="{StaticResource WineTextBrush}"/>
+					<TextBlock Text="Productos listos para cobrar." Foreground="{StaticResource WineMutedBrush}"/>
 				</StackPanel>
 
 				<ListView x:Name="lvCarritoRapido" Grid.Row="1" Margin="0,0,0,10" SelectionMode="None">
@@ -94,7 +97,7 @@
 						<TextBlock Text="Total:" FontSize="18" FontWeight="Bold" Foreground="{StaticResource WineTextBrush}"/>
 						<TextBlock x:Name="txtTotalRapido" Text="$0.00" FontSize="24" FontWeight="Bold" HorizontalAlignment="Right" Foreground="{StaticResource WineHeroBrush}"/>
 					</Grid>
-					<Button Content="Ir al carrito" Click="btnIrAPagar_Click" HorizontalAlignment="Stretch" Style="{StaticResource WinePrimaryButtonStyle}"/>
+					<Button Content="Ir a cobro" Click="btnIrAPagar_Click" HorizontalAlignment="Stretch" Style="{StaticResource WinePrimaryButtonStyle}"/>
 				</StackPanel>
 			</Grid>
 		</Border>

@@ -17,7 +17,7 @@ namespace Vinoteca.Services
 
 			if (!SessionService.PuedeComprar)
 			{
-				mensaje = "Solo clientes pueden agregar productos al carrito";
+				mensaje = "Solo empleados pueden agregar productos a la venta";
 				return false;
 			}
 
@@ -69,14 +69,14 @@ namespace Vinoteca.Services
 			mensaje = string.Empty;
 			if (!SessionService.PuedeComprar)
 			{
-				mensaje = "Solo clientes pueden modificar el carrito";
+				mensaje = "Solo empleados pueden modificar la venta";
 				return false;
 			}
 
 			var item = carrito.FirstOrDefault(c => c.Producto.Id == productoId);
 			if (item == null)
 			{
-				mensaje = "No se encontro el producto en el carrito";
+				mensaje = "No se encontro el producto en la venta";
 				return false;
 			}
 

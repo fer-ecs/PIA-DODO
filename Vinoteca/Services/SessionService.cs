@@ -9,14 +9,15 @@ namespace Vinoteca.Services
 		public static string RolActivo => RolesSistema.Normalizar(UsuarioActivo?.Rol);
 		public static bool EsAdministradorActivo => RolActivo == RolesSistema.Administrador;
 		public static bool EsSupervisorActivo => RolActivo == RolesSistema.Supervisor;
-		public static bool EsClienteActivo => RolActivo == RolesSistema.Cliente;
+		public static bool EsEmpleadoActivo => RolActivo == RolesSistema.Empleado;
+		public static bool EsClienteActivo => EsEmpleadoActivo;
 		public static bool PuedeGestionarUsuarios => EsAdministradorActivo;
 		public static bool PuedeGestionarInventario => EsAdministradorActivo;
 		public static bool PuedeVerInformacionOperativa => EsAdministradorActivo;
 		public static bool PuedeVerReportes => EsAdministradorActivo;
 		public static bool PuedeVerAnalisisSupervisor => EsSupervisorActivo;
-		public static bool PuedeComprar => EsClienteActivo;
-		public static bool PuedeProcesarVentas => EsClienteActivo;
+		public static bool PuedeComprar => EsEmpleadoActivo;
+		public static bool PuedeProcesarVentas => EsEmpleadoActivo;
 
 		public static void IniciarSesion(Usuario usuario)
 		{

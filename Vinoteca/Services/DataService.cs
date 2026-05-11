@@ -131,7 +131,7 @@ namespace Vinoteca.Services
 				string rolOriginal = usuario.Rol;
 				if (string.IsNullOrWhiteSpace(rolOriginal))
 				{
-					usuario.Rol = usuario.EsAdmin ? RolesSistema.Administrador : RolesSistema.Cliente;
+					usuario.Rol = usuario.EsAdmin ? RolesSistema.Administrador : RolesSistema.Empleado;
 					actualizados = true;
 				}
 				else
@@ -232,19 +232,19 @@ namespace Vinoteca.Services
 			{
 				new Usuario { Id = Guid.NewGuid().ToString(), Nombre = "Ana Lopez", Correo = "ana.lopez@vinoteca.com", Contrasena = "Ana_123*", Rol = RolesSistema.Supervisor, Activo = true },
 				new Usuario { Id = Guid.NewGuid().ToString(), Nombre = "Carlos Mendez", Correo = "carlos.mendez@vinoteca.com", Contrasena = "Carlos_123*", Rol = RolesSistema.Supervisor, Activo = true },
-				new Usuario { Id = Guid.NewGuid().ToString(), Nombre = "Laura Perez", Correo = "laura.perez@vinoteca.com", Contrasena = "Laura_123*", Rol = RolesSistema.Cliente, Activo = true },
-				new Usuario { Id = Guid.NewGuid().ToString(), Nombre = "Diego Ruiz", Correo = "diego.ruiz@vinoteca.com", Contrasena = "Diego_123*", Rol = RolesSistema.Cliente, Activo = true },
-				new Usuario { Id = Guid.NewGuid().ToString(), Nombre = "Sofia Vargas", Correo = "sofia.vargas@vinoteca.com", Contrasena = "Sofia_123*", Rol = RolesSistema.Cliente, Activo = true },
-				new Usuario { Id = Guid.NewGuid().ToString(), Nombre = "Miguel Torres", Correo = "miguel.torres@vinoteca.com", Contrasena = "Miguel_123*", Rol = RolesSistema.Cliente, Activo = true },
-				new Usuario { Id = Guid.NewGuid().ToString(), Nombre = "Valeria Castro", Correo = "valeria.castro@vinoteca.com", Contrasena = "Valeria_123*", Rol = RolesSistema.Cliente, Activo = true },
-				new Usuario { Id = Guid.NewGuid().ToString(), Nombre = "Javier Moreno", Correo = "javier.moreno@vinoteca.com", Contrasena = "Javier_123*", Rol = RolesSistema.Cliente, Activo = true },
-				new Usuario { Id = Guid.NewGuid().ToString(), Nombre = "Fernanda Gil", Correo = "fernanda.gil@vinoteca.com", Contrasena = "Fernanda_123*", Rol = RolesSistema.Cliente, Activo = true },
-				new Usuario { Id = Guid.NewGuid().ToString(), Nombre = "Ricardo Salas", Correo = "ricardo.salas@vinoteca.com", Contrasena = "Ricardo_123*", Rol = RolesSistema.Cliente, Activo = true },
-				new Usuario { Id = Guid.NewGuid().ToString(), Nombre = "Daniela Ortiz", Correo = "daniela.ortiz@vinoteca.com", Contrasena = "Daniela_123*", Rol = RolesSistema.Cliente, Activo = true },
-				new Usuario { Id = Guid.NewGuid().ToString(), Nombre = "Eduardo Rios", Correo = "eduardo.rios@vinoteca.com", Contrasena = "Eduardo_123*", Rol = RolesSistema.Cliente, Activo = true },
-				new Usuario { Id = Guid.NewGuid().ToString(), Nombre = "Mariana Vega", Correo = "mariana.vega@vinoteca.com", Contrasena = "Mariana_123*", Rol = RolesSistema.Cliente, Activo = true },
-				new Usuario { Id = Guid.NewGuid().ToString(), Nombre = "Patricia Leon", Correo = "patricia.leon@vinoteca.com", Contrasena = "Patricia_123*", Rol = RolesSistema.Cliente, Activo = true },
-				new Usuario { Id = Guid.NewGuid().ToString(), Nombre = "Hector Nava", Correo = "hector.nava@vinoteca.com", Contrasena = "Hector_123*", Rol = RolesSistema.Cliente, Activo = true }
+				new Usuario { Id = Guid.NewGuid().ToString(), Nombre = "Laura Perez", Correo = "laura.perez@vinoteca.com", Contrasena = "Laura_123*", Rol = RolesSistema.Empleado, Activo = true },
+				new Usuario { Id = Guid.NewGuid().ToString(), Nombre = "Diego Ruiz", Correo = "diego.ruiz@vinoteca.com", Contrasena = "Diego_123*", Rol = RolesSistema.Empleado, Activo = true },
+				new Usuario { Id = Guid.NewGuid().ToString(), Nombre = "Sofia Vargas", Correo = "sofia.vargas@vinoteca.com", Contrasena = "Sofia_123*", Rol = RolesSistema.Empleado, Activo = true },
+				new Usuario { Id = Guid.NewGuid().ToString(), Nombre = "Miguel Torres", Correo = "miguel.torres@vinoteca.com", Contrasena = "Miguel_123*", Rol = RolesSistema.Empleado, Activo = true },
+				new Usuario { Id = Guid.NewGuid().ToString(), Nombre = "Valeria Castro", Correo = "valeria.castro@vinoteca.com", Contrasena = "Valeria_123*", Rol = RolesSistema.Empleado, Activo = true },
+				new Usuario { Id = Guid.NewGuid().ToString(), Nombre = "Javier Moreno", Correo = "javier.moreno@vinoteca.com", Contrasena = "Javier_123*", Rol = RolesSistema.Empleado, Activo = true },
+				new Usuario { Id = Guid.NewGuid().ToString(), Nombre = "Fernanda Gil", Correo = "fernanda.gil@vinoteca.com", Contrasena = "Fernanda_123*", Rol = RolesSistema.Empleado, Activo = true },
+				new Usuario { Id = Guid.NewGuid().ToString(), Nombre = "Ricardo Salas", Correo = "ricardo.salas@vinoteca.com", Contrasena = "Ricardo_123*", Rol = RolesSistema.Empleado, Activo = true },
+				new Usuario { Id = Guid.NewGuid().ToString(), Nombre = "Daniela Ortiz", Correo = "daniela.ortiz@vinoteca.com", Contrasena = "Daniela_123*", Rol = RolesSistema.Empleado, Activo = true },
+				new Usuario { Id = Guid.NewGuid().ToString(), Nombre = "Eduardo Rios", Correo = "eduardo.rios@vinoteca.com", Contrasena = "Eduardo_123*", Rol = RolesSistema.Empleado, Activo = true },
+				new Usuario { Id = Guid.NewGuid().ToString(), Nombre = "Mariana Vega", Correo = "mariana.vega@vinoteca.com", Contrasena = "Mariana_123*", Rol = RolesSistema.Empleado, Activo = true },
+				new Usuario { Id = Guid.NewGuid().ToString(), Nombre = "Patricia Leon", Correo = "patricia.leon@vinoteca.com", Contrasena = "Patricia_123*", Rol = RolesSistema.Empleado, Activo = true },
+				new Usuario { Id = Guid.NewGuid().ToString(), Nombre = "Hector Nava", Correo = "hector.nava@vinoteca.com", Contrasena = "Hector_123*", Rol = RolesSistema.Empleado, Activo = true }
 			};
 		}
 
@@ -392,9 +392,76 @@ namespace Vinoteca.Services
 					ids.Add(venta.Id);
 					actualizados = true;
 				}
+
+				if (AsegurarDatosVentaPos(venta))
+				{
+					actualizados = true;
+				}
 			}
 
 			return actualizados;
+		}
+
+		private static bool AsegurarDatosVentaPos(Venta venta)
+		{
+			bool actualizada = false;
+
+			if (string.IsNullOrWhiteSpace(venta.EmpleadoId))
+			{
+				venta.EmpleadoId = venta.UsuarioId;
+				actualizada = true;
+			}
+
+			if (string.IsNullOrWhiteSpace(venta.NombreEmpleado))
+			{
+				venta.NombreEmpleado = venta.NombreCliente;
+				actualizada = true;
+			}
+
+			if (string.IsNullOrWhiteSpace(venta.CorreoEmpleado))
+			{
+				venta.CorreoEmpleado = venta.CorreoCliente;
+				actualizada = true;
+			}
+
+			if (string.IsNullOrWhiteSpace(venta.NombreCliente))
+			{
+				venta.NombreCliente = venta.NombreEmpleado;
+				actualizada = true;
+			}
+
+			if (string.IsNullOrWhiteSpace(venta.CorreoCliente))
+			{
+				venta.CorreoCliente = venta.CorreoEmpleado;
+				actualizada = true;
+			}
+
+			string rolNormalizado = RolesSistema.Normalizar(venta.RolUsuario);
+			if (venta.RolUsuario != rolNormalizado)
+			{
+				venta.RolUsuario = rolNormalizado;
+				actualizada = true;
+			}
+
+			if (string.IsNullOrWhiteSpace(venta.MetodoPago))
+			{
+				venta.MetodoPago = "Efectivo";
+				actualizada = true;
+			}
+
+			if (venta.MontoRecibido <= 0 && venta.Total > 0)
+			{
+				venta.MontoRecibido = venta.Total;
+				actualizada = true;
+			}
+
+			if (venta.Cambio < 0)
+			{
+				venta.Cambio = 0;
+				actualizada = true;
+			}
+
+			return actualizada;
 		}
 
 		private static string CrearIdVenta()
@@ -582,22 +649,24 @@ namespace Vinoteca.Services
 		public static List<Venta> ObtenerVentasPorUsuario(string usuarioId)
 		{
 			return ObtenerVentas()
-				.Where(v => v.UsuarioId == usuarioId)
+				.Where(v => v.UsuarioId == usuarioId || v.EmpleadoId == usuarioId)
 				.OrderByDescending(v => v.Fecha)
 				.ToList();
 		}
 
 		public static void GuardarVenta(Venta nuevaVenta)
 		{
-			if (!SessionService.PuedeComprar)
+			if (!SessionService.PuedeProcesarVentas)
 			{
-				throw new InvalidOperationException("Solo clientes pueden registrar compras");
+				throw new InvalidOperationException("Solo empleados pueden registrar ventas");
 			}
 
 			if (string.IsNullOrWhiteSpace(nuevaVenta.Id))
 			{
 				nuevaVenta.Id = CrearIdVenta();
 			}
+
+			AsegurarDatosVentaPos(nuevaVenta);
 
 			var ventas = ObtenerVentas();
 			if (ventas.Any(v => !string.IsNullOrWhiteSpace(v.Id) &&

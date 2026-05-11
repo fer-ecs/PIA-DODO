@@ -55,9 +55,13 @@ namespace Vinoteca.Views
 			var ventas = todasLasVentas.Where(v =>
 				(string.IsNullOrWhiteSpace(busqueda) ||
 				(v.Id?.ToLowerInvariant().Contains(busqueda) ?? false) ||
+				(v.NombreEmpleado?.ToLowerInvariant().Contains(busqueda) ?? false) ||
+				(v.CorreoEmpleado?.ToLowerInvariant().Contains(busqueda) ?? false) ||
 				(v.NombreCliente?.ToLowerInvariant().Contains(busqueda) ?? false) ||
 				(v.CorreoCliente?.ToLowerInvariant().Contains(busqueda) ?? false) ||
+				(v.EmpleadoId?.ToLowerInvariant().Contains(busqueda) ?? false) ||
 				(v.UsuarioId?.ToLowerInvariant().Contains(busqueda) ?? false) ||
+				(v.MetodoPago?.ToLowerInvariant().Contains(busqueda) ?? false) ||
 				v.Productos.Any(p =>
 					(p.Producto.Nombre?.ToLowerInvariant().Contains(busqueda) ?? false) ||
 					(p.Producto.Marca?.ToLowerInvariant().Contains(busqueda) ?? false))) &&
@@ -69,7 +73,7 @@ namespace Vinoteca.Views
 				"Fecha antigua" => ventas.OrderBy(v => v.Fecha),
 				"Total mayor" => ventas.OrderByDescending(v => v.Total),
 				"Total menor" => ventas.OrderBy(v => v.Total),
-				"Cliente A-Z" => ventas.OrderBy(v => v.NombreCliente),
+				"Empleado A-Z" => ventas.OrderBy(v => string.IsNullOrWhiteSpace(v.NombreEmpleado) ? v.NombreCliente : v.NombreEmpleado),
 				"ID" => ventas.OrderBy(v => v.Id),
 				_ => ventas.OrderByDescending(v => v.Fecha)
 			};

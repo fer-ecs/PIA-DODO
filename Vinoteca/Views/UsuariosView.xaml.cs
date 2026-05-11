@@ -512,7 +512,7 @@ namespace Vinoteca.Views
 			txtCorreo.Text = string.Empty;
 			txtPassword.Password = string.Empty;
 			txtConfirmarPassword.Password = string.Empty;
-			SeleccionarRol(RolesSistema.Cliente);
+			SeleccionarRol(RolesSistema.Empleado);
 			chkActivo.IsChecked = true;
 
 			ignorarCambioSeleccion = true;
@@ -558,7 +558,7 @@ namespace Vinoteca.Views
 				string.IsNullOrWhiteSpace(txtCorreo.Text) &&
 				string.IsNullOrWhiteSpace(txtPassword.Password) &&
 				string.IsNullOrWhiteSpace(txtConfirmarPassword.Password) &&
-				ObtenerRolActual() == RolesSistema.Cliente &&
+				ObtenerRolActual() == RolesSistema.Empleado &&
 				chkActivo.IsChecked == true;
 		}
 
@@ -574,7 +574,7 @@ namespace Vinoteca.Views
 
 		private string ObtenerRolActual()
 		{
-			return (cmbRol.SelectedItem as ComboBoxItem)?.Content?.ToString() ?? RolesSistema.Cliente;
+			return (cmbRol.SelectedItem as ComboBoxItem)?.Content?.ToString() ?? RolesSistema.Empleado;
 		}
 
 		private void SeleccionarRol(string rol)

@@ -102,8 +102,10 @@ namespace Vinoteca.Services
 			});
 
 			marca.Children.Add(marcaLinea);
-			marca.Children.Add(CrearTexto($"Cliente: {venta.NombreCliente}", "WineTextBrush", 13, Microsoft.UI.Text.FontWeights.SemiBold));
-			marca.Children.Add(CrearTexto(venta.CorreoCliente ?? string.Empty, "WineMutedBrush", 13));
+			string nombreEmpleado = string.IsNullOrWhiteSpace(venta.NombreEmpleado) ? venta.NombreCliente : venta.NombreEmpleado;
+			string correoEmpleado = string.IsNullOrWhiteSpace(venta.CorreoEmpleado) ? venta.CorreoCliente : venta.CorreoEmpleado;
+			marca.Children.Add(CrearTexto($"Empleado: {nombreEmpleado}", "WineTextBrush", 13, Microsoft.UI.Text.FontWeights.SemiBold));
+			marca.Children.Add(CrearTexto(correoEmpleado ?? string.Empty, "WineMutedBrush", 13));
 
 			var datos = new StackPanel
 			{
@@ -168,6 +170,9 @@ namespace Vinoteca.Services
 			panel.Children.Add(CrearLineaTotal("Subtotal sin IVA", totales.Subtotal, 14, "WineMutedBrush"));
 			panel.Children.Add(CrearLineaTotal("IVA incluido 16%", totales.Iva, 14, "WineMutedBrush"));
 			panel.Children.Add(CrearLineaTotal("Total pagado", totales.Total, 20, "WineHeroBrush"));
+			panel.Children.Add(CrearLineaTexto("Metodo", string.IsNullOrWhiteSpace(venta.MetodoPago) ? "Efectivo" : venta.MetodoPago));
+			panel.Children.Add(CrearLineaTotal("Recibido", venta.MontoRecibido <= 0 ? totales.Total : venta.MontoRecibido, 14, "WineMutedBrush"));
+			panel.Children.Add(CrearLineaTotal("Cambio", venta.Cambio < 0 ? 0 : venta.Cambio, 14, "WineMutedBrush"));
 
 			return new Border
 			{
@@ -177,6 +182,23 @@ namespace Vinoteca.Services
 				Margin = new Thickness(0, 8, 0, 0),
 				Child = panel
 			};
+		}
+
+		private static UIElement CrearLineaTexto(string etiqueta, string valor)
+		{
+			var grid = new Grid();
+			grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+			grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+
+			var texto = CrearTexto(etiqueta, "WineMutedBrush", 14, Microsoft.UI.Text.FontWeights.SemiBold);
+			var dato = CrearTexto(valor, "WineMutedBrush", 14, Microsoft.UI.Text.FontWeights.SemiBold);
+
+			Grid.SetColumn(texto, 0);
+			Grid.SetColumn(dato, 1);
+			grid.Children.Add(texto);
+			grid.Children.Add(dato);
+
+			return grid;
 		}
 
 		private static UIElement CrearLineaTotal(string etiqueta, double valor, double tamano, string recurso)

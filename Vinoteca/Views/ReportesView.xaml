@@ -43,7 +43,7 @@
 						<TextBlock Grid.Column="2" Text="Total max" Style="{StaticResource WineFieldLabelStyle}"/>
 						<TextBlock Grid.Column="3" Text="Orden" Style="{StaticResource WineFieldLabelStyle}"/>
 
-						<TextBox x:Name="txtBuscarReporte" Grid.Row="1" Grid.Column="0" Style="{StaticResource WineTextBoxStyle}" PlaceholderText="ID, cliente, correo o producto" MaxLength="80" TextChanged="FiltroReportes_Changed"/>
+						<TextBox x:Name="txtBuscarReporte" Grid.Row="1" Grid.Column="0" Style="{StaticResource WineTextBoxStyle}" PlaceholderText="ID, empleado, pago o producto" MaxLength="80" TextChanged="FiltroReportes_Changed"/>
 						<TextBox x:Name="txtTotalMin" Grid.Row="1" Grid.Column="1" Style="{StaticResource WineTextBoxStyle}" PlaceholderText="0" MaxLength="9" InputScope="Number" TextChanged="FiltroReportes_Changed"/>
 						<TextBox x:Name="txtTotalMax" Grid.Row="1" Grid.Column="2" Style="{StaticResource WineTextBoxStyle}" PlaceholderText="99999" MaxLength="9" InputScope="Number" TextChanged="FiltroReportes_Changed"/>
 						<ComboBox x:Name="cmbOrdenReportes" Grid.Row="1" Grid.Column="3" Style="{StaticResource WineComboBoxStyle}" HorizontalAlignment="Stretch" SelectionChanged="FiltroReportes_Changed">
@@ -51,7 +51,7 @@
 							<ComboBoxItem Content="Fecha antigua"/>
 							<ComboBoxItem Content="Total mayor"/>
 							<ComboBoxItem Content="Total menor"/>
-							<ComboBoxItem Content="Cliente A-Z"/>
+							<ComboBoxItem Content="Empleado A-Z"/>
 							<ComboBoxItem Content="ID"/>
 						</ComboBox>
 					</Grid>
@@ -79,7 +79,7 @@
 										<StackPanel>
 											<TextBlock Text="{x:Bind Id, Converter={StaticResource LocalStringConverter}, ConverterParameter='{}Ticket #{0}'}" FontWeight="SemiBold" Foreground="{StaticResource WineTextBrush}" FontSize="16"/>
 											<TextBlock Text="{x:Bind Fecha}" FontSize="13" Foreground="{StaticResource WineMutedBrush}"/>
-											<TextBlock Text="{x:Bind NombreCliente}" Foreground="{StaticResource WineLabelBrush}" Margin="0,4,0,0"/>
+											<TextBlock Text="{x:Bind NombreEmpleado}" Foreground="{StaticResource WineLabelBrush}" Margin="0,4,0,0"/>
 										</StackPanel>
 										<TextBlock Grid.Column="1" Text="{x:Bind Total, Converter={StaticResource LocalStringConverter}, ConverterParameter='{}{0:C}'}" FontSize="22" FontWeight="Bold" Foreground="{StaticResource WineHeroBrush}"/>
 									</Grid>

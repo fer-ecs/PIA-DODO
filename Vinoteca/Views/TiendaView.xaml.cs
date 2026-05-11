@@ -20,7 +20,7 @@ namespace Vinoteca.Views
 
 			if (!SessionService.PuedeComprar)
 			{
-				txtEstado.Text = "Solo clientes pueden comprar productos";
+				txtEstado.Text = "Solo empleados pueden operar el punto de venta";
 				txtEstado.Visibility = Visibility.Visible;
 				txtBuscar.IsEnabled = false;
 				gvTienda.IsEnabled = false;
@@ -29,7 +29,7 @@ namespace Vinoteca.Views
 			}
 
 			InputRestrictionsHelper.AplicarSinEspaciosNiEnter(this);
-			InputRestrictionsHelper.AplicarSoloLetrasConEspacios(txtBuscar);
+			InputRestrictionsHelper.AplicarTextoLibreSinEnter(txtBuscar);
 			CargarCatalogo();
 			RefrescarCarritoVisual();
 			CarritoService.CarritoActualizado += RefrescarCarritoVisual;
@@ -62,6 +62,7 @@ namespace Vinoteca.Views
 			string busqueda = txtBuscar.Text?.Trim().ToLowerInvariant() ?? string.Empty;
 			var filtrados = todosLosProductos.Where(p =>
 				string.IsNullOrEmpty(busqueda) ||
+				(p.Id?.ToLowerInvariant().Contains(busqueda) ?? false) ||
 				(p.Nombre?.ToLowerInvariant().Contains(busqueda) ?? false) ||
 				(p.Marca?.ToLowerInvariant().Contains(busqueda) ?? false) ||
 				(p.Categoria?.ToLowerInvariant().Contains(busqueda) ?? false))
@@ -80,7 +81,7 @@ namespace Vinoteca.Views
 		{
 			if (!SessionService.PuedeComprar)
 			{
-				txtEstado.Text = "Solo clientes pueden agregar productos al carrito";
+				txtEstado.Text = "Solo empleados pueden agregar productos a la venta";
 				txtEstado.Visibility = Visibility.Visible;
 				return;
 			}
@@ -90,9 +91,41 @@ namespace Vinoteca.Views
 				return;
 			}
 
+			AgregarProducto(producto);
+		}
+
+		private void btnEscanear_Click(object sender, RoutedEventArgs e)
+		{
+			if (!SessionService.PuedeComprar)
+			{
+				txtEstado.Text = "Solo empleados pueden escanear productos";
+				txtEstado.Visibility = Visibility.Visible;
+				return;
+			}
+
+			string busqueda = txtBuscar.Text?.Trim().ToLowerInvariant() ?? string.Empty;
+			var producto = todosLosProductos.FirstOrDefault(p =>
+				!string.IsNullOrWhiteSpace(busqueda) &&
+				((p.Id?.ToLowerInvariant().StartsWith(busqueda) ?? false) ||
+				(p.Nombre?.ToLowerInvariant().Contains(busqueda) ?? false) ||
+				(p.Marca?.ToLowerInvariant().Contains(busqueda) ?? false))) ??
+				ProductosCatalogo.FirstOrDefault();
+
+			if (producto == null)
+			{
+				txtEstado.Text = "No se encontro un producto disponible para escanear";
+				txtEstado.Visibility = Visibility.Visible;
+				return;
+			}
+
+			AgregarProducto(producto);
+		}
+
+		private void AgregarProducto(Producto producto)
+		{
 			if (CarritoService.AgregarAlCarrito(producto, out string mensaje))
 			{
-				txtEstado.Text = $"{producto.Nombre} agregado al carrito";
+				txtEstado.Text = $"{producto.Nombre} agregado a la venta";
 				txtEstado.Visibility = Visibility.Visible;
 				CargarCatalogo();
 				return;
@@ -114,14 +147,14 @@ namespace Vinoteca.Views
 		{
 			if (!SessionService.PuedeComprar)
 			{
-				txtEstado.Text = "Solo clientes pueden finalizar compras";
+				txtEstado.Text = "Solo empleados pueden cobrar ventas";
 				txtEstado.Visibility = Visibility.Visible;
 				return;
 			}
 
 			if (CarritoService.ObtenerCarrito().Count == 0)
 			{
-				txtEstado.Text = "Agrega al menos un producto al carrito";
+				txtEstado.Text = "Agrega al menos un producto a la venta";
 				txtEstado.Visibility = Visibility.Visible;
 				return;
 			}

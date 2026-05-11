@@ -20,7 +20,7 @@
 
 				<StackPanel Grid.Row="0" Padding="10,18,10,24" Spacing="6">
 					<TextBlock Text="Vinoteca" FontSize="30" FontWeight="SemiBold" Foreground="#FFFFFF"/>
-					<TextBlock Text="Compra y seguimiento" Foreground="#E5D5CC"/>
+					<TextBlock Text="Punto de venta" Foreground="#E5D5CC"/>
 				</StackPanel>
 
 				<StackPanel Grid.Row="1" Padding="8,0">
@@ -28,14 +28,14 @@
 					<Button x:Name="btnNavTienda" Style="{StaticResource WineSidebarButtonStyle}" Click="btnNavTienda_Click">
 						<StackPanel Orientation="Horizontal" Spacing="12">
 							<SymbolIcon Symbol="Shop"/>
-							<TextBlock Text="Tienda" VerticalAlignment="Center"/>
+							<TextBlock Text="Punto de venta" VerticalAlignment="Center"/>
 						</StackPanel>
 					</Button>
 
 					<Button x:Name="btnNavCarrito" Style="{StaticResource WineSidebarButtonStyle}" Click="btnNavCarrito_Click">
 						<StackPanel Orientation="Horizontal" Spacing="12">
 							<FontIcon Glyph="&#xE7BF;"/>
-							<TextBlock Text="Carrito" VerticalAlignment="Center"/>
+							<TextBlock Text="Venta actual" VerticalAlignment="Center"/>
 							<Border x:Name="bdgCarritoMenu" Background="#FFFFFF" CornerRadius="10" MinWidth="20" Padding="4,0" Visibility="Collapsed">
 								<TextBlock x:Name="txtContadorCarritoMenu" Text="0" Foreground="{StaticResource WineAccentBrush}" FontSize="12" FontWeight="SemiBold" HorizontalAlignment="Center"/>
 							</Border>
@@ -45,7 +45,7 @@
 					<Button x:Name="btnNavMisTickets" Style="{StaticResource WineSidebarButtonStyle}" Click="btnNavMisTickets_Click">
 						<StackPanel Orientation="Horizontal" Spacing="12">
 							<SymbolIcon Symbol="Document"/>
-							<TextBlock Text="Mis Tickets" VerticalAlignment="Center"/>
+							<TextBlock Text="Tickets emitidos" VerticalAlignment="Center"/>
 						</StackPanel>
 					</Button>
 				</StackPanel>
@@ -83,12 +83,12 @@
 					</Grid.ColumnDefinitions>
 
 					<StackPanel>
-						<TextBlock Text="Tu cuenta personal" FontSize="28" FontWeight="SemiBold" Foreground="{StaticResource WineTextBrush}"/>
-						<TextBlock Text="Un espacio mas amable para revisar vinos, agregar botellas y consultar tus compras sin distraerte." Foreground="{StaticResource WineMutedBrush}" Margin="0,6,0,0"/>
+						<TextBlock Text="Caja de venta" FontSize="28" FontWeight="SemiBold" Foreground="{StaticResource WineTextBrush}"/>
+						<TextBlock Text="Selecciona productos, ajusta cantidades, cobra y genera tickets desde el flujo de empleado." Foreground="{StaticResource WineMutedBrush}" Margin="0,6,0,0"/>
 					</StackPanel>
 
 					<Border Grid.Column="1" Background="{StaticResource WineAccentSoftBrush}" CornerRadius="16" Padding="16,10" VerticalAlignment="Center">
-						<TextBlock x:Name="txtRolActivo" Text="Cliente activo" Foreground="{StaticResource WineAccentBrush}" FontWeight="SemiBold"/>
+						<TextBlock x:Name="txtRolActivo" Text="Empleado activo" Foreground="{StaticResource WineAccentBrush}" FontWeight="SemiBold"/>
 					</Border>
 				</Grid>
 			</Border>

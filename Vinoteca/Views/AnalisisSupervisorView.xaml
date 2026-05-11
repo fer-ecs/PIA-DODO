@@ -73,8 +73,8 @@
 
 						<Border Background="{StaticResource WineAccentSoftBrush}" BorderBrush="{StaticResource WineBorderBrush}" BorderThickness="1" CornerRadius="16" Padding="16">
 							<StackPanel Spacing="6">
-								<TextBlock Text="Cliente con mas compras" Foreground="{StaticResource WineMutedBrush}"/>
-								<TextBlock x:Name="txtClienteTop" Text="Sin datos" FontSize="18" FontWeight="SemiBold" Foreground="{StaticResource WineTextBrush}" TextWrapping="Wrap"/>
+								<TextBlock Text="Empleado con mas ventas" Foreground="{StaticResource WineMutedBrush}"/>
+								<TextBlock x:Name="txtEmpleadoTop" Text="Sin datos" FontSize="18" FontWeight="SemiBold" Foreground="{StaticResource WineTextBrush}" TextWrapping="Wrap"/>
 							</StackPanel>
 						</Border>
 					</StackPanel>

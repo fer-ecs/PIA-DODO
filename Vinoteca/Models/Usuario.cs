@@ -8,7 +8,7 @@ namespace Vinoteca.Models
 		public string? Nombre { get; set; }
 		public string? Correo { get; set; }
 		public string? Contrasena { get; set; }
-		public string Rol { get; set; } = RolesSistema.Cliente;
+		public string Rol { get; set; } = RolesSistema.Empleado;
 		public bool EsAdmin
 		{
 			get => Rol == RolesSistema.Administrador;
@@ -20,7 +20,7 @@ namespace Vinoteca.Models
 				}
 				else if (Rol == RolesSistema.Administrador)
 				{
-					Rol = RolesSistema.Cliente;
+					Rol = RolesSistema.Empleado;
 				}
 			}
 		}

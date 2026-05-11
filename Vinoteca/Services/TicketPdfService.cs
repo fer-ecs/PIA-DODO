@@ -65,6 +65,11 @@ namespace Vinoteca.Services
 		private static string ConstruirContenido(Venta venta)
 		{
 			var totales = CalcularTotales(venta);
+			string nombreEmpleado = string.IsNullOrWhiteSpace(venta.NombreEmpleado) ? venta.NombreCliente : venta.NombreEmpleado;
+			string correoEmpleado = string.IsNullOrWhiteSpace(venta.CorreoEmpleado) ? venta.CorreoCliente : venta.CorreoEmpleado;
+			string metodoPago = string.IsNullOrWhiteSpace(venta.MetodoPago) ? "Efectivo" : venta.MetodoPago;
+			double montoRecibido = venta.MontoRecibido <= 0 ? totales.Total : venta.MontoRecibido;
+			double cambio = venta.Cambio < 0 ? 0 : venta.Cambio;
 			var lineas = new List<string>
 			{
 				"0.55 0.10 0.18 rg",
@@ -89,7 +94,7 @@ namespace Vinoteca.Services
 				"/F2 11 Tf",
 				"1 1 1 rg",
 				"86 784 Td",
-				$"({EscaparTextoPdf("Ticket de compra")}) Tj",
+				$"({EscaparTextoPdf("Ticket de venta")}) Tj",
 				"ET",
 				"BT",
 				"/F2 11 Tf",
@@ -99,13 +104,13 @@ namespace Vinoteca.Services
 				"0 -18 Td",
 				$"({EscaparTextoPdf($"Fecha: {venta.Fecha:g}")}) Tj",
 				"0 -18 Td",
-				$"({EscaparTextoPdf($"Cliente: {venta.NombreCliente}")}) Tj",
+				$"({EscaparTextoPdf($"Empleado: {nombreEmpleado}")}) Tj",
 				"0 -18 Td",
-				$"({EscaparTextoPdf($"Correo: {venta.CorreoCliente}")}) Tj",
+				$"({EscaparTextoPdf($"Correo: {correoEmpleado}")}) Tj",
 				"0 -18 Td",
-				$"({EscaparTextoPdf($"Rol: {venta.RolUsuario}")}) Tj",
+				$"({EscaparTextoPdf($"Pago: {metodoPago}")}) Tj",
 				"0 -30 Td",
-				$"({EscaparTextoPdf("Detalle de compra")}) Tj",
+				$"({EscaparTextoPdf("Detalle de venta")}) Tj",
 				"ET",
 				"0.95 0.90 0.88 rg",
 				"40 620 515 26 re",
@@ -171,12 +176,16 @@ namespace Vinoteca.Services
 			lineas.Add($"({EscaparTextoPdf($"Subtotal: {totales.Subtotal.ToString("C", CultureInfo.CurrentCulture)}")}) Tj");
 			lineas.Add("0 -18 Td");
 			lineas.Add($"({EscaparTextoPdf($"IVA 16%: {totales.Iva.ToString("C", CultureInfo.CurrentCulture)}")}) Tj");
+			lineas.Add("0 -18 Td");
+			lineas.Add($"({EscaparTextoPdf($"Recibido: {montoRecibido.ToString("C", CultureInfo.CurrentCulture)}")}) Tj");
+			lineas.Add("0 -18 Td");
+			lineas.Add($"({EscaparTextoPdf($"Cambio: {cambio.ToString("C", CultureInfo.CurrentCulture)}")}) Tj");
 			lineas.Add("ET");
 
 			lineas.Add("BT");
 			lineas.Add("/F2 18 Tf");
 			lineas.Add("0.55 0.10 0.18 rg");
-			lineas.Add($"360 {FormatearNumero(y - 78)} Td");
+			lineas.Add($"360 {FormatearNumero(y - 114)} Td");
 			lineas.Add($"({EscaparTextoPdf($"Total: {totales.Total.ToString("C", CultureInfo.CurrentCulture)}")}) Tj");
 			lineas.Add("ET");
 
@@ -184,7 +193,7 @@ namespace Vinoteca.Services
 			lineas.Add("/F1 9 Tf");
 			lineas.Add("0.45 0.45 0.50 rg");
 			lineas.Add("40 42 Td");
-			lineas.Add($"({EscaparTextoPdf("Gracias por tu compra")}) Tj");
+			lineas.Add($"({EscaparTextoPdf("Gracias por su compra")}) Tj");
 			lineas.Add("ET");
 
 			return string.Join("\n", lineas);

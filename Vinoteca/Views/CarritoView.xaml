@@ -20,8 +20,8 @@
 				</Grid.RowDefinitions>
 
 				<StackPanel Grid.Row="0" Margin="0,0,0,20">
-					<TextBlock Text="Carrito de compras" FontSize="28" FontWeight="SemiBold" Foreground="{StaticResource WineTextBrush}"/>
-					<TextBlock x:Name="txtResumen" Text="0 articulo(s) en el carrito" Foreground="{StaticResource WineMutedBrush}"/>
+					<TextBlock Text="Venta actual" FontSize="28" FontWeight="SemiBold" Foreground="{StaticResource WineTextBrush}"/>
+					<TextBlock x:Name="txtResumen" Text="0 articulo(s) en la venta" Foreground="{StaticResource WineMutedBrush}"/>
 					<TextBlock x:Name="txtEstado" Visibility="Collapsed" Margin="0,8,0,0" TextWrapping="Wrap"/>
 				</StackPanel>
 
@@ -59,7 +59,7 @@
 						</ListView.ItemTemplate>
 					</ListView>
 
-					<TextBlock x:Name="txtVacio" Text="Tu carrito esta vacio" Visibility="Collapsed" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{ThemeResource SubtitleTextBlockStyle}"/>
+					<TextBlock x:Name="txtVacio" Text="No hay productos en la venta" Visibility="Collapsed" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{ThemeResource SubtitleTextBlockStyle}"/>
 				</Grid>
 
 				<StackPanel Grid.Row="2" Spacing="12" HorizontalAlignment="Right">
@@ -69,8 +69,8 @@
 					</StackPanel>
 
 					<StackPanel Orientation="Horizontal" Spacing="10" HorizontalAlignment="Right">
-						<Button Content="Vaciar carrito" Style="{StaticResource WineSecondaryButtonStyle}" Click="btnVaciar_Click"/>
-						<Button Content="Finalizar compra" Style="{StaticResource WinePrimaryButtonStyle}" Click="btnFinalizarCompra_Click"/>
+						<Button Content="Vaciar venta" Style="{StaticResource WineSecondaryButtonStyle}" Click="btnVaciar_Click"/>
+						<Button Content="Ir a cobro" Style="{StaticResource WinePrimaryButtonStyle}" Click="btnFinalizarCompra_Click"/>
 					</StackPanel>
 				</StackPanel>
 			</Grid>
