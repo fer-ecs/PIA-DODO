@@ -19,8 +19,50 @@
 				</Grid.RowDefinitions>
 
 				<StackPanel Grid.Row="0" Margin="0,0,0,20">
-					<TextBlock Text="Tickets emitidos" FontSize="28" FontWeight="SemiBold" Foreground="{StaticResource WineTextBrush}"/>
-					<TextBlock x:Name="txtResumenTickets" Text="Todavia no tienes tickets emitidos" Foreground="{StaticResource WineMutedBrush}"/>
+					<Grid>
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="*"/>
+							<ColumnDefinition Width="Auto"/>
+						</Grid.ColumnDefinitions>
+
+						<StackPanel>
+							<TextBlock Text="Tickets emitidos" FontSize="28" FontWeight="SemiBold" Foreground="{StaticResource WineTextBrush}"/>
+							<TextBlock x:Name="txtResumenTickets" Text="Todavia no tienes tickets emitidos" Foreground="{StaticResource WineMutedBrush}"/>
+						</StackPanel>
+
+						<Border Grid.Column="1" Padding="16,8" CornerRadius="18" Background="{StaticResource WineAccentSoftBrush}" VerticalAlignment="Top">
+							<TextBlock x:Name="txtConteoTickets" Text="0 tickets" Foreground="{StaticResource WineHeroBrush}" FontWeight="SemiBold"/>
+						</Border>
+					</Grid>
+
+					<Border Style="{StaticResource WineFilterPillStyle}" Padding="16" Margin="0,18,0,0">
+						<Grid ColumnSpacing="12">
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="2*"/>
+								<ColumnDefinition Width="220"/>
+								<ColumnDefinition Width="Auto"/>
+							</Grid.ColumnDefinitions>
+
+							<StackPanel>
+								<TextBlock Text="Buscar ticket" Style="{StaticResource WineFieldLabelStyle}"/>
+								<TextBox x:Name="txtBuscarTicket" Style="{StaticResource WineTextBoxStyle}" PlaceholderText="ID, producto, pago o total" TextChanged="FiltroTickets_Changed" MaxLength="80"/>
+							</StackPanel>
+
+							<StackPanel Grid.Column="1">
+								<TextBlock Text="Orden" Style="{StaticResource WineFieldLabelStyle}"/>
+								<ComboBox x:Name="cmbOrdenTickets" Width="220" Style="{StaticResource WineComboBoxStyle}" SelectionChanged="FiltroTickets_Changed">
+									<ComboBoxItem Content="Fecha reciente"/>
+									<ComboBoxItem Content="Fecha antigua"/>
+									<ComboBoxItem Content="Total mayor"/>
+									<ComboBoxItem Content="Total menor"/>
+									<ComboBoxItem Content="ID"/>
+								</ComboBox>
+							</StackPanel>
+
+							<Button Grid.Column="2" Content="Limpiar filtros" Style="{StaticResource WineSecondaryButtonStyle}" VerticalAlignment="Bottom" Click="btnLimpiarTickets_Click"/>
+						</Grid>
+					</Border>
+
 					<TextBlock x:Name="txtEstado" Visibility="Collapsed" Margin="0,8,0,0" TextWrapping="Wrap"/>
 				</StackPanel>
 

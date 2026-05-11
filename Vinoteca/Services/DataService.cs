@@ -94,12 +94,137 @@ namespace Vinoteca.Services
 			File.WriteAllText(ruta, json);
 		}
 
+		private static string NormalizarTextoVisible(string? valor)
+		{
+			string limpio = string.Join(" ", (valor ?? string.Empty)
+				.Trim()
+				.Split(' ', StringSplitOptions.RemoveEmptyEntries));
+
+			if (string.IsNullOrWhiteSpace(limpio))
+			{
+				return string.Empty;
+			}
+
+			return string.Join(" ", limpio.Split(' ').Select(palabra =>
+			{
+				string minuscula = palabra.ToLowerInvariant();
+				return minuscula.Length == 1
+					? minuscula.ToUpperInvariant()
+					: $"{char.ToUpperInvariant(minuscula[0])}{minuscula[1..]}";
+			}));
+		}
+
+		private static string NormalizarCorreo(string? valor) => (valor ?? string.Empty).Trim().ToLowerInvariant();
+
+		private static string NormalizarTextoTecnico(string? valor) => (valor ?? string.Empty).Trim();
+
+		private static bool AsignarSiCambio(string? actual, string nuevo, Action<string> asignar)
+		{
+			if (string.Equals(actual ?? string.Empty, nuevo, StringComparison.Ordinal))
+			{
+				return false;
+			}
+
+			asignar(nuevo);
+			return true;
+		}
+
+		private static bool NormalizarUsuario(Usuario usuario)
+		{
+			bool actualizado = false;
+
+			actualizado = AsignarSiCambio(usuario.Nombre, NormalizarTextoVisible(usuario.Nombre), valor => usuario.Nombre = valor) || actualizado;
+			actualizado = AsignarSiCambio(usuario.Correo, NormalizarCorreo(usuario.Correo), valor => usuario.Correo = valor) || actualizado;
+			actualizado = AsignarSiCambio(usuario.Rol, RolesSistema.Normalizar(usuario.Rol), valor => usuario.Rol = valor) || actualizado;
+
+			return actualizado;
+		}
+
+		private static bool NormalizarProducto(Producto producto)
+		{
+			bool actualizado = false;
+
+			actualizado = AsignarSiCambio(producto.Nombre, NormalizarTextoVisible(producto.Nombre), valor => producto.Nombre = valor) || actualizado;
+			actualizado = AsignarSiCambio(producto.Marca, NormalizarTextoVisible(producto.Marca), valor => producto.Marca = valor) || actualizado;
+			actualizado = AsignarSiCambio(producto.Categoria, NormalizarTextoVisible(producto.Categoria), valor => producto.Categoria = valor) || actualizado;
+			actualizado = AsignarSiCambio(producto.Volumen, NormalizarTextoVisible(producto.Volumen), valor => producto.Volumen = valor) || actualizado;
+			actualizado = AsignarSiCambio(producto.ImagenPath, NormalizarTextoTecnico(producto.ImagenPath), valor => producto.ImagenPath = valor) || actualizado;
+
+			return actualizado;
+		}
+
+		private static bool NormalizarVenta(Venta venta)
+		{
+			bool actualizado = false;
+
+			actualizado = AsignarSiCambio(venta.NombreEmpleado, NormalizarTextoVisible(venta.NombreEmpleado), valor => venta.NombreEmpleado = valor) || actualizado;
+			actualizado = AsignarSiCambio(venta.CorreoEmpleado, NormalizarCorreo(venta.CorreoEmpleado), valor => venta.CorreoEmpleado = valor) || actualizado;
+			actualizado = AsignarSiCambio(venta.NombreCliente, NormalizarTextoVisible(venta.NombreCliente), valor => venta.NombreCliente = valor) || actualizado;
+			actualizado = AsignarSiCambio(venta.CorreoCliente, NormalizarCorreo(venta.CorreoCliente), valor => venta.CorreoCliente = valor) || actualizado;
+			actualizado = AsignarSiCambio(venta.RolUsuario, RolesSistema.Normalizar(venta.RolUsuario), valor => venta.RolUsuario = valor) || actualizado;
+			actualizado = AsignarSiCambio(venta.MetodoPago, NormalizarTextoVisible(venta.MetodoPago), valor => venta.MetodoPago = valor) || actualizado;
+			actualizado = AsignarSiCambio(venta.ReferenciaPago, NormalizarTextoTecnico(venta.ReferenciaPago), valor => venta.ReferenciaPago = valor) || actualizado;
+
+			if (venta.Productos == null)
+			{
+				venta.Productos = new List<CarritoItem>();
+				actualizado = true;
+			}
+
+			foreach (var item in venta.Productos)
+			{
+				if (item.Producto != null)
+				{
+					actualizado = NormalizarProducto(item.Producto) || actualizado;
+				}
+			}
+
+			return actualizado;
+		}
+
+		private static bool NormalizarUsuarios(List<Usuario> usuarios)
+		{
+			bool actualizado = false;
+
+			foreach (var usuario in usuarios)
+			{
+				actualizado = NormalizarUsuario(usuario) || actualizado;
+			}
+
+			return actualizado;
+		}
+
+		private static bool NormalizarProductos(List<Producto> productos)
+		{
+			bool actualizado = false;
+
+			foreach (var producto in productos)
+			{
+				actualizado = NormalizarProducto(producto) || actualizado;
+			}
+
+			return actualizado;
+		}
+
+		private static bool NormalizarVentas(List<Venta> ventas)
+		{
+			bool actualizado = false;
+
+			foreach (var venta in ventas)
+			{
+				actualizado = NormalizarVenta(venta) || actualizado;
+			}
+
+			return actualizado;
+		}
+
 		private static List<Usuario> CrearUsuariosBase()
 		{
 			return new List<Usuario>
 			{
 				new Usuario
 				{
+					Id = "1",
 					Nombre = "Administrador",
 					Correo = AdminCorreo,
 					Contrasena = AdminContrasena,
@@ -162,6 +287,8 @@ namespace Vinoteca.Services
 				actualizados = true;
 			}
 
+			actualizados = NormalizarUsuarios(usuarios) || actualizados;
+
 			if (actualizados)
 			{
 				GuardarJson(usuariosFile, usuarios);
@@ -170,40 +297,13 @@ namespace Vinoteca.Services
 
 		private static void AsegurarDatosMuestra()
 		{
-			var usuarios = ObtenerUsuariosSinInicializar();
-			bool usuariosActualizados = false;
-
-			foreach (var usuarioMuestra in CrearUsuariosMuestra())
-			{
-				var usuarioExistente = usuarios.FirstOrDefault(u =>
-					!string.IsNullOrWhiteSpace(u.Correo) &&
-					u.Correo.Equals(usuarioMuestra.Correo, StringComparison.OrdinalIgnoreCase));
-
-				if (usuarioExistente == null)
-				{
-					usuarios.Add(usuarioMuestra);
-					usuariosActualizados = true;
-					continue;
-				}
-
-				string rolNormalizado = RolesSistema.Normalizar(usuarioExistente.Rol);
-				if (usuarioExistente.Rol != rolNormalizado)
-				{
-					usuarioExistente.Rol = rolNormalizado;
-					usuariosActualizados = true;
-				}
-			}
-
-			if (usuariosActualizados)
-			{
-				GuardarJson(usuariosFile, usuarios);
-			}
-
 			var productos = ObtenerProductosSinInicializar();
 			bool productosActualizados = false;
 
 			foreach (var productoMuestra in CrearProductosMuestra())
 			{
+				NormalizarProducto(productoMuestra);
+
 				bool existe = productos.Any(p =>
 					!string.IsNullOrWhiteSpace(p.Nombre) &&
 					!string.IsNullOrWhiteSpace(p.Marca) &&
@@ -218,6 +318,8 @@ namespace Vinoteca.Services
 				productos.Add(productoMuestra);
 				productosActualizados = true;
 			}
+
+			productosActualizados = NormalizarProductos(productos) || productosActualizados;
 
 			if (productosActualizados)
 			{
@@ -324,21 +426,24 @@ namespace Vinoteca.Services
 		private static void AsegurarIdentificadores()
 		{
 			var usuarios = ObtenerUsuariosSinInicializar();
-			var mapaUsuarios = AsegurarIdsUsuarios(usuarios);
-			if (mapaUsuarios.Count > 0)
+			bool usuariosActualizados = NormalizarUsuarios(usuarios);
+			usuariosActualizados = AsegurarIdsUsuarios(usuarios, out var mapaUsuarios) || usuariosActualizados;
+			if (usuariosActualizados)
 			{
 				GuardarJson(usuariosFile, usuarios);
 			}
 
 			var productos = ObtenerProductosSinInicializar();
-			var mapaProductos = AsegurarIdsProductos(productos);
-			if (mapaProductos.Count > 0)
+			bool productosActualizados = NormalizarProductos(productos);
+			productosActualizados = AsegurarIdsProductos(productos, out var mapaProductos) || productosActualizados;
+			if (productosActualizados)
 			{
 				GuardarJson(productosFile, productos);
 			}
 
 			var ventas = ObtenerVentasSinInicializar();
-			bool ventasActualizadas = AsegurarReferenciasVentas(ventas, mapaUsuarios, mapaProductos);
+			bool ventasActualizadas = NormalizarVentas(ventas);
+			ventasActualizadas = AsegurarReferenciasVentas(ventas, mapaUsuarios, mapaProductos) || ventasActualizadas;
 			ventasActualizadas = AsegurarIdsVentas(ventas) || ventasActualizadas;
 			if (ventasActualizadas)
 			{
@@ -346,12 +451,12 @@ namespace Vinoteca.Services
 			}
 		}
 
-		private static Dictionary<string, string> AsegurarIdsUsuarios(List<Usuario> usuarios)
+		private static bool AsegurarIdsUsuarios(List<Usuario> usuarios, out Dictionary<string, string> mapa)
 		{
-			var mapa = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+			mapa = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 			if (!RequiereRenumeracion(usuarios.Select(u => u.Id)))
 			{
-				return mapa;
+				return false;
 			}
 
 			for (int i = 0; i < usuarios.Count; i++)
@@ -366,15 +471,15 @@ namespace Vinoteca.Services
 				usuarios[i].Id = idNuevo;
 			}
 
-			return mapa;
+			return true;
 		}
 
-		private static Dictionary<string, string> AsegurarIdsProductos(List<Producto> productos)
+		private static bool AsegurarIdsProductos(List<Producto> productos, out Dictionary<string, string> mapa)
 		{
-			var mapa = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+			mapa = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 			if (!RequiereRenumeracion(productos.Select(p => p.Id)))
 			{
-				return mapa;
+				return false;
 			}
 
 			for (int i = 0; i < productos.Count; i++)
@@ -389,7 +494,7 @@ namespace Vinoteca.Services
 				productos[i].Id = idNuevo;
 			}
 
-			return mapa;
+			return true;
 		}
 
 		private static bool AsegurarIdsVentas(List<Venta> ventas)
@@ -412,6 +517,11 @@ namespace Vinoteca.Services
 			foreach (var venta in ventas)
 			{
 				if (AsegurarDatosVentaPos(venta))
+				{
+					actualizados = true;
+				}
+
+				if (NormalizarVenta(venta))
 				{
 					actualizados = true;
 				}
@@ -439,6 +549,11 @@ namespace Vinoteca.Services
 				{
 					venta.EmpleadoId = empleadoId;
 					actualizadas = true;
+				}
+
+				if (venta.Productos == null)
+				{
+					continue;
 				}
 
 				foreach (var item in venta.Productos)
@@ -552,12 +667,7 @@ namespace Vinoteca.Services
 
 		private static string ObtenerSiguienteId(IEnumerable<string> ids)
 		{
-			int ultimoId = ids
-				.Select(id => int.TryParse(id, out int valor) ? valor : 0)
-				.DefaultIfEmpty(0)
-				.Max();
-
-			return (ultimoId + 1).ToString();
+			return (ids.Count() + 1).ToString();
 		}
 
 		private static bool IdNumericoDisponible(string id, IEnumerable<string> idsExistentes)
@@ -571,16 +681,17 @@ namespace Vinoteca.Services
 		{
 			var categorias = ObtenerCategoriasSinInicializar()
 				.Where(c => !string.IsNullOrWhiteSpace(c))
-				.Select(c => c.Trim())
+				.Select(NormalizarTextoVisible)
 				.Distinct(StringComparer.OrdinalIgnoreCase)
 				.ToList();
 
 			foreach (var producto in ObtenerProductosSinInicializar())
 			{
-				if (!string.IsNullOrWhiteSpace(producto.Categoria) &&
-					!categorias.Any(c => c.Equals(producto.Categoria, StringComparison.OrdinalIgnoreCase)))
+				string categoria = NormalizarTextoVisible(producto.Categoria);
+				if (!string.IsNullOrWhiteSpace(categoria) &&
+					!categorias.Any(c => c.Equals(categoria, StringComparison.OrdinalIgnoreCase)))
 				{
-					categorias.Add(producto.Categoria.Trim());
+					categorias.Add(categoria);
 				}
 			}
 
@@ -608,6 +719,7 @@ namespace Vinoteca.Services
 		public static bool GuardarUsuario(Usuario usuario)
 		{
 			var usuarios = ObtenerUsuarios();
+			NormalizarUsuario(usuario);
 
 			if (usuarios.Any(u =>
 				!string.IsNullOrWhiteSpace(u.Correo) &&
@@ -616,7 +728,6 @@ namespace Vinoteca.Services
 				return false;
 			}
 
-			usuario.Rol = RolesSistema.Normalizar(usuario.Rol);
 			if (!IdNumericoDisponible(usuario.Id, usuarios.Select(u => u.Id)))
 			{
 				usuario.Id = ObtenerSiguienteId(usuarios.Select(u => u.Id));
@@ -624,12 +735,14 @@ namespace Vinoteca.Services
 
 			usuarios.Add(usuario);
 			GuardarJson(usuariosFile, usuarios);
+			AsegurarIdentificadores();
 			return true;
 		}
 
 		public static void ActualizarUsuario(Usuario usuario)
 		{
 			var usuarios = ObtenerUsuarios();
+			NormalizarUsuario(usuario);
 			var index = usuarios.FindIndex(u => u.Id == usuario.Id);
 
 			if (index < 0)
@@ -637,9 +750,9 @@ namespace Vinoteca.Services
 				return;
 			}
 
-			usuario.Rol = RolesSistema.Normalizar(usuario.Rol);
 			usuarios[index] = usuario;
 			GuardarJson(usuariosFile, usuarios);
+			AsegurarIdentificadores();
 		}
 
 		public static bool EliminarUsuario(string id)
@@ -653,6 +766,7 @@ namespace Vinoteca.Services
 
 			usuarios.Remove(usuario);
 			GuardarJson(usuariosFile, usuarios);
+			AsegurarIdentificadores();
 			return true;
 		}
 
@@ -672,7 +786,7 @@ namespace Vinoteca.Services
 			InicializarArchivos();
 			return ObtenerCategoriasSinInicializar()
 				.Where(c => !string.IsNullOrWhiteSpace(c))
-				.Select(c => c.Trim())
+				.Select(NormalizarTextoVisible)
 				.Distinct(StringComparer.OrdinalIgnoreCase)
 				.OrderBy(c => c)
 				.ToList();
@@ -681,7 +795,7 @@ namespace Vinoteca.Services
 		public static bool GuardarCategoria(string categoria)
 		{
 			var categorias = ObtenerCategorias();
-			string categoriaLimpia = categoria.Trim();
+			string categoriaLimpia = NormalizarTextoVisible(categoria);
 
 			if (categorias.Any(c => c.Equals(categoriaLimpia, StringComparison.OrdinalIgnoreCase)))
 			{
@@ -696,7 +810,7 @@ namespace Vinoteca.Services
 		public static bool EliminarCategoria(string categoria)
 		{
 			var categorias = ObtenerCategorias();
-			string categoriaLimpia = categoria.Trim();
+			string categoriaLimpia = NormalizarTextoVisible(categoria);
 			var categoriaActual = categorias.FirstOrDefault(c => c.Equals(categoriaLimpia, StringComparison.OrdinalIgnoreCase));
 
 			if (categoriaActual == null)
@@ -712,6 +826,7 @@ namespace Vinoteca.Services
 		public static void GuardarProducto(Producto producto)
 		{
 			var productos = ObtenerProductos();
+			NormalizarProducto(producto);
 			var index = productos.FindIndex(p => p.Id == producto.Id);
 
 			if (index >= 0)
@@ -729,6 +844,7 @@ namespace Vinoteca.Services
 			}
 
 			GuardarJson(productosFile, productos);
+			AsegurarIdentificadores();
 		}
 
 		public static void EliminarProducto(string id)
@@ -740,6 +856,7 @@ namespace Vinoteca.Services
 			{
 				productos.Remove(productoAEliminar);
 				GuardarJson(productosFile, productos);
+				AsegurarIdentificadores();
 			}
 		}
 
@@ -770,6 +887,7 @@ namespace Vinoteca.Services
 			}
 
 			AsegurarDatosVentaPos(nuevaVenta);
+			NormalizarVenta(nuevaVenta);
 
 			var ventas = ObtenerVentas();
 			if (!IdNumericoDisponible(nuevaVenta.Id, ventas.Select(v => v.Id)))
@@ -779,6 +897,7 @@ namespace Vinoteca.Services
 
 			ventas.Add(nuevaVenta);
 			GuardarJson(ventasFile, ventas);
+			AsegurarIdentificadores();
 		}
 	}
 }

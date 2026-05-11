@@ -15,6 +15,16 @@ namespace Vinoteca.Views
 	public sealed partial class UsuariosView : Page, ICambiosPendientes
 	{
 		private const string CorreoAdminPrincipal = "admin@vinoteca.com";
+		private static readonly string[] DominiosCorreoPermitidos =
+		{
+			"gmail.com",
+			"outlook.com",
+			"yahoo.com",
+			"hotmail.com",
+			"live.com",
+			"icloud.com",
+			"vinoteca.com"
+		};
 
 		private Usuario? usuarioSeleccionado;
 		private bool ignorarCambioSeleccion;
@@ -30,6 +40,7 @@ namespace Vinoteca.Views
 			InputRestrictionsHelper.AplicarTextoLibreSinEnter(txtBuscarUsuario);
 			lvUsuarios.ItemsSource = Usuarios;
 			ConfigurarRoles();
+			ConfigurarDominiosCorreo();
 			ConfigurarFiltros();
 
 			if (!SessionService.PuedeVerInformacionOperativa)
@@ -66,6 +77,7 @@ namespace Vinoteca.Views
 		{
 			txtNombre.IsEnabled = false;
 			txtCorreo.IsEnabled = false;
+			cmbDominioCorreo.IsEnabled = false;
 			txtPassword.IsEnabled = false;
 			txtConfirmarPassword.IsEnabled = false;
 			cmbRol.IsEnabled = false;
@@ -87,6 +99,7 @@ namespace Vinoteca.Views
 			txtDescripcionLista.Text = "Selecciona una cuenta para revisar su informacion.";
 			txtNombre.IsEnabled = false;
 			txtCorreo.IsEnabled = false;
+			cmbDominioCorreo.IsEnabled = false;
 			txtPassword.IsEnabled = false;
 			txtConfirmarPassword.IsEnabled = false;
 			cmbRol.IsEnabled = false;
@@ -109,6 +122,17 @@ namespace Vinoteca.Views
 			cmbOrdenUsuarios.SelectedIndex = 0;
 		}
 
+		private void ConfigurarDominiosCorreo()
+		{
+			cmbDominioCorreo.Items.Clear();
+			foreach (string dominio in DominiosCorreoPermitidos)
+			{
+				cmbDominioCorreo.Items.Add(dominio);
+			}
+
+			cmbDominioCorreo.SelectedIndex = 0;
+		}
+
 		private void AplicarFiltroUsuarios()
 		{
 			string busqueda = txtBuscarUsuario.Text?.Trim().ToLowerInvariant() ?? string.Empty;
@@ -128,7 +152,7 @@ namespace Vinoteca.Views
 				"Nombre Z-A" => filtrados.OrderByDescending(u => u.Nombre),
 				"Rol" => filtrados.OrderBy(u => RolesSistema.Normalizar(u.Rol)).ThenBy(u => u.Nombre),
 				"Estado" => filtrados.OrderByDescending(u => u.Activo).ThenBy(u => u.Nombre),
-				"ID" => filtrados.OrderBy(u => u.Id),
+				"ID" => filtrados.OrderBy(u => ObtenerIdNumerico(u.Id)),
 				_ => filtrados.OrderBy(u => u.Nombre)
 			};
 
@@ -144,6 +168,11 @@ namespace Vinoteca.Views
 		private static string ObtenerContenidoCombo(ComboBox combo)
 		{
 			return (combo.SelectedItem as ComboBoxItem)?.Content?.ToString() ?? string.Empty;
+		}
+
+		private static int ObtenerIdNumerico(string? id)
+		{
+			return int.TryParse(id, out int valor) ? valor : int.MaxValue;
 		}
 
 		private async void lvUsuarios_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -193,12 +222,14 @@ namespace Vinoteca.Views
 			OcultarMensaje();
 
 			string nombre = txtNombre.Text;
-			string correo = txtCorreo.Text;
+			string correoLocal = txtCorreo.Text;
+			string dominioCorreo = ObtenerDominioCorreoActual();
+			string correo = ConstruirCorreo(correoLocal, dominioCorreo);
 			string password = txtPassword.Password;
 			string confirmarPassword = txtConfirmarPassword.Password;
 			string rol = ObtenerRolActual();
 
-			if (!ValidarFormulario(nombre, correo, password, confirmarPassword, rol))
+			if (!ValidarFormulario(nombre, correoLocal, dominioCorreo, correo, password, confirmarPassword, rol))
 			{
 				return;
 			}
@@ -256,7 +287,7 @@ namespace Vinoteca.Views
 			CargarUsuarios();
 		}
 
-		private bool ValidarFormulario(string nombre, string correo, string password, string confirmarPassword, string rol)
+		private bool ValidarFormulario(string nombre, string correoLocal, string dominioCorreo, string correo, string password, string confirmarPassword, string rol)
 		{
 			if (string.IsNullOrWhiteSpace(nombre))
 			{
@@ -294,25 +325,43 @@ namespace Vinoteca.Views
 				return false;
 			}
 
-			if (string.IsNullOrWhiteSpace(correo))
+			if (string.IsNullOrWhiteSpace(correoLocal))
 			{
-				MostrarError("El correo es obligatorio");
+				MostrarError("El nombre del correo es obligatorio");
 				return false;
 			}
 
-			if (correo != correo.Trim())
+			if (correoLocal != correoLocal.Trim())
 			{
-				MostrarError("El correo no debe tener espacios al inicio o al final");
+				MostrarError("El nombre del correo no debe tener espacios al inicio o al final");
 				return false;
 			}
 
-			if (correo.Length > 80 || correo.Any(char.IsWhiteSpace))
+			if (correoLocal.Contains('@'))
 			{
-				MostrarError("Ingresa un correo valido sin espacios y de maximo 80 caracteres");
+				MostrarError("Escribe solo el nombre del correo, sin @");
 				return false;
 			}
 
-			if (!FormValidationHelper.EsCorreoValido(correo))
+			if (correoLocal.Length > 40 || correoLocal.Any(char.IsWhiteSpace))
+			{
+				MostrarError("El nombre del correo no debe tener espacios y debe ser maximo 40 caracteres");
+				return false;
+			}
+
+			if (!EsNombreCorreoValido(correoLocal))
+			{
+				MostrarError("El nombre del correo solo permite letras, numeros, punto, guion y guion bajo");
+				return false;
+			}
+
+			if (!DominiosCorreoPermitidos.Any(d => d.Equals(dominioCorreo, StringComparison.OrdinalIgnoreCase)))
+			{
+				MostrarError("Selecciona un dominio de correo valido");
+				return false;
+			}
+
+			if (correo.Length > 80 || !FormValidationHelper.EsCorreoValido(correo))
 			{
 				MostrarError("Ingresa un correo valido");
 				return false;
@@ -514,6 +563,7 @@ namespace Vinoteca.Views
 			txtConfirmarPassword.Password = string.Empty;
 			SeleccionarRol(RolesSistema.Empleado);
 			chkActivo.IsChecked = true;
+			SeleccionarDominioCorreo(DominiosCorreoPermitidos[0]);
 
 			ignorarCambioSeleccion = true;
 			lvUsuarios.SelectedItem = null;
@@ -526,7 +576,9 @@ namespace Vinoteca.Views
 		{
 			usuarioSeleccionado = usuario;
 			txtNombre.Text = usuario.Nombre ?? string.Empty;
-			txtCorreo.Text = usuario.Correo ?? string.Empty;
+			SepararCorreo(usuario.Correo ?? string.Empty, out string nombreCorreo, out string dominioCorreo);
+			txtCorreo.Text = nombreCorreo;
+			SeleccionarDominioCorreo(dominioCorreo);
 			txtPassword.Password = usuario.Contrasena ?? string.Empty;
 			txtConfirmarPassword.Password = usuario.Contrasena ?? string.Empty;
 			SeleccionarRol(usuario.Rol);
@@ -565,7 +617,7 @@ namespace Vinoteca.Views
 		private bool FormularioCoincideConUsuario(Usuario usuario)
 		{
 			return string.Equals((txtNombre.Text ?? string.Empty).Trim(), usuario.Nombre ?? string.Empty, StringComparison.Ordinal) &&
-				string.Equals((txtCorreo.Text ?? string.Empty).Trim(), usuario.Correo ?? string.Empty, StringComparison.Ordinal) &&
+				string.Equals(ConstruirCorreo(txtCorreo.Text, ObtenerDominioCorreoActual()), usuario.Correo ?? string.Empty, StringComparison.OrdinalIgnoreCase) &&
 				string.Equals(txtPassword.Password, usuario.Contrasena ?? string.Empty, StringComparison.Ordinal) &&
 				string.Equals(txtConfirmarPassword.Password, usuario.Contrasena ?? string.Empty, StringComparison.Ordinal) &&
 				ObtenerRolActual() == RolesSistema.Normalizar(usuario.Rol) &&
@@ -590,6 +642,45 @@ namespace Vinoteca.Views
 			}
 
 			cmbRol.SelectedIndex = 2;
+		}
+
+		private string ObtenerDominioCorreoActual()
+		{
+			return cmbDominioCorreo.SelectedItem?.ToString() ?? DominiosCorreoPermitidos[0];
+		}
+
+		private static string ConstruirCorreo(string correoLocal, string dominioCorreo)
+		{
+			return $"{(correoLocal ?? string.Empty).Trim()}@{(dominioCorreo ?? string.Empty).Trim()}";
+		}
+
+		private static bool EsNombreCorreoValido(string correoLocal)
+		{
+			string nombre = correoLocal.Trim();
+			return !nombre.Contains("..") &&
+				Regex.IsMatch(nombre, @"^[A-Za-z0-9](?:[A-Za-z0-9._%+-]{0,38}[A-Za-z0-9])?$");
+		}
+
+		private static void SepararCorreo(string correo, out string correoLocal, out string dominioCorreo)
+		{
+			correoLocal = string.Empty;
+			dominioCorreo = DominiosCorreoPermitidos[0];
+
+			int indiceArroba = correo.IndexOf('@');
+			if (indiceArroba <= 0 || indiceArroba >= correo.Length - 1)
+			{
+				return;
+			}
+
+			correoLocal = correo[..indiceArroba];
+			dominioCorreo = correo[(indiceArroba + 1)..];
+		}
+
+		private void SeleccionarDominioCorreo(string dominio)
+		{
+			string dominioNormalizado = DominiosCorreoPermitidos
+				.FirstOrDefault(d => d.Equals(dominio, StringComparison.OrdinalIgnoreCase)) ?? DominiosCorreoPermitidos[0];
+			cmbDominioCorreo.SelectedItem = dominioNormalizado;
 		}
 
 		private void ActualizarModoFormulario()

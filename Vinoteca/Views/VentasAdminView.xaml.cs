@@ -78,7 +78,7 @@ namespace Vinoteca.Views
 			bool confirmarVaciado = await CambiosPendientesService.MostrarConfirmacionAsync(
 				XamlRoot,
 				"Vaciar venta",
-				"Deseas quitar todos los productos de esta venta?",
+				$"Deseas quitar los {CarritoService.ObtenerCantidadTotalArticulos()} articulo(s) de esta venta?",
 				"Vaciar");
 			if (!confirmarVaciado)
 			{
@@ -142,7 +142,7 @@ namespace Vinoteca.Views
 			bool confirmarVenta = await CambiosPendientesService.MostrarConfirmacionAsync(
 				XamlRoot,
 				"Confirmar venta",
-				"Deseas registrar la venta con los productos actuales?",
+				$"Deseas registrar esta venta por {total.ToString("C")} con pago {metodoPago}?",
 				"Confirmar");
 			if (!confirmarVenta)
 			{
@@ -172,6 +172,7 @@ namespace Vinoteca.Views
 
 			DataService.GuardarVenta(nuevaVenta);
 
+			var alertasStock = new List<string>();
 			foreach (var item in items)
 			{
 				var productoActual = DataService.ObtenerProductos().First(p => p.Id == item.Producto.Id);
@@ -182,9 +183,23 @@ namespace Vinoteca.Views
 				}
 
 				DataService.GuardarProducto(productoActual);
+
+				if (productoActual.Stock <= 0)
+				{
+					alertasStock.Add($"{productoActual.Nombre}: sin stock disponible");
+				}
+				else if (productoActual.Stock < 5)
+				{
+					alertasStock.Add($"{productoActual.Nombre}: stock bajo ({productoActual.Stock})");
+				}
 			}
 
 			CarritoService.LimpiarCarrito();
+
+			if (alertasStock.Count > 0)
+			{
+				MostrarEstado(string.Join(" | ", alertasStock));
+			}
 
 			await TicketPreviewService.MostrarAsync(nuevaVenta, XamlRoot);
 			Frame.Navigate(typeof(MisTicketsView));

@@ -27,7 +27,14 @@
 
 					<StackPanel Spacing="4">
 						<TextBlock Text="Correo" Style="{StaticResource WineFieldLabelStyle}"/>
-						<TextBox x:Name="txtCorreo" Style="{StaticResource WineTextBoxStyle}" MaxLength="80" PlaceholderText="usuario@vinoteca.com"/>
+						<Grid ColumnSpacing="8">
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="*"/>
+								<ColumnDefinition Width="170"/>
+							</Grid.ColumnDefinitions>
+							<TextBox x:Name="txtCorreo" Grid.Column="0" Style="{StaticResource WineTextBoxStyle}" MaxLength="40" PlaceholderText="usuario"/>
+							<ComboBox x:Name="cmbDominioCorreo" Grid.Column="1" Style="{StaticResource WineComboBoxStyle}" HorizontalAlignment="Stretch"/>
+						</Grid>
 					</StackPanel>
 
 					<StackPanel Spacing="4">

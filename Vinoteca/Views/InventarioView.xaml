@@ -67,7 +67,7 @@
 								<ColumnDefinition Width="*"/>
 								<ColumnDefinition Width="Auto"/>
 							</Grid.ColumnDefinitions>
-							<TextBox x:Name="txtImagen" Grid.Column="0" Style="{StaticResource WineTextBoxStyle}" PlaceholderText="URL o ruta de imagen" MaxLength="300"/>
+							<TextBox x:Name="txtImagen" Grid.Column="0" Style="{StaticResource WineTextBoxStyle}" PlaceholderText="Selecciona una imagen local" MaxLength="300" IsReadOnly="True"/>
 							<Button x:Name="btnSeleccionarImagen" Grid.Column="1" Content="Seleccionar" Style="{StaticResource WineSecondaryButtonStyle}" Click="btnSeleccionarImagen_Click"/>
 						</Grid>
 					</StackPanel>
@@ -103,6 +103,7 @@
 							<ColumnDefinition Width="*"/>
 							<ColumnDefinition Width="*"/>
 							<ColumnDefinition Width="1.4*"/>
+							<ColumnDefinition Width="Auto"/>
 						</Grid.ColumnDefinitions>
 						<Grid.RowDefinitions>
 							<RowDefinition Height="Auto"/>
@@ -114,6 +115,7 @@
 						<TextBlock Grid.Column="2" Text="Precio min" Style="{StaticResource WineFieldLabelStyle}"/>
 						<TextBlock Grid.Column="3" Text="Precio max" Style="{StaticResource WineFieldLabelStyle}"/>
 						<TextBlock Grid.Column="4" Text="Orden" Style="{StaticResource WineFieldLabelStyle}"/>
+						<TextBlock Grid.Column="5" Text=" " Style="{StaticResource WineFieldLabelStyle}"/>
 
 						<TextBox x:Name="txtBuscar" Grid.Row="1" Grid.Column="0" Style="{StaticResource WineTextBoxStyle}" PlaceholderText="ID, nombre, marca o categoria" MaxLength="50" TextChanged="txtBuscar_TextChanged"/>
 						<ComboBox x:Name="cmbFiltroCategoria" Grid.Row="1" Grid.Column="1" Style="{StaticResource WineComboBoxStyle}" HorizontalAlignment="Stretch" SelectionChanged="FiltroProductos_Changed"/>
@@ -128,6 +130,7 @@
 							<ComboBoxItem Content="Stock mayor"/>
 							<ComboBoxItem Content="ID"/>
 						</ComboBox>
+						<Button x:Name="btnLimpiarFiltrosProductos" Grid.Row="1" Grid.Column="5" Content="Limpiar filtros" Style="{StaticResource WineSecondaryButtonStyle}" Click="btnLimpiarFiltrosProductos_Click"/>
 					</Grid>
 				</Border>
 				<TextBlock x:Name="txtResumenProductos" Foreground="{StaticResource WineMutedBrush}" FontSize="13"/>
@@ -152,7 +155,7 @@
 								<TextBlock Text="{Binding Categoria}" Grid.Column="1" Foreground="{StaticResource WineMutedBrush}" VerticalAlignment="Center"/>
 								<TextBlock Text="{Binding PrecioTexto}" Grid.Column="2" Foreground="{StaticResource WineHeroBrush}" FontWeight="SemiBold" VerticalAlignment="Center"/>
 								<TextBlock Text="{Binding StockTexto}" Grid.Column="3" Foreground="{StaticResource WineMutedBrush}" VerticalAlignment="Center"/>
-								<TextBlock Text="{Binding EstadoTexto}" Grid.Column="4" Foreground="{StaticResource WineMutedBrush}" VerticalAlignment="Center"/>
+								<TextBlock Text="{Binding EstadoTexto}" Grid.Column="4" Foreground="{Binding EstadoBrush}" FontWeight="SemiBold" VerticalAlignment="Center"/>
 							</Grid>
 						</Border>
 					</DataTemplate>

@@ -6,7 +6,7 @@
 
 	<Grid Background="{StaticResource WineBackgroundBrush}" Padding="12">
 		<Border Style="{StaticResource WineCardStyle}" Padding="24">
-			<Grid RowSpacing="20">
+			<Grid RowSpacing="18">
 				<Grid.RowDefinitions>
 					<RowDefinition Height="Auto"/>
 					<RowDefinition Height="Auto"/>
@@ -14,95 +14,307 @@
 					<RowDefinition Height="Auto"/>
 				</Grid.RowDefinitions>
 
-				<StackPanel Grid.Row="0" Spacing="4">
-					<TextBlock Text="Analisis de datos" FontSize="28" FontWeight="SemiBold" Foreground="{StaticResource WineTextBrush}"/>
-					<TextBlock Text="Indicadores estadisticos para auditoria de ventas sin permisos de edicion." Foreground="{StaticResource WineMutedBrush}"/>
-					<TextBlock x:Name="txtEstado" Visibility="Collapsed" Margin="0,8,0,0" TextWrapping="Wrap"/>
-				</StackPanel>
-
-				<Grid Grid.Row="1" ColumnSpacing="12" RowSpacing="12">
+				<Grid Grid.Row="0">
 					<Grid.ColumnDefinitions>
 						<ColumnDefinition Width="*"/>
-						<ColumnDefinition Width="*"/>
-						<ColumnDefinition Width="*"/>
-						<ColumnDefinition Width="*"/>
+						<ColumnDefinition Width="Auto"/>
 					</Grid.ColumnDefinitions>
 
-					<Border Grid.Column="0" Background="{StaticResource WineAccentSoftBrush}" BorderBrush="{StaticResource WineBorderBrush}" BorderThickness="1" CornerRadius="16" Padding="16">
-						<StackPanel Spacing="4">
-							<TextBlock Text="Ventas" Foreground="{StaticResource WineMutedBrush}"/>
-							<TextBlock x:Name="txtTotalVentas" Text="0" FontSize="26" FontWeight="Bold" Foreground="{StaticResource WineAccentBrush}"/>
-						</StackPanel>
-					</Border>
-
-					<Border Grid.Column="1" Background="{StaticResource WineAccentSoftBrush}" BorderBrush="{StaticResource WineBorderBrush}" BorderThickness="1" CornerRadius="16" Padding="16">
-						<StackPanel Spacing="4">
-							<TextBlock Text="Ingresos" Foreground="{StaticResource WineMutedBrush}"/>
-							<TextBlock x:Name="txtIngresos" Text="$0.00" FontSize="26" FontWeight="Bold" Foreground="{StaticResource WineAccentBrush}"/>
-						</StackPanel>
-					</Border>
-
-					<Border Grid.Column="2" Background="{StaticResource WineAccentSoftBrush}" BorderBrush="{StaticResource WineBorderBrush}" BorderThickness="1" CornerRadius="16" Padding="16">
-						<StackPanel Spacing="4">
-							<TextBlock Text="Productos vendidos" Foreground="{StaticResource WineMutedBrush}"/>
-							<TextBlock x:Name="txtProductosVendidos" Text="0" FontSize="26" FontWeight="Bold" Foreground="{StaticResource WineAccentBrush}"/>
-						</StackPanel>
-					</Border>
-
-					<Border Grid.Column="3" Background="{StaticResource WineAccentSoftBrush}" BorderBrush="{StaticResource WineBorderBrush}" BorderThickness="1" CornerRadius="16" Padding="16">
-						<StackPanel Spacing="4">
-							<TextBlock Text="Ticket promedio" Foreground="{StaticResource WineMutedBrush}"/>
-							<TextBlock x:Name="txtTicketPromedio" Text="$0.00" FontSize="26" FontWeight="Bold" Foreground="{StaticResource WineAccentBrush}"/>
-						</StackPanel>
-					</Border>
-				</Grid>
-
-				<Grid Grid.Row="2" ColumnSpacing="16">
-					<Grid.ColumnDefinitions>
-						<ColumnDefinition Width="1.1*"/>
-						<ColumnDefinition Width="1.4*"/>
-					</Grid.ColumnDefinitions>
-
-					<StackPanel Grid.Column="0" Spacing="12">
-						<Border Background="{StaticResource WineAccentSoftBrush}" BorderBrush="{StaticResource WineBorderBrush}" BorderThickness="1" CornerRadius="16" Padding="16">
-							<StackPanel Spacing="6">
-								<TextBlock Text="Producto mas vendido" Foreground="{StaticResource WineMutedBrush}"/>
-								<TextBlock x:Name="txtProductoTop" Text="Sin datos" FontSize="18" FontWeight="SemiBold" Foreground="{StaticResource WineTextBrush}" TextWrapping="Wrap"/>
-							</StackPanel>
-						</Border>
-
-						<Border Background="{StaticResource WineAccentSoftBrush}" BorderBrush="{StaticResource WineBorderBrush}" BorderThickness="1" CornerRadius="16" Padding="16">
-							<StackPanel Spacing="6">
-								<TextBlock Text="Empleado con mas ventas" Foreground="{StaticResource WineMutedBrush}"/>
-								<TextBlock x:Name="txtEmpleadoTop" Text="Sin datos" FontSize="18" FontWeight="SemiBold" Foreground="{StaticResource WineTextBrush}" TextWrapping="Wrap"/>
-							</StackPanel>
-						</Border>
+					<StackPanel Spacing="4">
+						<TextBlock Text="Analisis de datos" FontSize="28" FontWeight="SemiBold" Foreground="{StaticResource WineTextBrush}"/>
+						<TextBlock Text="Supervision de ventas, rendimiento, inventario y tendencias sin permisos de edicion." Foreground="{StaticResource WineMutedBrush}"/>
 					</StackPanel>
 
-					<Border Grid.Column="1" Background="{StaticResource WineAccentSoftBrush}" BorderBrush="{StaticResource WineBorderBrush}" BorderThickness="1" CornerRadius="16" Padding="16">
-						<Grid>
-							<Grid.RowDefinitions>
-								<RowDefinition Height="Auto"/>
-								<RowDefinition Height="*"/>
-							</Grid.RowDefinitions>
-
-							<TextBlock Text="Ventas por categoria" FontSize="18" FontWeight="SemiBold" Foreground="{StaticResource WineTextBrush}" Margin="0,0,0,12"/>
-							<ListView Grid.Row="1" x:Name="lvCategorias" SelectionMode="None" Background="Transparent" BorderThickness="0">
-								<ListView.ItemTemplate>
-									<DataTemplate>
-										<Border Background="{StaticResource WineBackgroundBrush}" CornerRadius="8" Padding="12" Margin="0,4" BorderBrush="{StaticResource WineBorderBrush}" BorderThickness="1">
-											<StackPanel Spacing="3">
-												<TextBlock x:Name="txtCategoria" Text="{Binding}" Foreground="{StaticResource WineTextBrush}" FontWeight="SemiBold"/>
-											</StackPanel>
-										</Border>
-									</DataTemplate>
-								</ListView.ItemTemplate>
-							</ListView>
-						</Grid>
-					</Border>
+					<Button Grid.Column="1" Content="Exportar Excel" Style="{StaticResource WinePrimaryButtonStyle}" Click="btnExportarExcel_Click"/>
 				</Grid>
 
-				<Button Grid.Row="3" Content="Descargar reporte estadistico" HorizontalAlignment="Right" Style="{StaticResource WinePrimaryButtonStyle}" Click="btnDescargarReporte_Click"/>
+				<Border Grid.Row="1" Style="{StaticResource WineFilterPillStyle}">
+					<Grid ColumnSpacing="10" RowSpacing="8">
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="1.8*"/>
+							<ColumnDefinition Width="*"/>
+							<ColumnDefinition Width="*"/>
+							<ColumnDefinition Width="*"/>
+							<ColumnDefinition Width="1.2*"/>
+							<ColumnDefinition Width="Auto"/>
+						</Grid.ColumnDefinitions>
+						<Grid.RowDefinitions>
+							<RowDefinition Height="Auto"/>
+							<RowDefinition Height="Auto"/>
+						</Grid.RowDefinitions>
+
+						<TextBlock Grid.Column="0" Text="Buscar" Style="{StaticResource WineFieldLabelStyle}"/>
+						<TextBlock Grid.Column="1" Text="Periodo" Style="{StaticResource WineFieldLabelStyle}"/>
+						<TextBlock Grid.Column="2" Text="Categoria" Style="{StaticResource WineFieldLabelStyle}"/>
+						<TextBlock Grid.Column="3" Text="Empleado" Style="{StaticResource WineFieldLabelStyle}"/>
+						<TextBlock Grid.Column="4" Text="Orden productos" Style="{StaticResource WineFieldLabelStyle}"/>
+
+						<TextBox x:Name="txtBuscarAnalisis" Grid.Row="1" Grid.Column="0" Style="{StaticResource WineTextBoxStyle}" PlaceholderText="Producto, marca, empleado o pago" MaxLength="80" TextChanged="FiltroAnalisis_Changed"/>
+
+						<ComboBox x:Name="cmbPeriodo" Grid.Row="1" Grid.Column="1" Style="{StaticResource WineComboBoxStyle}" HorizontalAlignment="Stretch" SelectionChanged="FiltroAnalisis_Changed">
+							<ComboBoxItem Content="Todo"/>
+							<ComboBoxItem Content="Ultimos 7 dias"/>
+							<ComboBoxItem Content="Ultimos 30 dias"/>
+							<ComboBoxItem Content="Ultimos 90 dias"/>
+						</ComboBox>
+
+						<ComboBox x:Name="cmbCategoria" Grid.Row="1" Grid.Column="2" Style="{StaticResource WineComboBoxStyle}" HorizontalAlignment="Stretch" SelectionChanged="FiltroAnalisis_Changed"/>
+						<ComboBox x:Name="cmbEmpleado" Grid.Row="1" Grid.Column="3" Style="{StaticResource WineComboBoxStyle}" HorizontalAlignment="Stretch" SelectionChanged="FiltroAnalisis_Changed"/>
+
+						<ComboBox x:Name="cmbOrdenProductos" Grid.Row="1" Grid.Column="4" Style="{StaticResource WineComboBoxStyle}" HorizontalAlignment="Stretch" SelectionChanged="FiltroAnalisis_Changed">
+							<ComboBoxItem Content="Mas vendidos"/>
+							<ComboBoxItem Content="Mas ingresos"/>
+							<ComboBoxItem Content="Menor stock"/>
+							<ComboBoxItem Content="Nombre A-Z"/>
+						</ComboBox>
+
+						<Button Grid.Row="1" Grid.Column="5" Content="Limpiar filtros" Style="{StaticResource WineSecondaryButtonStyle}" Click="btnLimpiarFiltros_Click"/>
+					</Grid>
+				</Border>
+
+				<ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto">
+					<StackPanel Spacing="16" Padding="0,0,8,0">
+						<Grid ColumnSpacing="12" RowSpacing="12">
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="*"/>
+								<ColumnDefinition Width="*"/>
+								<ColumnDefinition Width="*"/>
+								<ColumnDefinition Width="*"/>
+								<ColumnDefinition Width="*"/>
+							</Grid.ColumnDefinitions>
+
+							<Border Grid.Column="0" Background="{StaticResource WineAccentSoftBrush}" BorderBrush="{StaticResource WineBorderBrush}" BorderThickness="1" CornerRadius="8" Padding="16">
+								<StackPanel Spacing="4">
+									<TextBlock Text="Ventas" Foreground="{StaticResource WineMutedBrush}"/>
+									<TextBlock x:Name="txtTotalVentas" Text="0" FontSize="24" FontWeight="Bold" Foreground="{StaticResource WineAccentBrush}"/>
+								</StackPanel>
+							</Border>
+
+							<Border Grid.Column="1" Background="{StaticResource WineAccentSoftBrush}" BorderBrush="{StaticResource WineBorderBrush}" BorderThickness="1" CornerRadius="8" Padding="16">
+								<StackPanel Spacing="4">
+									<TextBlock Text="Ingresos" Foreground="{StaticResource WineMutedBrush}"/>
+									<TextBlock x:Name="txtIngresos" Text="$0.00" FontSize="24" FontWeight="Bold" Foreground="{StaticResource WineAccentBrush}"/>
+								</StackPanel>
+							</Border>
+
+							<Border Grid.Column="2" Background="{StaticResource WineAccentSoftBrush}" BorderBrush="{StaticResource WineBorderBrush}" BorderThickness="1" CornerRadius="8" Padding="16">
+								<StackPanel Spacing="4">
+									<TextBlock Text="Unidades" Foreground="{StaticResource WineMutedBrush}"/>
+									<TextBlock x:Name="txtProductosVendidos" Text="0" FontSize="24" FontWeight="Bold" Foreground="{StaticResource WineAccentBrush}"/>
+								</StackPanel>
+							</Border>
+
+							<Border Grid.Column="3" Background="{StaticResource WineAccentSoftBrush}" BorderBrush="{StaticResource WineBorderBrush}" BorderThickness="1" CornerRadius="8" Padding="16">
+								<StackPanel Spacing="4">
+									<TextBlock Text="Ticket promedio" Foreground="{StaticResource WineMutedBrush}"/>
+									<TextBlock x:Name="txtTicketPromedio" Text="$0.00" FontSize="24" FontWeight="Bold" Foreground="{StaticResource WineAccentBrush}"/>
+								</StackPanel>
+							</Border>
+
+							<Border Grid.Column="4" Background="{StaticResource WineAccentSoftBrush}" BorderBrush="{StaticResource WineBorderBrush}" BorderThickness="1" CornerRadius="8" Padding="16">
+								<StackPanel Spacing="4">
+									<TextBlock Text="Margen estimado" Foreground="{StaticResource WineMutedBrush}"/>
+									<TextBlock x:Name="txtMargenEstimado" Text="$0.00" FontSize="24" FontWeight="Bold" Foreground="{StaticResource WineAccentBrush}"/>
+								</StackPanel>
+							</Border>
+						</Grid>
+
+						<Grid ColumnSpacing="16">
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="1.05*"/>
+								<ColumnDefinition Width="1.25*"/>
+								<ColumnDefinition Width="1.05*"/>
+							</Grid.ColumnDefinitions>
+
+							<Border Grid.Column="0" Background="{StaticResource WineSubtleBrush}" BorderBrush="{StaticResource WineBorderBrush}" BorderThickness="1" CornerRadius="8" Padding="16">
+								<StackPanel Spacing="12">
+									<TextBlock Text="Predicciones" FontSize="18" FontWeight="SemiBold" Foreground="{StaticResource WineTextBrush}"/>
+									<TextBlock x:Name="txtPrediccionIngresos" Text="Proyeccion semanal: $0.00" Foreground="{StaticResource WineTextBrush}" TextWrapping="Wrap"/>
+									<TextBlock x:Name="txtPrediccionProductos" Text="Productos esperados: 0" Foreground="{StaticResource WineTextBrush}" TextWrapping="Wrap"/>
+									<TextBlock x:Name="txtRiesgoStock" Text="Riesgo de stock: sin alertas" Foreground="{StaticResource WineDangerBrush}" FontWeight="SemiBold" TextWrapping="Wrap"/>
+								</StackPanel>
+							</Border>
+
+							<Border Grid.Column="1" Background="{StaticResource WineSubtleBrush}" BorderBrush="{StaticResource WineBorderBrush}" BorderThickness="1" CornerRadius="8" Padding="16">
+								<StackPanel Spacing="12">
+									<TextBlock Text="Lectura rapida" FontSize="18" FontWeight="SemiBold" Foreground="{StaticResource WineTextBrush}"/>
+									<TextBlock x:Name="txtProductoTop" Text="Producto lider: sin datos" Foreground="{StaticResource WineTextBrush}" TextWrapping="Wrap"/>
+									<TextBlock x:Name="txtEmpleadoTop" Text="Empleado lider: sin datos" Foreground="{StaticResource WineTextBrush}" TextWrapping="Wrap"/>
+									<TextBlock x:Name="txtDiaTop" Text="Mejor dia: sin datos" Foreground="{StaticResource WineTextBrush}" TextWrapping="Wrap"/>
+								</StackPanel>
+							</Border>
+
+							<Border Grid.Column="2" Background="{StaticResource WineSubtleBrush}" BorderBrush="{StaticResource WineBorderBrush}" BorderThickness="1" CornerRadius="8" Padding="16">
+								<StackPanel Spacing="12">
+									<TextBlock Text="Inventario" FontSize="18" FontWeight="SemiBold" Foreground="{StaticResource WineTextBrush}"/>
+									<TextBlock x:Name="txtProductosActivos" Text="Productos activos: 0" Foreground="{StaticResource WineTextBrush}"/>
+									<TextBlock x:Name="txtValorInventario" Text="Valor en stock: $0.00" Foreground="{StaticResource WineTextBrush}"/>
+									<TextBlock x:Name="txtStockCritico" Text="Stock critico: 0" Foreground="{StaticResource WineDangerBrush}" FontWeight="SemiBold"/>
+								</StackPanel>
+							</Border>
+						</Grid>
+
+						<Grid ColumnSpacing="16">
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="1.2*"/>
+								<ColumnDefinition Width="*"/>
+							</Grid.ColumnDefinitions>
+
+							<Border Grid.Column="0" Background="{StaticResource WinePanelBrush}" BorderBrush="{StaticResource WineBorderBrush}" BorderThickness="1" CornerRadius="8" Padding="16">
+								<Grid RowSpacing="12">
+									<Grid.RowDefinitions>
+										<RowDefinition Height="Auto"/>
+										<RowDefinition Height="*"/>
+									</Grid.RowDefinitions>
+									<TextBlock Text="Productos destacados" FontSize="18" FontWeight="SemiBold" Foreground="{StaticResource WineTextBrush}"/>
+									<ListView Grid.Row="1" x:Name="lvProductosTop" SelectionMode="None" Background="Transparent" BorderThickness="0" MaxHeight="280">
+										<ListView.ItemTemplate>
+											<DataTemplate>
+												<Border Background="{StaticResource WineSubtleBrush}" CornerRadius="8" Padding="12" Margin="0,4" BorderBrush="{StaticResource WineBorderBrush}" BorderThickness="1">
+													<Grid ColumnSpacing="12">
+														<Grid.ColumnDefinitions>
+															<ColumnDefinition Width="*"/>
+															<ColumnDefinition Width="Auto"/>
+														</Grid.ColumnDefinitions>
+														<StackPanel Spacing="3">
+															<TextBlock Text="{Binding Titulo}" Foreground="{StaticResource WineTextBrush}" FontWeight="SemiBold"/>
+															<TextBlock Text="{Binding Detalle}" Foreground="{StaticResource WineMutedBrush}" FontSize="12"/>
+															<ProgressBar Value="{Binding Porcentaje}" Maximum="100" Height="6" Foreground="{StaticResource WineAccentBrush}" Background="{StaticResource WineHeroSoftBrush}"/>
+														</StackPanel>
+														<TextBlock Grid.Column="1" Text="{Binding Importe}" Foreground="{StaticResource WineAccentBrush}" FontWeight="SemiBold" VerticalAlignment="Center"/>
+													</Grid>
+												</Border>
+											</DataTemplate>
+										</ListView.ItemTemplate>
+									</ListView>
+								</Grid>
+							</Border>
+
+							<Border Grid.Column="1" Background="{StaticResource WinePanelBrush}" BorderBrush="{StaticResource WineBorderBrush}" BorderThickness="1" CornerRadius="8" Padding="16">
+								<Grid RowSpacing="12">
+									<Grid.RowDefinitions>
+										<RowDefinition Height="Auto"/>
+										<RowDefinition Height="*"/>
+									</Grid.RowDefinitions>
+									<TextBlock Text="Ventas por categoria" FontSize="18" FontWeight="SemiBold" Foreground="{StaticResource WineTextBrush}"/>
+									<ListView Grid.Row="1" x:Name="lvCategorias" SelectionMode="None" Background="Transparent" BorderThickness="0" MaxHeight="280">
+										<ListView.ItemTemplate>
+											<DataTemplate>
+												<Border Background="{StaticResource WineSubtleBrush}" CornerRadius="8" Padding="12" Margin="0,4" BorderBrush="{StaticResource WineBorderBrush}" BorderThickness="1">
+													<StackPanel Spacing="4">
+														<Grid>
+															<Grid.ColumnDefinitions>
+																<ColumnDefinition Width="*"/>
+																<ColumnDefinition Width="Auto"/>
+															</Grid.ColumnDefinitions>
+															<TextBlock Text="{Binding Titulo}" Foreground="{StaticResource WineTextBrush}" FontWeight="SemiBold"/>
+															<TextBlock Grid.Column="1" Text="{Binding Importe}" Foreground="{StaticResource WineAccentBrush}" FontWeight="SemiBold"/>
+														</Grid>
+														<TextBlock Text="{Binding Detalle}" Foreground="{StaticResource WineMutedBrush}" FontSize="12"/>
+														<ProgressBar Value="{Binding Porcentaje}" Maximum="100" Height="6" Foreground="{StaticResource WineAccentBrush}" Background="{StaticResource WineHeroSoftBrush}"/>
+													</StackPanel>
+												</Border>
+											</DataTemplate>
+										</ListView.ItemTemplate>
+									</ListView>
+								</Grid>
+							</Border>
+						</Grid>
+
+						<Grid ColumnSpacing="16">
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="*"/>
+								<ColumnDefinition Width="*"/>
+								<ColumnDefinition Width="*"/>
+							</Grid.ColumnDefinitions>
+
+							<Border Grid.Column="0" Background="{StaticResource WinePanelBrush}" BorderBrush="{StaticResource WineBorderBrush}" BorderThickness="1" CornerRadius="8" Padding="16">
+								<Grid RowSpacing="12">
+									<Grid.RowDefinitions>
+										<RowDefinition Height="Auto"/>
+										<RowDefinition Height="*"/>
+									</Grid.RowDefinitions>
+									<TextBlock Text="Rendimiento por empleado" FontSize="18" FontWeight="SemiBold" Foreground="{StaticResource WineTextBrush}"/>
+									<ListView Grid.Row="1" x:Name="lvEmpleados" SelectionMode="None" Background="Transparent" BorderThickness="0" MaxHeight="240">
+										<ListView.ItemTemplate>
+											<DataTemplate>
+												<Border Background="{StaticResource WineSubtleBrush}" CornerRadius="8" Padding="12" Margin="0,4" BorderBrush="{StaticResource WineBorderBrush}" BorderThickness="1">
+													<StackPanel Spacing="3">
+														<TextBlock Text="{Binding Titulo}" Foreground="{StaticResource WineTextBrush}" FontWeight="SemiBold"/>
+														<TextBlock Text="{Binding Detalle}" Foreground="{StaticResource WineMutedBrush}" FontSize="12"/>
+														<TextBlock Text="{Binding Importe}" Foreground="{StaticResource WineAccentBrush}" FontWeight="SemiBold"/>
+													</StackPanel>
+												</Border>
+											</DataTemplate>
+										</ListView.ItemTemplate>
+									</ListView>
+								</Grid>
+							</Border>
+
+							<Border Grid.Column="1" Background="{StaticResource WinePanelBrush}" BorderBrush="{StaticResource WineBorderBrush}" BorderThickness="1" CornerRadius="8" Padding="16">
+								<Grid RowSpacing="12">
+									<Grid.RowDefinitions>
+										<RowDefinition Height="Auto"/>
+										<RowDefinition Height="*"/>
+									</Grid.RowDefinitions>
+									<TextBlock Text="Metodos de pago" FontSize="18" FontWeight="SemiBold" Foreground="{StaticResource WineTextBrush}"/>
+									<ListView Grid.Row="1" x:Name="lvPagos" SelectionMode="None" Background="Transparent" BorderThickness="0" MaxHeight="240">
+										<ListView.ItemTemplate>
+											<DataTemplate>
+												<Border Background="{StaticResource WineSubtleBrush}" CornerRadius="8" Padding="12" Margin="0,4" BorderBrush="{StaticResource WineBorderBrush}" BorderThickness="1">
+													<StackPanel Spacing="4">
+														<Grid>
+															<Grid.ColumnDefinitions>
+																<ColumnDefinition Width="*"/>
+																<ColumnDefinition Width="Auto"/>
+															</Grid.ColumnDefinitions>
+															<TextBlock Text="{Binding Titulo}" Foreground="{StaticResource WineTextBrush}" FontWeight="SemiBold"/>
+															<TextBlock Grid.Column="1" Text="{Binding Importe}" Foreground="{StaticResource WineAccentBrush}" FontWeight="SemiBold"/>
+														</Grid>
+														<TextBlock Text="{Binding Detalle}" Foreground="{StaticResource WineMutedBrush}" FontSize="12"/>
+														<ProgressBar Value="{Binding Porcentaje}" Maximum="100" Height="6" Foreground="{StaticResource WineAccentBrush}" Background="{StaticResource WineHeroSoftBrush}"/>
+													</StackPanel>
+												</Border>
+											</DataTemplate>
+										</ListView.ItemTemplate>
+									</ListView>
+								</Grid>
+							</Border>
+
+							<Border Grid.Column="2" Background="{StaticResource WinePanelBrush}" BorderBrush="{StaticResource WineBorderBrush}" BorderThickness="1" CornerRadius="8" Padding="16">
+								<Grid RowSpacing="12">
+									<Grid.RowDefinitions>
+										<RowDefinition Height="Auto"/>
+										<RowDefinition Height="*"/>
+									</Grid.RowDefinitions>
+									<TextBlock Text="Alertas de stock" FontSize="18" FontWeight="SemiBold" Foreground="{StaticResource WineTextBrush}"/>
+									<ListView Grid.Row="1" x:Name="lvInventario" SelectionMode="None" Background="Transparent" BorderThickness="0" MaxHeight="240">
+										<ListView.ItemTemplate>
+											<DataTemplate>
+												<Border Background="{StaticResource WineSubtleBrush}" CornerRadius="8" Padding="12" Margin="0,4" BorderBrush="{StaticResource WineBorderBrush}" BorderThickness="1">
+													<StackPanel Spacing="3">
+														<TextBlock Text="{Binding Titulo}" Foreground="{StaticResource WineTextBrush}" FontWeight="SemiBold"/>
+														<TextBlock Text="{Binding Detalle}" Foreground="{StaticResource WineMutedBrush}" FontSize="12"/>
+														<TextBlock Text="{Binding Importe}" Foreground="{StaticResource WineDangerBrush}" FontWeight="SemiBold"/>
+													</StackPanel>
+												</Border>
+											</DataTemplate>
+										</ListView.ItemTemplate>
+									</ListView>
+								</Grid>
+							</Border>
+						</Grid>
+					</StackPanel>
+				</ScrollViewer>
+
+				<Grid Grid.Row="3">
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="*"/>
+						<ColumnDefinition Width="Auto"/>
+					</Grid.ColumnDefinitions>
+					<TextBlock x:Name="txtEstado" Visibility="Collapsed" TextWrapping="Wrap" FontSize="13" FontWeight="SemiBold" Foreground="{StaticResource WineDangerBrush}" VerticalAlignment="Center"/>
+					<TextBlock x:Name="txtResumenFiltro" Grid.Column="1" Text="0 ventas analizadas" Foreground="{StaticResource WineMutedBrush}" FontSize="13" VerticalAlignment="Center"/>
+				</Grid>
 			</Grid>
 		</Border>
 	</Grid>

@@ -13,12 +13,23 @@ using Vinoteca.Services;
 	{
 		private const string CACHE_KEY_NOMBRE = "Register_Nombre";
 		private const string CACHE_KEY_CORREO = "Register_Correo";
+		private const string CACHE_KEY_DOMINIO = "Register_DominioCorreo";
 		private const string CACHE_KEY_PASSWORD = "Register_Password";
 		private const string CACHE_KEY_CONFIRMAR = "Register_ConfirmarPassword";
+		private static readonly string[] DominiosCorreoPermitidos =
+		{
+			"gmail.com",
+			"outlook.com",
+			"yahoo.com",
+			"hotmail.com",
+			"live.com",
+			"icloud.com"
+		};
 
 		public RegisterView()
 		{
 			this.InitializeComponent();
+			ConfigurarDominiosCorreo();
 			InputRestrictionsHelper.AplicarSinEspaciosNiEnter(this);
 			InputRestrictionsHelper.AplicarSoloLetrasConEspacios(txtNombre);
 
@@ -28,6 +39,7 @@ using Vinoteca.Services;
 			// Guarda cambios del formulario
 			txtNombre.TextChanged += (s, e) => GuardarEnCache(CACHE_KEY_NOMBRE, txtNombre.Text);
 			txtCorreo.TextChanged += (s, e) => GuardarEnCache(CACHE_KEY_CORREO, txtCorreo.Text);
+			cmbDominioCorreo.SelectionChanged += (s, e) => GuardarEnCache(CACHE_KEY_DOMINIO, ObtenerDominioCorreoActual());
 			txtPassword.PasswordChanged += (s, e) => GuardarEnCache(CACHE_KEY_PASSWORD, txtPassword.Password);
 			txtConfirmarPassword.PasswordChanged += (s, e) => GuardarEnCache(CACHE_KEY_CONFIRMAR, txtConfirmarPassword.Password);
 
@@ -42,7 +54,15 @@ using Vinoteca.Services;
 
 			var correo = App.FormCacheService.GetValue(CACHE_KEY_CORREO);
 			if (!string.IsNullOrEmpty(correo))
-				txtCorreo.Text = correo;
+			{
+				SepararCorreo(correo, out string correoLocal, out string dominioCorreo);
+				txtCorreo.Text = correoLocal;
+				SeleccionarDominioCorreo(dominioCorreo);
+			}
+
+			var dominio = App.FormCacheService.GetValue(CACHE_KEY_DOMINIO);
+			if (!string.IsNullOrEmpty(dominio))
+				SeleccionarDominioCorreo(dominio);
 
 			var password = App.FormCacheService.GetValue(CACHE_KEY_PASSWORD);
 			if (!string.IsNullOrEmpty(password))
@@ -64,6 +84,7 @@ using Vinoteca.Services;
 			App.FormCacheService.ClearAll();
 			txtNombre.Text = string.Empty;
 			txtCorreo.Text = string.Empty;
+			cmbDominioCorreo.SelectedIndex = 0;
 			txtPassword.Password = string.Empty;
 			txtConfirmarPassword.Password = string.Empty;
 			OcultarMensajes();
@@ -74,7 +95,9 @@ using Vinoteca.Services;
 			OcultarMensajes();
 
 			string nombre = txtNombre.Text;
-			string correo = txtCorreo.Text;
+			string correoLocal = txtCorreo.Text;
+			string dominioCorreo = ObtenerDominioCorreoActual();
+			string correo = ConstruirCorreo(correoLocal, dominioCorreo);
 			string password = txtPassword.Password;
 			string confirmarPassword = txtConfirmarPassword.Password;
 
@@ -108,13 +131,13 @@ using Vinoteca.Services;
 				return;
 			}
 
-			if (string.IsNullOrWhiteSpace(correo))
+			if (string.IsNullOrWhiteSpace(correoLocal))
 			{
 				MostrarError("El correo es obligatorio");
 				return;
 			}
 
-			if (correo != correo.Trim())
+			if (correoLocal != correoLocal.Trim())
 			{
 				MostrarError("El correo no debe tener espacios al inicio o al final");
 				return;
@@ -126,9 +149,33 @@ using Vinoteca.Services;
 				return;
 			}
 
-			if (correo.Any(char.IsWhiteSpace))
+			if (correoLocal.Contains("@"))
+			{
+				MostrarError("Escribe solo el nombre del correo, sin @");
+				return;
+			}
+
+			if (correoLocal.Any(char.IsWhiteSpace))
 			{
 				MostrarError("El correo no debe contener espacios");
+				return;
+			}
+
+			if (correoLocal.Length > 40)
+			{
+				MostrarError("El nombre del correo no debe exceder 40 caracteres");
+				return;
+			}
+
+			if (!Regex.IsMatch(correoLocal, @"^[A-Za-z0-9](?:[A-Za-z0-9._%+-]{0,38}[A-Za-z0-9])?$") || correoLocal.Contains(".."))
+			{
+				MostrarError("El nombre del correo contiene caracteres invalidos");
+				return;
+			}
+
+			if (!DominiosCorreoPermitidos.Contains(dominioCorreo))
+			{
+				MostrarError("Selecciona un dominio de correo valido");
 				return;
 			}
 
@@ -189,7 +236,7 @@ using Vinoteca.Services;
 			var nuevoUsuario = new Usuario
 			{
 				Nombre = nombre,
-				Correo = correo,
+				Correo = correo.Trim(),
 				Contrasena = password,
 				Rol = RolesSistema.Cliente,
 				Activo = true
@@ -210,6 +257,62 @@ using Vinoteca.Services;
 		{
 			string patron = @"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z\d\s])[^\s]{6,}$";
 			return Regex.IsMatch(password, patron);
+		}
+
+		private void ConfigurarDominiosCorreo()
+		{
+			cmbDominioCorreo.Items.Clear();
+			foreach (string dominio in DominiosCorreoPermitidos)
+			{
+				cmbDominioCorreo.Items.Add("@" + dominio);
+			}
+
+			cmbDominioCorreo.SelectedIndex = 0;
+		}
+
+		private string ObtenerDominioCorreoActual()
+		{
+			string seleccionado = cmbDominioCorreo.SelectedItem?.ToString() ?? "@" + DominiosCorreoPermitidos[0];
+			return seleccionado.TrimStart('@');
+		}
+
+		private string ConstruirCorreo(string correoLocal, string dominioCorreo)
+		{
+			return $"{correoLocal.Trim()}@{dominioCorreo}";
+		}
+
+		private void SeleccionarDominioCorreo(string dominioCorreo)
+		{
+			if (string.IsNullOrWhiteSpace(dominioCorreo))
+			{
+				cmbDominioCorreo.SelectedIndex = 0;
+				return;
+			}
+
+			string dominio = dominioCorreo.Trim().TrimStart('@');
+			int indice = Array.IndexOf(DominiosCorreoPermitidos, dominio);
+			cmbDominioCorreo.SelectedIndex = indice >= 0 ? indice : 0;
+		}
+
+		private void SepararCorreo(string correo, out string correoLocal, out string dominioCorreo)
+		{
+			correoLocal = correo;
+			dominioCorreo = DominiosCorreoPermitidos[0];
+
+			if (string.IsNullOrWhiteSpace(correo))
+			{
+				correoLocal = string.Empty;
+				return;
+			}
+
+			string[] partes = correo.Split('@', 2);
+			if (partes.Length != 2)
+			{
+				return;
+			}
+
+			correoLocal = partes[0];
+			dominioCorreo = partes[1];
 		}
 
 		public bool TieneCambiosPendientes =>

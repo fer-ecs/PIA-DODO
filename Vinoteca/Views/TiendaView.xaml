@@ -4,6 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:models="using:Vinoteca.Models"
     xmlns:helpers="using:Vinoteca.Helpers"
+    xmlns:views="using:Vinoteca.Views"
     Background="{StaticResource WineBackgroundBrush}">
 
 	<Page.Resources>
@@ -24,46 +25,91 @@
 			</Grid.RowDefinitions>
 
 			<Border Grid.Row="0" Style="{StaticResource WineCardStyle}" Padding="22" Margin="0,0,0,18">
-				<StackPanel Spacing="10">
-					<TextBlock Text="Punto de venta" FontSize="28" FontWeight="SemiBold" Foreground="{StaticResource WineTextBrush}"/>
-					<TextBlock Text="Busca productos o captura el ID corto para simular un lector de codigo." Foreground="{StaticResource WineMutedBrush}" TextWrapping="Wrap"/>
-					<Grid ColumnSpacing="10" RowSpacing="8">
+				<Grid RowSpacing="14">
+					<Grid.RowDefinitions>
+						<RowDefinition Height="Auto"/>
+						<RowDefinition Height="Auto"/>
+						<RowDefinition Height="Auto"/>
+						<RowDefinition Height="Auto"/>
+					</Grid.RowDefinitions>
+
+					<Grid>
 						<Grid.ColumnDefinitions>
-							<ColumnDefinition Width="1.3*"/>
+							<ColumnDefinition Width="*"/>
+							<ColumnDefinition Width="Auto"/>
+						</Grid.ColumnDefinitions>
+						<StackPanel>
+							<TextBlock Text="Punto de venta" FontSize="28" FontWeight="SemiBold" Foreground="{StaticResource WineTextBrush}"/>
+							<TextBlock Text="Busca, filtra y agrega productos al ticket activo." Foreground="{StaticResource WineMutedBrush}" TextWrapping="Wrap"/>
+						</StackPanel>
+						<Border Grid.Column="1" Background="{StaticResource WineAccentSoftBrush}" CornerRadius="18" Padding="14,8" VerticalAlignment="Center">
+							<TextBlock x:Name="txtConteoCatalogo" Text="0 disponibles" Foreground="{StaticResource WineAccentBrush}" FontWeight="SemiBold"/>
+						</Border>
+					</Grid>
+
+					<Border Grid.Row="1" Grid.RowSpan="2" Style="{StaticResource WineFilterPillStyle}" Padding="12">
+						<Grid ColumnSpacing="10" RowSpacing="8">
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="1.4*"/>
+							<ColumnDefinition Width="1*"/>
+							<ColumnDefinition Width="1*"/>
 							<ColumnDefinition Width="1*"/>
 							<ColumnDefinition Width="Auto"/>
 						</Grid.ColumnDefinitions>
 						<Grid.RowDefinitions>
 							<RowDefinition Height="Auto"/>
 							<RowDefinition Height="Auto"/>
+							<RowDefinition Height="Auto"/>
+							<RowDefinition Height="Auto"/>
 						</Grid.RowDefinitions>
 
 						<TextBlock Text="Busqueda" Foreground="{StaticResource WineLabelBrush}" FontWeight="SemiBold"/>
-						<TextBlock Grid.Column="1" Text="Escaner simulado" Foreground="{StaticResource WineLabelBrush}" FontWeight="SemiBold"/>
+						<TextBlock Grid.Column="1" Text="Categoria" Foreground="{StaticResource WineLabelBrush}" FontWeight="SemiBold"/>
+						<TextBlock Grid.Column="2" Text="Stock" Foreground="{StaticResource WineLabelBrush}" FontWeight="SemiBold"/>
+						<TextBlock Grid.Column="3" Text="Orden" Foreground="{StaticResource WineLabelBrush}" FontWeight="SemiBold"/>
 
-						<TextBox x:Name="txtBuscar" Grid.Row="1" Style="{StaticResource WineTextBoxStyle}" PlaceholderText="Nombre, marca, categoria o ID" Foreground="Black" PlaceholderForeground="Black" MaxLength="50" TextChanged="txtBuscar_TextChanged"/>
-						<TextBox x:Name="txtCodigoEscaneo" Grid.Row="1" Grid.Column="1" Style="{StaticResource WineTextBoxStyle}" PlaceholderText="ID corto del producto" Foreground="Black" PlaceholderForeground="Black" MaxLength="12"/>
-						<Button Grid.Row="1" Grid.Column="2" Content="Agregar por ID" Style="{StaticResource WineSecondaryButtonStyle}" Click="btnEscanear_Click"/>
+						<TextBox x:Name="txtBuscar" Grid.Row="1" Style="{StaticResource WineTextBoxStyle}" PlaceholderText="Nombre, marca, categoria o ID" MaxLength="50" TextChanged="txtBuscar_TextChanged"/>
+						<ComboBox x:Name="cmbFiltroCategoria" Grid.Row="1" Grid.Column="1" Style="{StaticResource WineComboBoxStyle}" HorizontalAlignment="Stretch" SelectionChanged="Filtros_Changed"/>
+						<ComboBox x:Name="cmbFiltroStock" Grid.Row="1" Grid.Column="2" Style="{StaticResource WineComboBoxStyle}" HorizontalAlignment="Stretch" SelectionChanged="Filtros_Changed">
+							<ComboBoxItem Content="Todo el stock"/>
+							<ComboBoxItem Content="Stock bajo"/>
+							<ComboBoxItem Content="Mas de 10"/>
+						</ComboBox>
+						<ComboBox x:Name="cmbOrdenCatalogo" Grid.Row="1" Grid.Column="3" Style="{StaticResource WineComboBoxStyle}" HorizontalAlignment="Stretch" SelectionChanged="Filtros_Changed">
+							<ComboBoxItem Content="Nombre A-Z"/>
+							<ComboBoxItem Content="Precio menor"/>
+							<ComboBoxItem Content="Precio mayor"/>
+							<ComboBoxItem Content="Stock menor"/>
+							<ComboBoxItem Content="ID"/>
+						</ComboBox>
+						<Button Grid.Row="1" Grid.Column="4" Content="Limpiar filtros" Style="{StaticResource WineSecondaryButtonStyle}" Click="btnLimpiarFiltros_Click"/>
+
+						<TextBlock Grid.Row="2" Text="Escaner simulado" Foreground="{StaticResource WineLabelBrush}" FontWeight="SemiBold" Margin="0,8,0,0"/>
+						<TextBox x:Name="txtCodigoEscaneo" Grid.Row="3" Grid.ColumnSpan="4" Style="{StaticResource WineTextBoxStyle}" PlaceholderText="ID corto del producto" MaxLength="12"/>
+						<Button Grid.Row="3" Grid.Column="4" Content="Agregar por ID" Style="{StaticResource WineSecondaryButtonStyle}" Click="btnEscanear_Click"/>
 					</Grid>
-					<TextBlock x:Name="txtEstado" Visibility="Collapsed" TextWrapping="Wrap"/>
-				</StackPanel>
+					</Border>
+
+					<TextBlock Grid.Row="3" x:Name="txtEstado" Visibility="Collapsed" TextWrapping="Wrap" Foreground="{StaticResource WineAccentBrush}" FontWeight="SemiBold"/>
+				</Grid>
 			</Border>
 
 			<GridView x:Name="gvTienda" Grid.Row="1" SelectionMode="None">
 				<GridView.ItemTemplate>
-					<DataTemplate x:DataType="models:Producto">
+					<DataTemplate x:DataType="views:ProductoVentaViewModel">
 						<Border Width="210" Margin="6" Style="{StaticResource WineCardStyle}" Padding="10">
 							<StackPanel Spacing="8">
-								<Border CornerRadius="14" Background="{StaticResource WineAccentSoftBrush}" Padding="6">
-									<Image Source="{x:Bind ImagenPath, Mode=OneWay, Converter={StaticResource LocalImageConverter}}" Height="132" Stretch="UniformToFill"/>
+								<Border Height="154" CornerRadius="14" Background="{StaticResource WineAccentSoftBrush}" Padding="10">
+									<Image Source="{x:Bind ImagenPath, Mode=OneWay, Converter={StaticResource LocalImageConverter}}" MaxHeight="136" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center"/>
 								</Border>
 								<TextBlock Text="{x:Bind Nombre}" FontWeight="SemiBold" FontSize="15" TextWrapping="WrapWholeWords" MaxLines="2" Foreground="{StaticResource WineTextBrush}"/>
 								<TextBlock Text="{x:Bind Marca}" FontSize="12" Foreground="{StaticResource WineMutedBrush}" TextTrimming="CharacterEllipsis"/>
 								<TextBlock Text="{x:Bind Categoria}" FontSize="12" Foreground="{StaticResource WineMutedBrush}"/>
 								<TextBlock Text="{x:Bind CodigoCorto, Converter={StaticResource LocalStringConverter}, ConverterParameter='{}ID: {0}'}" FontSize="11" Foreground="{StaticResource WineMutedBrush}"/>
-								<TextBlock Text="{x:Bind Stock, Converter={StaticResource LocalStringConverter}, ConverterParameter='{}Stock disponible: {0}'}" FontSize="12" Foreground="{StaticResource WineMutedBrush}"/>
+								<TextBlock Text="{x:Bind StockTexto}" FontSize="12" Foreground="{StaticResource WineMutedBrush}"/>
+								<TextBlock Text="{x:Bind AlertaStockTexto}" Visibility="{x:Bind AlertaStockVisibility}" FontSize="12" Foreground="{StaticResource WineDangerBrush}" FontWeight="SemiBold"/>
 								<TextBlock Text="{x:Bind PrecioVenta, Converter={StaticResource LocalStringConverter}, ConverterParameter='{}{0:C}'}" Foreground="{StaticResource WineHeroBrush}" FontSize="18" FontWeight="Bold"/>
-								<Button Content="Agregar a venta" HorizontalAlignment="Stretch" Style="{StaticResource WinePrimaryButtonStyle}" Click="btnAgregar_Click" Tag="{x:Bind}"/>
+								<Button Content="Agregar a venta" HorizontalAlignment="Stretch" Style="{StaticResource WinePrimaryButtonStyle}" Click="btnAgregar_Click" Tag="{x:Bind Producto}" IsEnabled="{x:Bind PuedeAgregarse}"/>
 							</StackPanel>
 						</Border>
 					</DataTemplate>

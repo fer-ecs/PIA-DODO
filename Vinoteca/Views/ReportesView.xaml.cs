@@ -74,7 +74,7 @@ namespace Vinoteca.Views
 				"Total mayor" => ventas.OrderByDescending(v => v.Total),
 				"Total menor" => ventas.OrderBy(v => v.Total),
 				"Empleado A-Z" => ventas.OrderBy(v => string.IsNullOrWhiteSpace(v.NombreEmpleado) ? v.NombreCliente : v.NombreEmpleado),
-				"ID" => ventas.OrderBy(v => v.Id),
+				"ID" => ventas.OrderBy(v => ObtenerIdNumerico(v.Id)),
 				_ => ventas.OrderByDescending(v => v.Fecha)
 			};
 
@@ -98,6 +98,11 @@ namespace Vinoteca.Views
 		{
 			string normalizado = (texto ?? string.Empty).Trim().Replace(',', '.');
 			return double.TryParse(normalizado, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double valor) ? valor : null;
+		}
+
+		private static int ObtenerIdNumerico(string? id)
+		{
+			return int.TryParse(id, out int valor) ? valor : int.MaxValue;
 		}
 
 		private string ObtenerOrdenReportes()

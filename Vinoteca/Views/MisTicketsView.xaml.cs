@@ -1,7 +1,10 @@
+using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
+using Vinoteca.Helpers;
 using Vinoteca.Models;
 using Vinoteca.Services;
 
@@ -9,9 +12,13 @@ namespace Vinoteca.Views
 {
 	public sealed partial class MisTicketsView : Page
 	{
+		private List<Venta> ticketsUsuario = new();
+
 		public MisTicketsView()
 		{
 			InitializeComponent();
+			InputRestrictionsHelper.AplicarTextoLibreSinEnter(txtBuscarTicket);
+			cmbOrdenTickets.SelectedIndex = 0;
 			CargarTickets();
 		}
 
@@ -25,13 +32,61 @@ namespace Vinoteca.Views
 				return;
 			}
 
-			var tickets = DataService.ObtenerVentasPorUsuario(SessionService.UsuarioActivo.Id);
-			lvTickets.ItemsSource = tickets;
+			ticketsUsuario = DataService.ObtenerVentasPorUsuario(SessionService.UsuarioActivo.Id);
+			AplicarFiltroTickets();
+		}
 
-			txtResumenTickets.Text = tickets.Count == 0
+		private void AplicarFiltroTickets()
+		{
+			string busqueda = txtBuscarTicket.Text?.Trim().ToLowerInvariant() ?? string.Empty;
+			IEnumerable<Venta> consulta = ticketsUsuario;
+
+			if (!string.IsNullOrWhiteSpace(busqueda))
+			{
+				consulta = consulta.Where(v =>
+					(v.Id?.ToLowerInvariant().Contains(busqueda) ?? false) ||
+					(v.MetodoPago?.ToLowerInvariant().Contains(busqueda) ?? false) ||
+					v.Total.ToString("0.##", CultureInfo.InvariantCulture).Contains(busqueda) ||
+					v.Productos.Any(item =>
+						(item.Producto.Nombre?.ToLowerInvariant().Contains(busqueda) ?? false) ||
+						(item.Producto.Marca?.ToLowerInvariant().Contains(busqueda) ?? false) ||
+						(item.Producto.Categoria?.ToLowerInvariant().Contains(busqueda) ?? false)));
+			}
+
+			consulta = ObtenerOrdenTickets() switch
+			{
+				"Fecha antigua" => consulta.OrderBy(v => v.Fecha),
+				"Total mayor" => consulta.OrderByDescending(v => v.Total),
+				"Total menor" => consulta.OrderBy(v => v.Total),
+				"ID" => consulta.OrderByDescending(v => v.Id),
+				_ => consulta.OrderByDescending(v => v.Fecha)
+			};
+
+			var ticketsFiltrados = consulta.ToList();
+			lvTickets.ItemsSource = ticketsFiltrados;
+
+			txtResumenTickets.Text = ticketsUsuario.Count == 0
 				? "Todavia no tienes tickets emitidos"
-				: $"Tienes {tickets.Count} ticket(s) emitidos";
-			txtSinTickets.Visibility = tickets.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
+				: $"{ticketsFiltrados.Count} de {ticketsUsuario.Count} ticket(s)";
+			txtConteoTickets.Text = $"{ticketsFiltrados.Count} tickets";
+			txtSinTickets.Visibility = ticketsFiltrados.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
+		}
+
+		private string ObtenerOrdenTickets()
+		{
+			return (cmbOrdenTickets.SelectedItem as ComboBoxItem)?.Content?.ToString() ?? "Fecha reciente";
+		}
+
+		private void FiltroTickets_Changed(object sender, object e)
+		{
+			AplicarFiltroTickets();
+		}
+
+		private void btnLimpiarTickets_Click(object sender, RoutedEventArgs e)
+		{
+			txtBuscarTicket.Text = string.Empty;
+			cmbOrdenTickets.SelectedIndex = 0;
+			AplicarFiltroTickets();
 		}
 
 		private async void btnDescargarPdf_Click(object sender, RoutedEventArgs e)

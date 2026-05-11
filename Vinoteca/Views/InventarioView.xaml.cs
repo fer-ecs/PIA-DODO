@@ -5,8 +5,8 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
+using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
 using Vinoteca.Helpers;
 using Vinoteca.Models;
 using Vinoteca.Services;
@@ -18,9 +18,18 @@ namespace Vinoteca.Views
 	public sealed partial class InventarioView : Page, ICambiosPendientes
 	{
 		public ObservableCollection<ProductoItemViewModel> ProductosMostrados { get; } = new();
+		private static readonly HashSet<string> ExtensionesImagenPermitidas = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+		{
+			".jpg",
+			".jpeg",
+			".png",
+			".webp"
+		};
+
 		private List<Producto> todosLosProductos = new();
 		private Producto? productoSeleccionado;
 		private bool ignorarCambioSeleccion;
+		private bool ignorarCambiosFiltro;
 
 		public InventarioView()
 		{
@@ -29,7 +38,7 @@ namespace Vinoteca.Views
 			InputRestrictionsHelper.AplicarSoloLetrasConEspacios(txtNombre, txtMarca, txtNuevaCategoria);
 			InputRestrictionsHelper.AplicarSoloDecimal(txtPrecioVenta, txtPrecioMin, txtPrecioMax);
 			InputRestrictionsHelper.AplicarSoloNumeros(txtStock);
-			InputRestrictionsHelper.AplicarTextoLibreSinEnter(txtImagen, txtBuscar);
+			InputRestrictionsHelper.AplicarTextoLibreSinEnter(txtBuscar);
 			lvProductos.ItemsSource = ProductosMostrados;
 			ConfigurarFiltros();
 
@@ -101,20 +110,33 @@ namespace Vinoteca.Views
 			AplicarFiltro();
 		}
 
-		private void CargarCategorias(string? categoriaSeleccionada = null)
+		private void CargarCategorias(string? categoriaSeleccionada = null, bool actualizarFiltro = true)
 		{
+			string categoriaFiltroActual = ObtenerCategoriaFiltro();
+
 			cmbCategoria.Items.Clear();
-			cmbFiltroCategoria.Items.Clear();
-			cmbFiltroCategoria.Items.Add("Todas");
+			if (actualizarFiltro)
+			{
+				ignorarCambiosFiltro = true;
+				cmbFiltroCategoria.Items.Clear();
+				cmbFiltroCategoria.Items.Add("Todas");
+			}
+
 			foreach (var categoria in DataService.ObtenerCategorias())
 			{
 				cmbCategoria.Items.Add(categoria);
-				cmbFiltroCategoria.Items.Add(categoria);
+				if (actualizarFiltro)
+				{
+					cmbFiltroCategoria.Items.Add(categoria);
+				}
 			}
 
-			if (cmbFiltroCategoria.SelectedIndex < 0)
+			if (actualizarFiltro)
 			{
-				cmbFiltroCategoria.SelectedIndex = 0;
+				cmbFiltroCategoria.SelectedItem = cmbFiltroCategoria.Items
+					.Cast<string>()
+					.FirstOrDefault(c => c.Equals(categoriaFiltroActual, StringComparison.OrdinalIgnoreCase)) ?? "Todas";
+				ignorarCambiosFiltro = false;
 			}
 
 			if (!string.IsNullOrWhiteSpace(categoriaSeleccionada))
@@ -148,7 +170,7 @@ namespace Vinoteca.Views
 				"Precio mayor" => filtrados.OrderByDescending(p => p.PrecioVenta),
 				"Stock menor" => filtrados.OrderBy(p => p.Stock),
 				"Stock mayor" => filtrados.OrderByDescending(p => p.Stock),
-				"ID" => filtrados.OrderBy(p => p.Id),
+				"ID" => filtrados.OrderBy(p => ObtenerIdNumerico(p.Id)),
 				_ => filtrados.OrderBy(p => p.Nombre)
 			};
 
@@ -287,17 +309,13 @@ namespace Vinoteca.Views
 			{
 				if (imagen.Length > 300)
 				{
-					MostrarMensaje("La ruta o URL de la imagen no debe exceder 300 caracteres", false);
+					MostrarMensaje("La ruta de la imagen no debe exceder 300 caracteres", false);
 					return false;
 				}
 
-				bool esUrlValida = Uri.TryCreate(imagen, UriKind.Absolute, out Uri? uriResultado)
-					&& (uriResultado.Scheme == Uri.UriSchemeHttp || uriResultado.Scheme == Uri.UriSchemeHttps);
-				bool esRutaLocalValida = Regex.IsMatch(imagen, @"^[A-Za-z]:\\.+");
-
-				if (!esUrlValida && !esRutaLocalValida)
+				if (!ImageAssetService.EsImagenDelProyectoValida(imagen))
 				{
-					MostrarMensaje("La imagen debe ser una URL valida o una ruta local valida", false);
+					MostrarMensaje("Selecciona una imagen desde el explorador de archivos", false);
 					return false;
 				}
 			}
@@ -428,7 +446,7 @@ namespace Vinoteca.Views
 			txtPrecioVenta.Text = producto.PrecioVenta.ToString("0.##", CultureInfo.InvariantCulture);
 			txtStock.Text = producto.Stock.ToString();
 			txtImagen.Text = producto.ImagenPath ?? string.Empty;
-			CargarCategorias(producto.Categoria);
+			CargarCategorias(producto.Categoria, actualizarFiltro: false);
 		}
 
 		private void RestaurarSeleccionAnterior()
@@ -495,6 +513,22 @@ namespace Vinoteca.Views
 			string normalizado = NormalizarDecimal(texto);
 			int indiceDecimal = normalizado.IndexOf('.');
 			return indiceDecimal < 0 ? 0 : normalizado.Length - indiceDecimal - 1;
+		}
+
+		private static int ObtenerIdNumerico(string? id)
+		{
+			return int.TryParse(id, out int valor) ? valor : int.MaxValue;
+		}
+
+		private static bool EsArchivoImagenLocalValido(string ruta)
+		{
+			if (string.IsNullOrWhiteSpace(ruta) || !Path.IsPathRooted(ruta) || !File.Exists(ruta))
+			{
+				return false;
+			}
+
+			string extension = Path.GetExtension(ruta);
+			return ExtensionesImagenPermitidas.Contains(extension);
 		}
 
 		private void btnAgregarCategoria_Click(object sender, RoutedEventArgs e)
@@ -575,6 +609,23 @@ namespace Vinoteca.Views
 
 		private void FiltroProductos_Changed(object sender, object e)
 		{
+			if (ignorarCambiosFiltro)
+			{
+				return;
+			}
+
+			AplicarFiltro();
+		}
+
+		private void btnLimpiarFiltrosProductos_Click(object sender, RoutedEventArgs e)
+		{
+			ignorarCambiosFiltro = true;
+			txtBuscar.Text = string.Empty;
+			txtPrecioMin.Text = string.Empty;
+			txtPrecioMax.Text = string.Empty;
+			cmbFiltroCategoria.SelectedItem = "Todas";
+			cmbOrdenProductos.SelectedIndex = 0;
+			ignorarCambiosFiltro = false;
 			AplicarFiltro();
 		}
 
@@ -608,8 +659,28 @@ namespace Vinoteca.Views
 				return;
 			}
 
-			txtImagen.Text = archivo.Path;
-			MostrarMensaje("Imagen seleccionada correctamente", true);
+			if (!EsArchivoImagenLocalValido(archivo.Path))
+			{
+				MostrarMensaje("Selecciona un archivo local JPG, JPEG, PNG o WEBP", false);
+				return;
+			}
+
+			try
+			{
+				string rutaProyecto = ImageAssetService.CopiarImagenAProyecto(archivo.Path);
+				if (string.IsNullOrWhiteSpace(rutaProyecto))
+				{
+					MostrarMensaje("No se pudo guardar la imagen en assets", false);
+					return;
+				}
+
+				txtImagen.Text = rutaProyecto;
+				MostrarMensaje("Imagen guardada en assets correctamente", true);
+			}
+			catch
+			{
+				MostrarMensaje("No se pudo guardar la imagen en assets", false);
+			}
 		}
 
 		private void MostrarMensaje(string mensaje, bool esExito)
@@ -634,7 +705,13 @@ namespace Vinoteca.Views
 		public string IdTexto => $"ID: {(Producto.Id?.Length > 8 ? Producto.Id[..8] : Producto.Id)}";
 		public string PrecioTexto => Producto.PrecioVenta.ToString("C");
 		public string StockTexto => Producto.Stock.ToString();
-		public string EstadoTexto => Producto.Activo ? "Activo" : "Inactivo";
+		public string EstadoTexto => Producto.Stock <= 0
+			? "Sin stock disponible"
+			: Producto.Stock < 5
+				? $"Stock bajo: {Producto.Stock}"
+				: Producto.Activo ? "Activo" : "Inactivo";
+		public SolidColorBrush EstadoBrush => (SolidColorBrush)Application.Current.Resources[
+			Producto.Stock <= 0 || Producto.Stock < 5 ? "WineDangerBrush" : "WineMutedBrush"];
 
 		public ProductoItemViewModel(Producto producto)
 		{

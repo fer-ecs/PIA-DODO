@@ -1,6 +1,7 @@
-﻿using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Media.Imaging;
 using System;
+using Vinoteca.Services;
 
 namespace Vinoteca.Helpers
 {
@@ -10,12 +11,20 @@ namespace Vinoteca.Helpers
 		{
 			var path = value as string;
 
-			if (string.IsNullOrWhiteSpace(path))
-				return null;
+            if (string.IsNullOrWhiteSpace(path))
+            {
+                return null;
+            }
 
 			try
 			{
-				return new BitmapImage(new Uri(path));
+				string? rutaImagen = ImageAssetService.ResolverRutaAbsoluta(path);
+				if (!string.IsNullOrWhiteSpace(rutaImagen))
+				{
+					return new BitmapImage(new Uri(rutaImagen, UriKind.Absolute));
+				}
+
+				return null;
 			}
 			catch
 			{

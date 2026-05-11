@@ -38,7 +38,7 @@ namespace Vinoteca.Services
 
 			if (productoActual.Stock <= 0)
 			{
-				mensaje = "El producto no tiene stock disponible";
+				mensaje = "No hay stock disponible";
 				return false;
 			}
 
@@ -46,7 +46,7 @@ namespace Vinoteca.Services
 			int cantidadNueva = (itemExistente?.Cantidad ?? 0) + 1;
 			if (cantidadNueva > productoActual.Stock)
 			{
-				mensaje = "No hay suficiente stock para agregar mas unidades";
+				mensaje = "No hay suficiente stock disponible";
 				return false;
 			}
 
@@ -58,6 +58,16 @@ namespace Vinoteca.Services
 			else
 			{
 				carrito.Add(new CarritoItem { Producto = productoActual, Cantidad = 1 });
+			}
+
+			int stockDisponible = productoActual.Stock - cantidadNueva;
+			if (stockDisponible <= 0)
+			{
+				mensaje = $"{productoActual.Nombre} agregado. No hay stock disponible";
+			}
+			else if (stockDisponible < 5)
+			{
+				mensaje = $"{productoActual.Nombre} agregado. Stock bajo: quedan {stockDisponible}";
 			}
 
 			NotificarCambio();
@@ -96,14 +106,30 @@ namespace Vinoteca.Services
 				return false;
 			}
 
+			if (productoActual.Stock <= 0)
+			{
+				mensaje = "No hay stock disponible";
+				return false;
+			}
+
 			if (nuevaCantidad > productoActual.Stock)
 			{
-				mensaje = "La cantidad solicitada excede el stock disponible";
+				mensaje = "No hay suficiente stock disponible";
 				return false;
 			}
 
 			item.Producto = productoActual;
 			item.Cantidad = nuevaCantidad;
+			int stockDisponible = productoActual.Stock - nuevaCantidad;
+			if (stockDisponible <= 0)
+			{
+				mensaje = $"{productoActual.Nombre} queda sin stock disponible";
+			}
+			else if (stockDisponible < 5)
+			{
+				mensaje = $"Stock bajo para {productoActual.Nombre}: quedan {stockDisponible}";
+			}
+
 			NotificarCambio();
 			return true;
 		}

@@ -71,7 +71,7 @@ namespace Vinoteca.Views
 			}
 		}
 
-		private void btnDisminuir_Click(object sender, RoutedEventArgs e)
+		private async void btnDisminuir_Click(object sender, RoutedEventArgs e)
 		{
 			if (!SessionService.PuedeComprar)
 			{
@@ -82,12 +82,25 @@ namespace Vinoteca.Views
 			if (sender is not Button button || button.Tag is not CarritoItem item)
 			{
 				return;
+			}
+
+			if (item.Cantidad == 1)
+			{
+				bool confirmar = await CambiosPendientesService.MostrarConfirmacionAsync(
+					XamlRoot,
+					"Quitar producto",
+					$"Deseas quitar {item.Producto.Nombre} de la venta?",
+					"Quitar");
+				if (!confirmar)
+				{
+					return;
+				}
 			}
 
 			CarritoService.CambiarCantidad(item.Producto.Id, item.Cantidad - 1, out _);
 		}
 
-		private void btnEliminar_Click(object sender, RoutedEventArgs e)
+		private async void btnEliminar_Click(object sender, RoutedEventArgs e)
 		{
 			if (!SessionService.PuedeComprar)
 			{
@@ -96,6 +109,16 @@ namespace Vinoteca.Views
 			}
 
 			if (sender is not Button button || button.Tag is not CarritoItem item)
+			{
+				return;
+			}
+
+			bool confirmar = await CambiosPendientesService.MostrarConfirmacionAsync(
+				XamlRoot,
+				"Quitar producto",
+				$"Deseas quitar {item.Producto.Nombre} de la venta?",
+				"Quitar");
+			if (!confirmar)
 			{
 				return;
 			}
@@ -119,7 +142,7 @@ namespace Vinoteca.Views
 			bool confirmarVaciado = await CambiosPendientesService.MostrarConfirmacionAsync(
 				XamlRoot,
 				"Vaciar venta",
-				"Deseas quitar todos los productos de la venta?",
+				$"Deseas quitar los {CarritoService.ObtenerCantidadTotalArticulos()} articulo(s) de la venta?",
 				"Vaciar");
 			if (!confirmarVaciado)
 			{

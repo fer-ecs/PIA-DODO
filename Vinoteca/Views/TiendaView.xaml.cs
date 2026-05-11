@@ -1,5 +1,6 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -11,7 +12,7 @@ namespace Vinoteca.Views
 {
 	public sealed partial class TiendaView : Page
 	{
-		public ObservableCollection<Producto> ProductosCatalogo { get; } = new();
+		public ObservableCollection<ProductoVentaViewModel> ProductosCatalogo { get; } = new();
 		private List<Producto> todosLosProductos = new();
 
 		public TiendaView()
@@ -32,6 +33,8 @@ namespace Vinoteca.Views
 			InputRestrictionsHelper.AplicarSinEspaciosNiEnter(this);
 			InputRestrictionsHelper.AplicarTextoLibreSinEnter(txtBuscar);
 			InputRestrictionsHelper.AplicarSinEspacios(txtCodigoEscaneo);
+			gvTienda.ItemsSource = ProductosCatalogo;
+			ConfigurarFiltros();
 			CargarCatalogo();
 			RefrescarCarritoVisual();
 			CarritoService.CarritoActualizado += RefrescarCarritoVisual;
@@ -51,7 +54,36 @@ namespace Vinoteca.Views
 				.OrderBy(p => p.Nombre)
 				.ToList();
 
+			CargarCategorias();
 			AplicarFiltro();
+		}
+
+		private void ConfigurarFiltros()
+		{
+			cmbFiltroStock.SelectedIndex = 0;
+			cmbOrdenCatalogo.SelectedIndex = 0;
+		}
+
+		private void CargarCategorias()
+		{
+			string seleccionActual = cmbFiltroCategoria.SelectedItem?.ToString() ?? "Todas";
+			cmbFiltroCategoria.SelectionChanged -= Filtros_Changed;
+			cmbFiltroCategoria.Items.Clear();
+			cmbFiltroCategoria.Items.Add("Todas");
+
+			foreach (var categoria in todosLosProductos
+				.Select(p => p.Categoria)
+				.Where(c => !string.IsNullOrWhiteSpace(c))
+				.Distinct()
+				.OrderBy(c => c))
+			{
+				cmbFiltroCategoria.Items.Add(categoria);
+			}
+
+			cmbFiltroCategoria.SelectedItem = cmbFiltroCategoria.Items.Contains(seleccionActual)
+				? seleccionActual
+				: "Todas";
+			cmbFiltroCategoria.SelectionChanged += Filtros_Changed;
 		}
 
 		private void txtBuscar_TextChanged(object sender, TextChangedEventArgs e)
@@ -62,13 +94,45 @@ namespace Vinoteca.Views
 		private void AplicarFiltro()
 		{
 			string busqueda = txtBuscar.Text?.Trim().ToLowerInvariant() ?? string.Empty;
-			var filtrados = todosLosProductos.Where(p =>
+			string categoria = cmbFiltroCategoria.SelectedItem?.ToString() ?? "Todas";
+			string stock = ObtenerContenidoCombo(cmbFiltroStock);
+			string orden = ObtenerContenidoCombo(cmbOrdenCatalogo);
+
+			var reservados = CarritoService.ObtenerCarrito()
+				.GroupBy(c => c.Producto.Id)
+				.ToDictionary(g => g.Key, g => g.Sum(c => c.Cantidad));
+
+			IEnumerable<ProductoVentaViewModel> consulta = todosLosProductos
+				.Select(p => new ProductoVentaViewModel(p, reservados.TryGetValue(p.Id, out int cantidadReservada) ? cantidadReservada : 0))
+				.Where(p =>
 				string.IsNullOrEmpty(busqueda) ||
 				(p.Id?.ToLowerInvariant().Contains(busqueda) ?? false) ||
 				(p.Nombre?.ToLowerInvariant().Contains(busqueda) ?? false) ||
 				(p.Marca?.ToLowerInvariant().Contains(busqueda) ?? false) ||
-				(p.Categoria?.ToLowerInvariant().Contains(busqueda) ?? false))
-				.ToList();
+				(p.Categoria?.ToLowerInvariant().Contains(busqueda) ?? false));
+
+			if (!string.IsNullOrWhiteSpace(categoria) && categoria != "Todas")
+			{
+				consulta = consulta.Where(p => p.Categoria == categoria);
+			}
+
+			consulta = stock switch
+			{
+				"Stock bajo" => consulta.Where(p => p.StockDisponible < 5),
+				"Mas de 10" => consulta.Where(p => p.StockDisponible > 10),
+				_ => consulta
+			};
+
+			consulta = orden switch
+			{
+				"Precio menor" => consulta.OrderBy(p => p.PrecioVenta).ThenBy(p => p.Nombre),
+				"Precio mayor" => consulta.OrderByDescending(p => p.PrecioVenta).ThenBy(p => p.Nombre),
+				"Stock menor" => consulta.OrderBy(p => p.StockDisponible).ThenBy(p => p.Nombre),
+				"ID" => consulta.OrderBy(p => ObtenerIdNumerico(p.Id)).ThenBy(p => p.Nombre),
+				_ => consulta.OrderBy(p => p.Nombre)
+			};
+
+			var filtrados = consulta.ToList();
 
 			ProductosCatalogo.Clear();
 			foreach (var producto in filtrados)
@@ -76,7 +140,44 @@ namespace Vinoteca.Views
 				ProductosCatalogo.Add(producto);
 			}
 
-			gvTienda.ItemsSource = ProductosCatalogo;
+			txtConteoCatalogo.Text = $"{filtrados.Count} de {todosLosProductos.Count} disponibles";
+			if (filtrados.Count == 0)
+			{
+				txtEstado.Text = "No hay productos con esos filtros";
+				txtEstado.Visibility = Visibility.Visible;
+			}
+			else if (txtEstado.Text == "No hay productos con esos filtros")
+			{
+				txtEstado.Visibility = Visibility.Collapsed;
+			}
+		}
+
+		private static string ObtenerContenidoCombo(ComboBox combo)
+		{
+			return (combo.SelectedItem as ComboBoxItem)?.Content?.ToString()
+				?? combo.SelectedItem?.ToString()
+				?? string.Empty;
+		}
+
+		private static int ObtenerIdNumerico(string? id)
+		{
+			return int.TryParse(id, out int valor) ? valor : int.MaxValue;
+		}
+
+		private void Filtros_Changed(object sender, object e)
+		{
+			AplicarFiltro();
+		}
+
+		private void btnLimpiarFiltros_Click(object sender, RoutedEventArgs e)
+		{
+			txtBuscar.Text = string.Empty;
+			txtCodigoEscaneo.Text = string.Empty;
+			cmbFiltroCategoria.SelectedItem = "Todas";
+			cmbFiltroStock.SelectedIndex = 0;
+			cmbOrdenCatalogo.SelectedIndex = 0;
+			txtEstado.Visibility = Visibility.Collapsed;
+			AplicarFiltro();
 		}
 
 		private void btnAgregar_Click(object sender, RoutedEventArgs e)
@@ -142,9 +243,9 @@ namespace Vinoteca.Views
 		{
 			if (CarritoService.AgregarAlCarrito(producto, out string mensaje))
 			{
-				txtEstado.Text = $"{producto.Nombre} agregado a la venta";
+				txtEstado.Text = string.IsNullOrWhiteSpace(mensaje) ? $"{producto.Nombre} agregado a la venta" : mensaje;
 				txtEstado.Visibility = Visibility.Visible;
-				CargarCatalogo();
+				AplicarFiltro();
 				return;
 			}
 
@@ -158,6 +259,10 @@ namespace Vinoteca.Views
 			lvCarritoRapido.ItemsSource = new ObservableCollection<CarritoItem>(items);
 			txtTotalRapido.Text = CarritoService.ObtenerTotal().ToString("C");
 			txtCantidadRapida.Text = $"{CarritoService.ObtenerCantidadTotalArticulos()} articulo(s)";
+			if (todosLosProductos.Count > 0)
+			{
+				AplicarFiltro();
+			}
 		}
 
 		private void btnIrAPagar_Click(object sender, RoutedEventArgs e)
@@ -177,6 +282,31 @@ namespace Vinoteca.Views
 			}
 
 			Frame.Navigate(typeof(CarritoView));
+		}
+	}
+
+	public sealed class ProductoVentaViewModel
+	{
+		public Producto Producto { get; }
+		public string Id => Producto.Id ?? string.Empty;
+		public string CodigoCorto => Producto.CodigoCorto;
+		public string Nombre => Producto.Nombre ?? string.Empty;
+		public string Marca => Producto.Marca ?? string.Empty;
+		public string Categoria => Producto.Categoria ?? string.Empty;
+		public double PrecioVenta => Producto.PrecioVenta;
+		public string ImagenPath => Producto.ImagenPath ?? string.Empty;
+		public int StockDisponible { get; }
+		public bool PuedeAgregarse => StockDisponible > 0;
+		public Visibility AlertaStockVisibility => StockDisponible < 5 ? Visibility.Visible : Visibility.Collapsed;
+		public string StockTexto => StockDisponible <= 0 ? "Sin stock disponible" : $"Stock disponible: {StockDisponible}";
+		public string AlertaStockTexto => StockDisponible <= 0
+			? "No hay stock disponible"
+			: $"Stock bajo: quedan {StockDisponible}";
+
+		public ProductoVentaViewModel(Producto producto, int reservado)
+		{
+			Producto = producto;
+			StockDisponible = Math.Max(0, producto.Stock - reservado);
 		}
 	}
 }
