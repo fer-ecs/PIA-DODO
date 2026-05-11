@@ -51,7 +51,7 @@
 							</Grid.ColumnDefinitions>
 							<StackPanel Grid.Column="0">
 								<TextBlock Text="Precio de venta" Style="{StaticResource WineFieldLabelStyle}"/>
-								<TextBox x:Name="txtPrecioVenta" Style="{StaticResource WineTextBoxStyle}" Text="0" MaxLength="6" InputScope="Number"/>
+								<TextBox x:Name="txtPrecioVenta" Style="{StaticResource WineTextBoxStyle}" Text="0" MaxLength="9" InputScope="Number"/>
 							</StackPanel>
 							<StackPanel Grid.Column="1">
 								<TextBlock Text="Stock" Style="{StaticResource WineFieldLabelStyle}"/>
@@ -93,10 +93,44 @@
 				<RowDefinition Height="Auto"/>
 				<RowDefinition Height="*"/>
 			</Grid.RowDefinitions>
-			<StackPanel Margin="0,0,0,16">
+			<StackPanel Margin="0,0,0,16" Spacing="12">
 				<TextBlock Text="Catalogo registrado" FontSize="24" FontWeight="SemiBold" Foreground="{StaticResource WineTextBrush}"/>
-				<TextBlock Text="Buscar producto" Style="{StaticResource WineFieldLabelStyle}" Margin="0,10,0,0"/>
-				<TextBox x:Name="txtBuscar" Style="{StaticResource WineTextBoxStyle}" PlaceholderText="Nombre, marca o categoria" MaxLength="50" TextChanged="txtBuscar_TextChanged"/>
+				<Border Style="{StaticResource WineFilterPillStyle}">
+					<Grid ColumnSpacing="10" RowSpacing="8">
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="2*"/>
+							<ColumnDefinition Width="1.2*"/>
+							<ColumnDefinition Width="*"/>
+							<ColumnDefinition Width="*"/>
+							<ColumnDefinition Width="1.4*"/>
+						</Grid.ColumnDefinitions>
+						<Grid.RowDefinitions>
+							<RowDefinition Height="Auto"/>
+							<RowDefinition Height="Auto"/>
+						</Grid.RowDefinitions>
+
+						<TextBlock Grid.Column="0" Text="Buscar" Style="{StaticResource WineFieldLabelStyle}"/>
+						<TextBlock Grid.Column="1" Text="Categoria" Style="{StaticResource WineFieldLabelStyle}"/>
+						<TextBlock Grid.Column="2" Text="Precio min" Style="{StaticResource WineFieldLabelStyle}"/>
+						<TextBlock Grid.Column="3" Text="Precio max" Style="{StaticResource WineFieldLabelStyle}"/>
+						<TextBlock Grid.Column="4" Text="Orden" Style="{StaticResource WineFieldLabelStyle}"/>
+
+						<TextBox x:Name="txtBuscar" Grid.Row="1" Grid.Column="0" Style="{StaticResource WineTextBoxStyle}" PlaceholderText="ID, nombre, marca o categoria" MaxLength="50" TextChanged="txtBuscar_TextChanged"/>
+						<ComboBox x:Name="cmbFiltroCategoria" Grid.Row="1" Grid.Column="1" Style="{StaticResource WineComboBoxStyle}" HorizontalAlignment="Stretch" SelectionChanged="FiltroProductos_Changed"/>
+						<TextBox x:Name="txtPrecioMin" Grid.Row="1" Grid.Column="2" Style="{StaticResource WineTextBoxStyle}" PlaceholderText="0" MaxLength="9" InputScope="Number" TextChanged="FiltroProductos_Changed"/>
+						<TextBox x:Name="txtPrecioMax" Grid.Row="1" Grid.Column="3" Style="{StaticResource WineTextBoxStyle}" PlaceholderText="99999" MaxLength="9" InputScope="Number" TextChanged="FiltroProductos_Changed"/>
+						<ComboBox x:Name="cmbOrdenProductos" Grid.Row="1" Grid.Column="4" Style="{StaticResource WineComboBoxStyle}" HorizontalAlignment="Stretch" SelectionChanged="FiltroProductos_Changed">
+							<ComboBoxItem Content="Nombre A-Z"/>
+							<ComboBoxItem Content="Nombre Z-A"/>
+							<ComboBoxItem Content="Precio menor"/>
+							<ComboBoxItem Content="Precio mayor"/>
+							<ComboBoxItem Content="Stock menor"/>
+							<ComboBoxItem Content="Stock mayor"/>
+							<ComboBoxItem Content="ID"/>
+						</ComboBox>
+					</Grid>
+				</Border>
+				<TextBlock x:Name="txtResumenProductos" Foreground="{StaticResource WineMutedBrush}" FontSize="13"/>
 			</StackPanel>
 			<ListView x:Name="lvProductos" Grid.Row="1" SelectionChanged="lvProductos_SelectionChanged" Background="Transparent" BorderThickness="0">
 				<ListView.ItemTemplate>
@@ -104,13 +138,17 @@
 						<Border Background="#FAFAFA" BorderBrush="{StaticResource WineBorderBrush}" BorderThickness="1" CornerRadius="8" Padding="16" Margin="0,0,0,8">
 							<Grid>
 								<Grid.ColumnDefinitions>
-									<ColumnDefinition Width="2.5*"/>
-									<ColumnDefinition Width="1.5*"/>
+									<ColumnDefinition Width="2.4*"/>
+									<ColumnDefinition Width="1.2*"/>
 									<ColumnDefinition Width="*"/>
 									<ColumnDefinition Width="*"/>
 									<ColumnDefinition Width="*"/>
 								</Grid.ColumnDefinitions>
-								<TextBlock Text="{Binding Nombre}" Grid.Column="0" FontWeight="SemiBold" Foreground="{StaticResource WineTextBrush}" VerticalAlignment="Center"/>
+								<StackPanel Grid.Column="0" VerticalAlignment="Center">
+									<TextBlock Text="{Binding Nombre}" FontWeight="SemiBold" Foreground="{StaticResource WineTextBrush}"/>
+									<TextBlock Text="{Binding Marca}" Foreground="{StaticResource WineMutedBrush}" FontSize="12" Margin="0,2,0,0"/>
+									<TextBlock Text="{Binding IdTexto}" Foreground="{StaticResource WineLabelBrush}" FontSize="12" Margin="0,2,0,0"/>
+								</StackPanel>
 								<TextBlock Text="{Binding Categoria}" Grid.Column="1" Foreground="{StaticResource WineMutedBrush}" VerticalAlignment="Center"/>
 								<TextBlock Text="{Binding PrecioTexto}" Grid.Column="2" Foreground="{StaticResource WineHeroBrush}" FontWeight="SemiBold" VerticalAlignment="Center"/>
 								<TextBlock Text="{Binding StockTexto}" Grid.Column="3" Foreground="{StaticResource WineMutedBrush}" VerticalAlignment="Center"/>

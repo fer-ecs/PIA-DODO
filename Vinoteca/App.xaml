@@ -22,6 +22,7 @@
 			<SolidColorBrush x:Key="WinePlaceholderBrush" Color="#A1A1AA"/>
 
 			<SolidColorBrush x:Key="WineBorderBrush" Color="#E4E4E7"/>
+			<SolidColorBrush x:Key="WineSubtleBrush" Color="#F8F5F4"/>
 			<SolidColorBrush x:Key="WineAccentBrush" Color="#7A2030"/>
 			<SolidColorBrush x:Key="WineHeroBrush" Color="#8F2D3B"/>
 			<SolidColorBrush x:Key="WineAccentSoftBrush" Color="#F3E8E8"/>
@@ -105,6 +106,14 @@
 				<Setter Property="Background" Value="Transparent"/>
 				<Setter Property="Foreground" Value="White"/>
 				<Setter Property="BorderThickness" Value="0"/>
+			</Style>
+
+			<Style x:Key="WineFilterPillStyle" TargetType="Border">
+				<Setter Property="Background" Value="{StaticResource WineSubtleBrush}"/>
+				<Setter Property="BorderBrush" Value="{StaticResource WineBorderBrush}"/>
+				<Setter Property="BorderThickness" Value="1"/>
+				<Setter Property="CornerRadius" Value="8"/>
+				<Setter Property="Padding" Value="12"/>
 			</Style>
 
 			<Style x:Key="WineTextBoxStyle" TargetType="TextBox">

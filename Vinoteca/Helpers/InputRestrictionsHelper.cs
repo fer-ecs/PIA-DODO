@@ -1,4 +1,5 @@
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -13,6 +14,7 @@ namespace Vinoteca.Helpers
 		private const string ModoSinEspacios = "SinEspacios";
 		private const string ModoLetrasConEspacios = "LetrasConEspacios";
 		private const string ModoSoloNumeros = "SoloNumeros";
+		private const string ModoSoloDecimal = "SoloDecimal";
 		private const string ModoTextoLibre = "TextoLibre";
 
 		public static void AplicarSinEspaciosNiEnter(DependencyObject parent)
@@ -92,6 +94,18 @@ namespace Vinoteca.Helpers
 			}
 		}
 
+		public static void AplicarSoloDecimal(params TextBox[] textBoxes)
+		{
+			foreach (var textBox in textBoxes)
+			{
+				textBox.Tag = ModoSoloDecimal;
+				textBox.KeyDown -= TextBox_KeyDown;
+				textBox.KeyDown += TextBox_KeyDown;
+				textBox.TextChanged -= TextBox_TextChanged;
+				textBox.TextChanged += TextBox_TextChanged;
+			}
+		}
+
 		public static void AplicarTextoLibreSinEnter(params TextBox[] textBoxes)
 		{
 			foreach (var textBox in textBoxes)
@@ -112,7 +126,7 @@ namespace Vinoteca.Helpers
 			}
 
 			string modo = textBox.Tag?.ToString() ?? ModoSinEspacios;
-			if (e.Key == VirtualKey.Enter || ((modo == ModoSinEspacios || modo == ModoSoloNumeros) && e.Key == VirtualKey.Space))
+			if (e.Key == VirtualKey.Enter || ((modo == ModoSinEspacios || modo == ModoSoloNumeros || modo == ModoSoloDecimal) && e.Key == VirtualKey.Space))
 			{
 				e.Handled = true;
 			}
@@ -138,6 +152,7 @@ namespace Vinoteca.Helpers
 			{
 				ModoLetrasConEspacios => LimpiarLetrasConEspacios(textBox.Text),
 				ModoSoloNumeros => LimpiarSoloNumeros(textBox.Text),
+				ModoSoloDecimal => LimpiarSoloDecimal(textBox.Text),
 				ModoTextoLibre => textBox.Text,
 				_ => QuitarEspaciosEnBlanco(textBox.Text)
 			};
@@ -179,6 +194,27 @@ namespace Vinoteca.Helpers
 		private static string LimpiarSoloNumeros(string texto)
 		{
 			return string.Concat(texto.Where(char.IsDigit));
+		}
+
+		private static string LimpiarSoloDecimal(string texto)
+		{
+			var resultado = new StringBuilder();
+			bool tieneSeparador = false;
+
+			foreach (char caracter in texto.Replace(',', '.'))
+			{
+				if (char.IsDigit(caracter))
+				{
+					resultado.Append(caracter);
+				}
+				else if (caracter == '.' && !tieneSeparador)
+				{
+					resultado.Append(caracter);
+					tieneSeparador = true;
+				}
+			}
+
+			return resultado.ToString();
 		}
 	}
 }

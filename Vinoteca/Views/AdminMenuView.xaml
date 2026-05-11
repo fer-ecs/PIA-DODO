@@ -32,6 +32,12 @@
 					</Border>
 
 					<Button Style="{StaticResource WineSidebarButtonStyle}" Click="btnNavInventario_Click">
+						<Button.Resources>
+							<SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="#2AFFFFFF"/>
+							<SolidColorBrush x:Key="ButtonBackgroundPressed" Color="#3AFFFFFF"/>
+							<SolidColorBrush x:Key="ButtonForegroundPointerOver" Color="#FFFFFF"/>
+							<SolidColorBrush x:Key="ButtonForegroundPressed" Color="#FFFFFF"/>
+						</Button.Resources>
 						<StackPanel Orientation="Horizontal" Spacing="12">
 							<SymbolIcon Symbol="Library" Foreground="White"/>
 							<TextBlock Text="Inventario" VerticalAlignment="Center" Foreground="White"/>
@@ -39,6 +45,12 @@
 					</Button>
 
 					<Button Style="{StaticResource WineSidebarButtonStyle}" Click="btnNavUsuarios_Click">
+						<Button.Resources>
+							<SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="#2AFFFFFF"/>
+							<SolidColorBrush x:Key="ButtonBackgroundPressed" Color="#3AFFFFFF"/>
+							<SolidColorBrush x:Key="ButtonForegroundPointerOver" Color="#FFFFFF"/>
+							<SolidColorBrush x:Key="ButtonForegroundPressed" Color="#FFFFFF"/>
+						</Button.Resources>
 						<StackPanel Orientation="Horizontal" Spacing="12">
 							<SymbolIcon Symbol="People" Foreground="White"/>
 							<TextBlock Text="Usuarios" VerticalAlignment="Center" Foreground="White"/>
@@ -46,6 +58,12 @@
 					</Button>
 
 					<Button Style="{StaticResource WineSidebarButtonStyle}" Click="btnNavReportes_Click">
+						<Button.Resources>
+							<SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="#2AFFFFFF"/>
+							<SolidColorBrush x:Key="ButtonBackgroundPressed" Color="#3AFFFFFF"/>
+							<SolidColorBrush x:Key="ButtonForegroundPointerOver" Color="#FFFFFF"/>
+							<SolidColorBrush x:Key="ButtonForegroundPressed" Color="#FFFFFF"/>
+						</Button.Resources>
 						<StackPanel Orientation="Horizontal" Spacing="12">
 							<SymbolIcon Symbol="Document" Foreground="White"/>
 							<TextBlock Text="Reportes" VerticalAlignment="Center" Foreground="White"/>

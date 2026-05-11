@@ -72,9 +72,49 @@
 				<RowDefinition Height="Auto"/>
 				<RowDefinition Height="*"/>
 			</Grid.RowDefinitions>
-			<StackPanel Margin="0,0,0,16">
+			<StackPanel Margin="0,0,0,16" Spacing="12">
 				<TextBlock Text="Cuentas registradas" FontSize="24" FontWeight="SemiBold" Foreground="{StaticResource WineTextBrush}"/>
 				<TextBlock x:Name="txtDescripcionLista" Text="Selecciona una cuenta para editarla o revisar su informacion." Foreground="{StaticResource WineMutedBrush}" Margin="0,4,0,0"/>
+				<Border Style="{StaticResource WineFilterPillStyle}">
+					<Grid ColumnSpacing="10" RowSpacing="8">
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="2*"/>
+							<ColumnDefinition Width="1.2*"/>
+							<ColumnDefinition Width="1.2*"/>
+							<ColumnDefinition Width="1.4*"/>
+						</Grid.ColumnDefinitions>
+						<Grid.RowDefinitions>
+							<RowDefinition Height="Auto"/>
+							<RowDefinition Height="Auto"/>
+						</Grid.RowDefinitions>
+
+						<TextBlock Grid.Column="0" Text="Buscar" Style="{StaticResource WineFieldLabelStyle}"/>
+						<TextBlock Grid.Column="1" Text="Rol" Style="{StaticResource WineFieldLabelStyle}"/>
+						<TextBlock Grid.Column="2" Text="Estado" Style="{StaticResource WineFieldLabelStyle}"/>
+						<TextBlock Grid.Column="3" Text="Orden" Style="{StaticResource WineFieldLabelStyle}"/>
+
+						<TextBox x:Name="txtBuscarUsuario" Grid.Row="1" Grid.Column="0" Style="{StaticResource WineTextBoxStyle}" PlaceholderText="ID, nombre o correo" MaxLength="80" TextChanged="FiltroUsuarios_Changed"/>
+						<ComboBox x:Name="cmbFiltroRol" Grid.Row="1" Grid.Column="1" Style="{StaticResource WineComboBoxStyle}" HorizontalAlignment="Stretch" SelectionChanged="FiltroUsuarios_Changed">
+							<ComboBoxItem Content="Todos"/>
+							<ComboBoxItem Content="Administrador"/>
+							<ComboBoxItem Content="Supervisor"/>
+							<ComboBoxItem Content="Cliente"/>
+						</ComboBox>
+						<ComboBox x:Name="cmbFiltroEstado" Grid.Row="1" Grid.Column="2" Style="{StaticResource WineComboBoxStyle}" HorizontalAlignment="Stretch" SelectionChanged="FiltroUsuarios_Changed">
+							<ComboBoxItem Content="Todos"/>
+							<ComboBoxItem Content="Activos"/>
+							<ComboBoxItem Content="Inactivos"/>
+						</ComboBox>
+						<ComboBox x:Name="cmbOrdenUsuarios" Grid.Row="1" Grid.Column="3" Style="{StaticResource WineComboBoxStyle}" HorizontalAlignment="Stretch" SelectionChanged="FiltroUsuarios_Changed">
+							<ComboBoxItem Content="Nombre A-Z"/>
+							<ComboBoxItem Content="Nombre Z-A"/>
+							<ComboBoxItem Content="Rol"/>
+							<ComboBoxItem Content="Estado"/>
+							<ComboBoxItem Content="ID"/>
+						</ComboBox>
+					</Grid>
+				</Border>
+				<TextBlock x:Name="txtResumenUsuarios" Foreground="{StaticResource WineMutedBrush}" FontSize="13"/>
 			</StackPanel>
 			<ListView x:Name="lvUsuarios" Grid.Row="1" SelectionMode="Single" SelectionChanged="lvUsuarios_SelectionChanged" Background="Transparent" BorderThickness="0">
 				<ListView.ItemTemplate>
@@ -88,6 +128,7 @@
 								<StackPanel VerticalAlignment="Center">
 									<TextBlock Text="{Binding Nombre}" FontWeight="SemiBold" Foreground="{StaticResource WineTextBrush}" FontSize="16"/>
 									<TextBlock Text="{Binding Correo}" Foreground="{StaticResource WineMutedBrush}" Margin="0,2,0,0"/>
+									<TextBlock Text="{Binding IdTexto}" Foreground="{StaticResource WineLabelBrush}" FontSize="12" Margin="0,2,0,0"/>
 									<TextBlock Text="{Binding RolTexto}" Foreground="{StaticResource WineHeroBrush}" FontWeight="SemiBold" Margin="0,4,0,0"/>
 								</StackPanel>
 								<StackPanel Grid.Column="1" Spacing="10" VerticalAlignment="Center" HorizontalAlignment="Right">

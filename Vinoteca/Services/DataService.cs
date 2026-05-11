@@ -61,6 +61,7 @@ namespace Vinoteca.Services
 
 				ActualizarUsuariosSistema();
 				AsegurarDatosMuestra();
+				AsegurarIdentificadores();
 				AsegurarCategoriasDeProductos();
 			}
 			catch (Exception ex)
@@ -308,6 +309,99 @@ namespace Vinoteca.Services
 			}
 		}
 
+		private static List<Venta> ObtenerVentasSinInicializar()
+		{
+			try
+			{
+				string json = File.ReadAllText(ventasFile);
+				return JsonSerializer.Deserialize<List<Venta>>(json) ?? new List<Venta>();
+			}
+			catch
+			{
+				return new List<Venta>();
+			}
+		}
+
+		private static void AsegurarIdentificadores()
+		{
+			var usuarios = ObtenerUsuariosSinInicializar();
+			if (AsegurarIdsUsuarios(usuarios))
+			{
+				GuardarJson(usuariosFile, usuarios);
+			}
+
+			var productos = ObtenerProductosSinInicializar();
+			if (AsegurarIdsProductos(productos))
+			{
+				GuardarJson(productosFile, productos);
+			}
+
+			var ventas = ObtenerVentasSinInicializar();
+			if (AsegurarIdsVentas(ventas))
+			{
+				GuardarJson(ventasFile, ventas);
+			}
+		}
+
+		private static bool AsegurarIdsUsuarios(List<Usuario> usuarios)
+		{
+			var ids = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+			bool actualizados = false;
+
+			foreach (var usuario in usuarios)
+			{
+				if (string.IsNullOrWhiteSpace(usuario.Id) || !ids.Add(usuario.Id))
+				{
+					usuario.Id = Guid.NewGuid().ToString();
+					ids.Add(usuario.Id);
+					actualizados = true;
+				}
+			}
+
+			return actualizados;
+		}
+
+		private static bool AsegurarIdsProductos(List<Producto> productos)
+		{
+			var ids = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+			bool actualizados = false;
+
+			foreach (var producto in productos)
+			{
+				if (string.IsNullOrWhiteSpace(producto.Id) || !ids.Add(producto.Id))
+				{
+					producto.Id = Guid.NewGuid().ToString();
+					ids.Add(producto.Id);
+					actualizados = true;
+				}
+			}
+
+			return actualizados;
+		}
+
+		private static bool AsegurarIdsVentas(List<Venta> ventas)
+		{
+			var ids = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+			bool actualizados = false;
+
+			foreach (var venta in ventas)
+			{
+				if (string.IsNullOrWhiteSpace(venta.Id) || !ids.Add(venta.Id))
+				{
+					venta.Id = CrearIdVenta();
+					ids.Add(venta.Id);
+					actualizados = true;
+				}
+			}
+
+			return actualizados;
+		}
+
+		private static string CrearIdVenta()
+		{
+			return Guid.NewGuid().ToString("N").Substring(0, 8);
+		}
+
 		private static void AsegurarCategoriasDeProductos()
 		{
 			var categorias = ObtenerCategoriasSinInicializar()
@@ -482,15 +576,7 @@ namespace Vinoteca.Services
 				return new List<Venta>();
 			}
 
-			try
-			{
-				string json = File.ReadAllText(ventasFile);
-				return JsonSerializer.Deserialize<List<Venta>>(json) ?? new List<Venta>();
-			}
-			catch
-			{
-				return new List<Venta>();
-			}
+			return ObtenerVentasSinInicializar();
 		}
 
 		public static List<Venta> ObtenerVentasPorUsuario(string usuarioId)
@@ -508,7 +594,18 @@ namespace Vinoteca.Services
 				throw new InvalidOperationException("Solo clientes pueden registrar compras");
 			}
 
+			if (string.IsNullOrWhiteSpace(nuevaVenta.Id))
+			{
+				nuevaVenta.Id = CrearIdVenta();
+			}
+
 			var ventas = ObtenerVentas();
+			if (ventas.Any(v => !string.IsNullOrWhiteSpace(v.Id) &&
+				v.Id.Equals(nuevaVenta.Id, StringComparison.OrdinalIgnoreCase)))
+			{
+				return;
+			}
+
 			ventas.Add(nuevaVenta);
 			GuardarJson(ventasFile, ventas);
 		}

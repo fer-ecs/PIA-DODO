@@ -4,6 +4,7 @@ using Microsoft.UI.Xaml.Media;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Vinoteca.Helpers;
@@ -25,10 +26,12 @@ namespace Vinoteca.Views
 		{
 			InitializeComponent();
 			InputRestrictionsHelper.AplicarSinEspaciosNiEnter(this);
-			InputRestrictionsHelper.AplicarSoloLetrasConEspacios(txtNombre, txtMarca, txtBuscar, txtNuevaCategoria);
-			InputRestrictionsHelper.AplicarSoloNumeros(txtPrecioVenta, txtStock);
-			InputRestrictionsHelper.AplicarTextoLibreSinEnter(txtImagen);
+			InputRestrictionsHelper.AplicarSoloLetrasConEspacios(txtNombre, txtMarca, txtNuevaCategoria);
+			InputRestrictionsHelper.AplicarSoloDecimal(txtPrecioVenta, txtPrecioMin, txtPrecioMax);
+			InputRestrictionsHelper.AplicarSoloNumeros(txtStock);
+			InputRestrictionsHelper.AplicarTextoLibreSinEnter(txtImagen, txtBuscar);
 			lvProductos.ItemsSource = ProductosMostrados;
+			ConfigurarFiltros();
 
 			if (!SessionService.PuedeVerInformacionOperativa)
 			{
@@ -94,16 +97,24 @@ namespace Vinoteca.Views
 
 		private void CargarDatos()
 		{
-			todosLosProductos = DataService.ObtenerProductos().OrderBy(p => p.Nombre).ToList();
+			todosLosProductos = DataService.ObtenerProductos().ToList();
 			AplicarFiltro();
 		}
 
 		private void CargarCategorias(string? categoriaSeleccionada = null)
 		{
 			cmbCategoria.Items.Clear();
+			cmbFiltroCategoria.Items.Clear();
+			cmbFiltroCategoria.Items.Add("Todas");
 			foreach (var categoria in DataService.ObtenerCategorias())
 			{
 				cmbCategoria.Items.Add(categoria);
+				cmbFiltroCategoria.Items.Add(categoria);
+			}
+
+			if (cmbFiltroCategoria.SelectedIndex < 0)
+			{
+				cmbFiltroCategoria.SelectedIndex = 0;
 			}
 
 			if (!string.IsNullOrWhiteSpace(categoriaSeleccionada))
@@ -117,19 +128,53 @@ namespace Vinoteca.Views
 		private void AplicarFiltro()
 		{
 			string busqueda = txtBuscar.Text?.Trim().ToLowerInvariant() ?? string.Empty;
+			string categoria = ObtenerCategoriaFiltro();
+			double precioMin = ObtenerDecimalFormulario(txtPrecioMin.Text);
+			double precioMax = ObtenerDecimalFormulario(txtPrecioMax.Text);
 			var filtrados = todosLosProductos.Where(p =>
-				string.IsNullOrEmpty(busqueda) ||
+				(string.IsNullOrEmpty(busqueda) ||
+				(p.Id?.ToLowerInvariant().Contains(busqueda) ?? false) ||
 				(p.Nombre?.ToLowerInvariant().Contains(busqueda) ?? false) ||
 				(p.Marca?.ToLowerInvariant().Contains(busqueda) ?? false) ||
-				(p.Categoria?.ToLowerInvariant().Contains(busqueda) ?? false))
-				.Select(p => new ProductoItemViewModel(p))
-				.ToList();
+				(p.Categoria?.ToLowerInvariant().Contains(busqueda) ?? false)) &&
+				(string.IsNullOrWhiteSpace(categoria) || string.Equals(p.Categoria, categoria, StringComparison.OrdinalIgnoreCase)) &&
+				(precioMin < 0 || p.PrecioVenta >= precioMin) &&
+				(precioMax < 0 || p.PrecioVenta <= precioMax));
+
+			filtrados = ObtenerOrdenProductos() switch
+			{
+				"Nombre Z-A" => filtrados.OrderByDescending(p => p.Nombre),
+				"Precio menor" => filtrados.OrderBy(p => p.PrecioVenta),
+				"Precio mayor" => filtrados.OrderByDescending(p => p.PrecioVenta),
+				"Stock menor" => filtrados.OrderBy(p => p.Stock),
+				"Stock mayor" => filtrados.OrderByDescending(p => p.Stock),
+				"ID" => filtrados.OrderBy(p => p.Id),
+				_ => filtrados.OrderBy(p => p.Nombre)
+			};
 
 			ProductosMostrados.Clear();
-			foreach (var producto in filtrados)
+			foreach (var producto in filtrados.Select(p => new ProductoItemViewModel(p)))
 			{
 				ProductosMostrados.Add(producto);
 			}
+
+			txtResumenProductos.Text = $"{ProductosMostrados.Count} de {todosLosProductos.Count} productos";
+		}
+
+		private void ConfigurarFiltros()
+		{
+			cmbOrdenProductos.SelectedIndex = 0;
+		}
+
+		private string ObtenerCategoriaFiltro()
+		{
+			string categoria = cmbFiltroCategoria.SelectedItem?.ToString() ?? string.Empty;
+			return categoria == "Todas" ? string.Empty : categoria;
+		}
+
+		private string ObtenerOrdenProductos()
+		{
+			return (cmbOrdenProductos.SelectedItem as ComboBoxItem)?.Content?.ToString() ?? "Nombre A-Z";
 		}
 
 		private void btnGuardar_Click(object sender, RoutedEventArgs e)
@@ -215,9 +260,17 @@ namespace Vinoteca.Views
 				return false;
 			}
 
-			if (!int.TryParse(precioTexto, out int precioEntero) || precioEntero <= 0 || precioEntero > 100000)
+			if (!double.TryParse(NormalizarDecimal(precioTexto), NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double precioValor) ||
+				precioValor <= 0 ||
+				precioValor > 100000)
 			{
-				MostrarMensaje("El precio solo debe contener numeros entre 1 y 100000", false);
+				MostrarMensaje("El precio debe ser mayor a 0 y maximo 100000", false);
+				return false;
+			}
+
+			if (ContarDecimales(precioTexto) > 2)
+			{
+				MostrarMensaje("El precio solo puede tener hasta 2 decimales", false);
 				return false;
 			}
 
@@ -227,7 +280,7 @@ namespace Vinoteca.Views
 				return false;
 			}
 
-			precio = precioEntero;
+			precio = Math.Round(precioValor, 2);
 			stock = stockValor;
 
 			if (!string.IsNullOrWhiteSpace(imagen))
@@ -372,7 +425,7 @@ namespace Vinoteca.Views
 			productoSeleccionado = producto;
 			txtNombre.Text = producto.Nombre ?? string.Empty;
 			txtMarca.Text = producto.Marca ?? string.Empty;
-			txtPrecioVenta.Text = producto.PrecioVenta.ToString("0");
+			txtPrecioVenta.Text = producto.PrecioVenta.ToString("0.##", CultureInfo.InvariantCulture);
 			txtStock.Text = producto.Stock.ToString();
 			txtImagen.Text = producto.ImagenPath ?? string.Empty;
 			CargarCategorias(producto.Categoria);
@@ -402,7 +455,7 @@ namespace Vinoteca.Views
 			return string.IsNullOrWhiteSpace(txtNombre.Text) &&
 				string.IsNullOrWhiteSpace(txtMarca.Text) &&
 				string.IsNullOrWhiteSpace(ObtenerCategoriaActual()) &&
-				ObtenerNumeroFormulario(txtPrecioVenta.Text) == 0 &&
+				ObtenerDecimalFormulario(txtPrecioVenta.Text) == 0 &&
 				ObtenerNumeroFormulario(txtStock.Text) == 0 &&
 				string.IsNullOrWhiteSpace(txtImagen.Text);
 		}
@@ -412,7 +465,7 @@ namespace Vinoteca.Views
 			return string.Equals((txtNombre.Text ?? string.Empty).Trim(), producto.Nombre ?? string.Empty, StringComparison.Ordinal) &&
 				string.Equals((txtMarca.Text ?? string.Empty).Trim(), producto.Marca ?? string.Empty, StringComparison.Ordinal) &&
 				string.Equals(ObtenerCategoriaActual(), producto.Categoria ?? string.Empty, StringComparison.Ordinal) &&
-				ObtenerNumeroFormulario(txtPrecioVenta.Text) == (int)producto.PrecioVenta &&
+				Math.Abs(ObtenerDecimalFormulario(txtPrecioVenta.Text) - producto.PrecioVenta) < 0.01 &&
 				ObtenerNumeroFormulario(txtStock.Text) == producto.Stock &&
 				string.Equals((txtImagen.Text ?? string.Empty).Trim(), producto.ImagenPath ?? string.Empty, StringComparison.Ordinal);
 		}
@@ -425,6 +478,23 @@ namespace Vinoteca.Views
 		private static int ObtenerNumeroFormulario(string? texto)
 		{
 			return int.TryParse(texto?.Trim(), out int valor) ? valor : -1;
+		}
+
+		private static double ObtenerDecimalFormulario(string? texto)
+		{
+			return double.TryParse(NormalizarDecimal(texto), NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double valor) ? valor : -1;
+		}
+
+		private static string NormalizarDecimal(string? texto)
+		{
+			return (texto ?? string.Empty).Trim().Replace(',', '.');
+		}
+
+		private static int ContarDecimales(string texto)
+		{
+			string normalizado = NormalizarDecimal(texto);
+			int indiceDecimal = normalizado.IndexOf('.');
+			return indiceDecimal < 0 ? 0 : normalizado.Length - indiceDecimal - 1;
 		}
 
 		private void btnAgregarCategoria_Click(object sender, RoutedEventArgs e)
@@ -503,6 +573,11 @@ namespace Vinoteca.Views
 			AplicarFiltro();
 		}
 
+		private void FiltroProductos_Changed(object sender, object e)
+		{
+			AplicarFiltro();
+		}
+
 		private async void btnSeleccionarImagen_Click(object sender, RoutedEventArgs e)
 		{
 			if (!SessionService.PuedeGestionarInventario)
@@ -554,7 +629,9 @@ namespace Vinoteca.Views
 	{
 		public Producto Producto { get; }
 		public string Nombre => Producto.Nombre ?? string.Empty;
+		public string Marca => Producto.Marca ?? string.Empty;
 		public string Categoria => Producto.Categoria ?? string.Empty;
+		public string IdTexto => $"ID: {(Producto.Id?.Length > 8 ? Producto.Id[..8] : Producto.Id)}";
 		public string PrecioTexto => Producto.PrecioVenta.ToString("C");
 		public string StockTexto => Producto.Stock.ToString();
 		public string EstadoTexto => Producto.Activo ? "Activo" : "Inactivo";

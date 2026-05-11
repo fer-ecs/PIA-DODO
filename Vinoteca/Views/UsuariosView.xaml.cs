@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -17,6 +18,7 @@ namespace Vinoteca.Views
 
 		private Usuario? usuarioSeleccionado;
 		private bool ignorarCambioSeleccion;
+		private List<Usuario> todosLosUsuarios = new();
 
 		public ObservableCollection<UsuarioItemViewModel> Usuarios { get; } = new();
 
@@ -25,8 +27,10 @@ namespace Vinoteca.Views
 			InitializeComponent();
 			InputRestrictionsHelper.AplicarSinEspaciosNiEnter(this);
 			InputRestrictionsHelper.AplicarSoloLetrasConEspacios(txtNombre);
+			InputRestrictionsHelper.AplicarTextoLibreSinEnter(txtBuscarUsuario);
 			lvUsuarios.ItemsSource = Usuarios;
 			ConfigurarRoles();
+			ConfigurarFiltros();
 
 			if (!SessionService.PuedeVerInformacionOperativa)
 			{
@@ -70,6 +74,10 @@ namespace Vinoteca.Views
 			btnLimpiarUsuario.IsEnabled = false;
 			btnEliminarUsuario.IsEnabled = false;
 			lvUsuarios.IsEnabled = false;
+			txtBuscarUsuario.IsEnabled = false;
+			cmbFiltroRol.IsEnabled = false;
+			cmbFiltroEstado.IsEnabled = false;
+			cmbOrdenUsuarios.IsEnabled = false;
 			MostrarError("Solo personal autorizado puede revisar usuarios");
 		}
 
@@ -90,12 +98,52 @@ namespace Vinoteca.Views
 
 		private void CargarUsuarios()
 		{
-			Usuarios.Clear();
+			todosLosUsuarios = DataService.ObtenerUsuarios().ToList();
+			AplicarFiltroUsuarios();
+		}
 
-			foreach (var usuario in DataService.ObtenerUsuarios().OrderBy(u => u.Nombre))
+		private void ConfigurarFiltros()
+		{
+			cmbFiltroRol.SelectedIndex = 0;
+			cmbFiltroEstado.SelectedIndex = 0;
+			cmbOrdenUsuarios.SelectedIndex = 0;
+		}
+
+		private void AplicarFiltroUsuarios()
+		{
+			string busqueda = txtBuscarUsuario.Text?.Trim().ToLowerInvariant() ?? string.Empty;
+			string rol = ObtenerContenidoCombo(cmbFiltroRol);
+			string estado = ObtenerContenidoCombo(cmbFiltroEstado);
+
+			var filtrados = todosLosUsuarios.Where(u =>
+				(string.IsNullOrWhiteSpace(busqueda) ||
+				(u.Id?.ToLowerInvariant().Contains(busqueda) ?? false) ||
+				(u.Nombre?.ToLowerInvariant().Contains(busqueda) ?? false) ||
+				(u.Correo?.ToLowerInvariant().Contains(busqueda) ?? false)) &&
+				(rol == "Todos" || RolesSistema.Normalizar(u.Rol) == rol) &&
+				(estado == "Todos" || (estado == "Activos" && u.Activo) || (estado == "Inactivos" && !u.Activo)));
+
+			filtrados = ObtenerContenidoCombo(cmbOrdenUsuarios) switch
 			{
-				Usuarios.Add(new UsuarioItemViewModel(usuario));
+				"Nombre Z-A" => filtrados.OrderByDescending(u => u.Nombre),
+				"Rol" => filtrados.OrderBy(u => RolesSistema.Normalizar(u.Rol)).ThenBy(u => u.Nombre),
+				"Estado" => filtrados.OrderByDescending(u => u.Activo).ThenBy(u => u.Nombre),
+				"ID" => filtrados.OrderBy(u => u.Id),
+				_ => filtrados.OrderBy(u => u.Nombre)
+			};
+
+			Usuarios.Clear();
+			foreach (var usuario in filtrados.Select(u => new UsuarioItemViewModel(u)))
+			{
+				Usuarios.Add(usuario);
 			}
+
+			txtResumenUsuarios.Text = $"{Usuarios.Count} de {todosLosUsuarios.Count} cuentas";
+		}
+
+		private static string ObtenerContenidoCombo(ComboBox combo)
+		{
+			return (combo.SelectedItem as ComboBoxItem)?.Content?.ToString() ?? string.Empty;
 		}
 
 		private async void lvUsuarios_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -552,6 +600,11 @@ namespace Vinoteca.Views
 			btnEliminarUsuario.IsEnabled = edicion && SessionService.PuedeGestionarUsuarios;
 		}
 
+		private void FiltroUsuarios_Changed(object sender, object e)
+		{
+			AplicarFiltroUsuarios();
+		}
+
 		private void MostrarError(string mensaje)
 		{
 			txtMensaje.Text = mensaje;
@@ -577,6 +630,7 @@ namespace Vinoteca.Views
 		public Usuario Usuario { get; }
 		public string Nombre => Usuario.Nombre ?? string.Empty;
 		public string Correo => Usuario.Correo ?? string.Empty;
+		public string IdTexto => $"ID: {(Usuario.Id?.Length > 8 ? Usuario.Id[..8] : Usuario.Id)}";
 		public string RolTexto => $"Rol: {RolesSistema.Normalizar(Usuario.Rol)}";
 		public string EstadoTexto => Usuario.Activo ? "Activo" : "Inactivo";
 		public string AccionEstadoTexto => Usuario.Activo ? "Desactivar" : "Activar";
