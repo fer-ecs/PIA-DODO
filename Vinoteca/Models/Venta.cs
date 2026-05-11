@@ -5,7 +5,7 @@ namespace Vinoteca.Models
 {
 	public class Venta
 	{
-		public string Id { get; set; } = Guid.NewGuid().ToString().Substring(0, 8);
+		public string Id { get; set; } = string.Empty;
 		public DateTime Fecha { get; set; } = DateTime.Now;
 		public string UsuarioId { get; set; } = string.Empty;
 		public string EmpleadoId { get; set; } = string.Empty;

@@ -100,7 +100,6 @@ namespace Vinoteca.Services
 			{
 				new Usuario
 				{
-					Id = Guid.NewGuid().ToString(),
 					Nombre = "Administrador",
 					Correo = AdminCorreo,
 					Contrasena = AdminContrasena,
@@ -230,21 +229,21 @@ namespace Vinoteca.Services
 		{
 			return new List<Usuario>
 			{
-				new Usuario { Id = Guid.NewGuid().ToString(), Nombre = "Ana Lopez", Correo = "ana.lopez@vinoteca.com", Contrasena = "Ana_123*", Rol = RolesSistema.Supervisor, Activo = true },
-				new Usuario { Id = Guid.NewGuid().ToString(), Nombre = "Carlos Mendez", Correo = "carlos.mendez@vinoteca.com", Contrasena = "Carlos_123*", Rol = RolesSistema.Supervisor, Activo = true },
-				new Usuario { Id = Guid.NewGuid().ToString(), Nombre = "Laura Perez", Correo = "laura.perez@vinoteca.com", Contrasena = "Laura_123*", Rol = RolesSistema.Empleado, Activo = true },
-				new Usuario { Id = Guid.NewGuid().ToString(), Nombre = "Diego Ruiz", Correo = "diego.ruiz@vinoteca.com", Contrasena = "Diego_123*", Rol = RolesSistema.Empleado, Activo = true },
-				new Usuario { Id = Guid.NewGuid().ToString(), Nombre = "Sofia Vargas", Correo = "sofia.vargas@vinoteca.com", Contrasena = "Sofia_123*", Rol = RolesSistema.Empleado, Activo = true },
-				new Usuario { Id = Guid.NewGuid().ToString(), Nombre = "Miguel Torres", Correo = "miguel.torres@vinoteca.com", Contrasena = "Miguel_123*", Rol = RolesSistema.Empleado, Activo = true },
-				new Usuario { Id = Guid.NewGuid().ToString(), Nombre = "Valeria Castro", Correo = "valeria.castro@vinoteca.com", Contrasena = "Valeria_123*", Rol = RolesSistema.Empleado, Activo = true },
-				new Usuario { Id = Guid.NewGuid().ToString(), Nombre = "Javier Moreno", Correo = "javier.moreno@vinoteca.com", Contrasena = "Javier_123*", Rol = RolesSistema.Empleado, Activo = true },
-				new Usuario { Id = Guid.NewGuid().ToString(), Nombre = "Fernanda Gil", Correo = "fernanda.gil@vinoteca.com", Contrasena = "Fernanda_123*", Rol = RolesSistema.Empleado, Activo = true },
-				new Usuario { Id = Guid.NewGuid().ToString(), Nombre = "Ricardo Salas", Correo = "ricardo.salas@vinoteca.com", Contrasena = "Ricardo_123*", Rol = RolesSistema.Empleado, Activo = true },
-				new Usuario { Id = Guid.NewGuid().ToString(), Nombre = "Daniela Ortiz", Correo = "daniela.ortiz@vinoteca.com", Contrasena = "Daniela_123*", Rol = RolesSistema.Empleado, Activo = true },
-				new Usuario { Id = Guid.NewGuid().ToString(), Nombre = "Eduardo Rios", Correo = "eduardo.rios@vinoteca.com", Contrasena = "Eduardo_123*", Rol = RolesSistema.Empleado, Activo = true },
-				new Usuario { Id = Guid.NewGuid().ToString(), Nombre = "Mariana Vega", Correo = "mariana.vega@vinoteca.com", Contrasena = "Mariana_123*", Rol = RolesSistema.Empleado, Activo = true },
-				new Usuario { Id = Guid.NewGuid().ToString(), Nombre = "Patricia Leon", Correo = "patricia.leon@vinoteca.com", Contrasena = "Patricia_123*", Rol = RolesSistema.Empleado, Activo = true },
-				new Usuario { Id = Guid.NewGuid().ToString(), Nombre = "Hector Nava", Correo = "hector.nava@vinoteca.com", Contrasena = "Hector_123*", Rol = RolesSistema.Empleado, Activo = true }
+				new Usuario { Nombre = "Ana Lopez", Correo = "ana.lopez@vinoteca.com", Contrasena = "Ana_123*", Rol = RolesSistema.Supervisor, Activo = true },
+				new Usuario { Nombre = "Carlos Mendez", Correo = "carlos.mendez@vinoteca.com", Contrasena = "Carlos_123*", Rol = RolesSistema.Supervisor, Activo = true },
+				new Usuario { Nombre = "Laura Perez", Correo = "laura.perez@vinoteca.com", Contrasena = "Laura_123*", Rol = RolesSistema.Empleado, Activo = true },
+				new Usuario { Nombre = "Diego Ruiz", Correo = "diego.ruiz@vinoteca.com", Contrasena = "Diego_123*", Rol = RolesSistema.Empleado, Activo = true },
+				new Usuario { Nombre = "Sofia Vargas", Correo = "sofia.vargas@vinoteca.com", Contrasena = "Sofia_123*", Rol = RolesSistema.Empleado, Activo = true },
+				new Usuario { Nombre = "Miguel Torres", Correo = "miguel.torres@vinoteca.com", Contrasena = "Miguel_123*", Rol = RolesSistema.Empleado, Activo = true },
+				new Usuario { Nombre = "Valeria Castro", Correo = "valeria.castro@vinoteca.com", Contrasena = "Valeria_123*", Rol = RolesSistema.Empleado, Activo = true },
+				new Usuario { Nombre = "Javier Moreno", Correo = "javier.moreno@vinoteca.com", Contrasena = "Javier_123*", Rol = RolesSistema.Empleado, Activo = true },
+				new Usuario { Nombre = "Fernanda Gil", Correo = "fernanda.gil@vinoteca.com", Contrasena = "Fernanda_123*", Rol = RolesSistema.Empleado, Activo = true },
+				new Usuario { Nombre = "Ricardo Salas", Correo = "ricardo.salas@vinoteca.com", Contrasena = "Ricardo_123*", Rol = RolesSistema.Empleado, Activo = true },
+				new Usuario { Nombre = "Daniela Ortiz", Correo = "daniela.ortiz@vinoteca.com", Contrasena = "Daniela_123*", Rol = RolesSistema.Empleado, Activo = true },
+				new Usuario { Nombre = "Eduardo Rios", Correo = "eduardo.rios@vinoteca.com", Contrasena = "Eduardo_123*", Rol = RolesSistema.Empleado, Activo = true },
+				new Usuario { Nombre = "Mariana Vega", Correo = "mariana.vega@vinoteca.com", Contrasena = "Mariana_123*", Rol = RolesSistema.Empleado, Activo = true },
+				new Usuario { Nombre = "Patricia Leon", Correo = "patricia.leon@vinoteca.com", Contrasena = "Patricia_123*", Rol = RolesSistema.Empleado, Activo = true },
+				new Usuario { Nombre = "Hector Nava", Correo = "hector.nava@vinoteca.com", Contrasena = "Hector_123*", Rol = RolesSistema.Empleado, Activo = true }
 			};
 		}
 
@@ -325,74 +324,93 @@ namespace Vinoteca.Services
 		private static void AsegurarIdentificadores()
 		{
 			var usuarios = ObtenerUsuariosSinInicializar();
-			if (AsegurarIdsUsuarios(usuarios))
+			var mapaUsuarios = AsegurarIdsUsuarios(usuarios);
+			if (mapaUsuarios.Count > 0)
 			{
 				GuardarJson(usuariosFile, usuarios);
 			}
 
 			var productos = ObtenerProductosSinInicializar();
-			if (AsegurarIdsProductos(productos))
+			var mapaProductos = AsegurarIdsProductos(productos);
+			if (mapaProductos.Count > 0)
 			{
 				GuardarJson(productosFile, productos);
 			}
 
 			var ventas = ObtenerVentasSinInicializar();
-			if (AsegurarIdsVentas(ventas))
+			bool ventasActualizadas = AsegurarReferenciasVentas(ventas, mapaUsuarios, mapaProductos);
+			ventasActualizadas = AsegurarIdsVentas(ventas) || ventasActualizadas;
+			if (ventasActualizadas)
 			{
 				GuardarJson(ventasFile, ventas);
 			}
 		}
 
-		private static bool AsegurarIdsUsuarios(List<Usuario> usuarios)
+		private static Dictionary<string, string> AsegurarIdsUsuarios(List<Usuario> usuarios)
 		{
-			var ids = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-			bool actualizados = false;
-
-			foreach (var usuario in usuarios)
+			var mapa = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+			if (!RequiereRenumeracion(usuarios.Select(u => u.Id)))
 			{
-				if (string.IsNullOrWhiteSpace(usuario.Id) || !ids.Add(usuario.Id))
-				{
-					usuario.Id = Guid.NewGuid().ToString();
-					ids.Add(usuario.Id);
-					actualizados = true;
-				}
+				return mapa;
 			}
 
-			return actualizados;
+			for (int i = 0; i < usuarios.Count; i++)
+			{
+				string idAnterior = usuarios[i].Id ?? string.Empty;
+				string idNuevo = (i + 1).ToString();
+				if (!string.IsNullOrWhiteSpace(idAnterior) && idAnterior != idNuevo)
+				{
+					mapa[idAnterior] = idNuevo;
+				}
+
+				usuarios[i].Id = idNuevo;
+			}
+
+			return mapa;
 		}
 
-		private static bool AsegurarIdsProductos(List<Producto> productos)
+		private static Dictionary<string, string> AsegurarIdsProductos(List<Producto> productos)
 		{
-			var ids = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-			bool actualizados = false;
-
-			foreach (var producto in productos)
+			var mapa = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+			if (!RequiereRenumeracion(productos.Select(p => p.Id)))
 			{
-				if (string.IsNullOrWhiteSpace(producto.Id) || !ids.Add(producto.Id))
-				{
-					producto.Id = Guid.NewGuid().ToString();
-					ids.Add(producto.Id);
-					actualizados = true;
-				}
+				return mapa;
 			}
 
-			return actualizados;
+			for (int i = 0; i < productos.Count; i++)
+			{
+				string idAnterior = productos[i].Id ?? string.Empty;
+				string idNuevo = (i + 1).ToString();
+				if (!string.IsNullOrWhiteSpace(idAnterior) && idAnterior != idNuevo)
+				{
+					mapa[idAnterior] = idNuevo;
+				}
+
+				productos[i].Id = idNuevo;
+			}
+
+			return mapa;
 		}
 
 		private static bool AsegurarIdsVentas(List<Venta> ventas)
 		{
-			var ids = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 			bool actualizados = false;
+
+			if (RequiereRenumeracion(ventas.Select(v => v.Id)))
+			{
+				for (int i = 0; i < ventas.Count; i++)
+				{
+					string idNuevo = (i + 1).ToString();
+					if (ventas[i].Id != idNuevo)
+					{
+						ventas[i].Id = idNuevo;
+						actualizados = true;
+					}
+				}
+			}
 
 			foreach (var venta in ventas)
 			{
-				if (string.IsNullOrWhiteSpace(venta.Id) || !ids.Add(venta.Id))
-				{
-					venta.Id = CrearIdVenta();
-					ids.Add(venta.Id);
-					actualizados = true;
-				}
-
 				if (AsegurarDatosVentaPos(venta))
 				{
 					actualizados = true;
@@ -400,6 +418,74 @@ namespace Vinoteca.Services
 			}
 
 			return actualizados;
+		}
+
+		private static bool AsegurarReferenciasVentas(
+			List<Venta> ventas,
+			Dictionary<string, string> mapaUsuarios,
+			Dictionary<string, string> mapaProductos)
+		{
+			bool actualizadas = false;
+
+			foreach (var venta in ventas)
+			{
+				if (ReemplazarId(mapaUsuarios, venta.UsuarioId, out string usuarioId))
+				{
+					venta.UsuarioId = usuarioId;
+					actualizadas = true;
+				}
+
+				if (ReemplazarId(mapaUsuarios, venta.EmpleadoId, out string empleadoId))
+				{
+					venta.EmpleadoId = empleadoId;
+					actualizadas = true;
+				}
+
+				foreach (var item in venta.Productos)
+				{
+					if (item.Producto != null && ReemplazarId(mapaProductos, item.Producto.Id, out string productoId))
+					{
+						item.Producto.Id = productoId;
+						actualizadas = true;
+					}
+				}
+			}
+
+			return actualizadas;
+		}
+
+		private static bool ReemplazarId(Dictionary<string, string> mapa, string idActual, out string idNuevo)
+		{
+			idNuevo = idActual ?? string.Empty;
+			if (string.IsNullOrWhiteSpace(idActual))
+			{
+				return false;
+			}
+
+			if (mapa.TryGetValue(idActual, out string? idEncontrado) && !string.IsNullOrWhiteSpace(idEncontrado))
+			{
+				idNuevo = idEncontrado;
+				return true;
+			}
+
+			return false;
+		}
+
+		private static bool RequiereRenumeracion(IEnumerable<string> ids)
+		{
+			var vistos = new HashSet<int>();
+			int esperado = 1;
+			foreach (string id in ids)
+			{
+				if (!int.TryParse(id, out int valor) || valor != esperado || !vistos.Add(valor))
+				{
+					return true;
+				}
+
+				esperado++;
+			}
+
+			return false;
 		}
 
 		private static bool AsegurarDatosVentaPos(Venta venta)
@@ -464,9 +550,21 @@ namespace Vinoteca.Services
 			return actualizada;
 		}
 
-		private static string CrearIdVenta()
+		private static string ObtenerSiguienteId(IEnumerable<string> ids)
 		{
-			return Guid.NewGuid().ToString("N").Substring(0, 8);
+			int ultimoId = ids
+				.Select(id => int.TryParse(id, out int valor) ? valor : 0)
+				.DefaultIfEmpty(0)
+				.Max();
+
+			return (ultimoId + 1).ToString();
+		}
+
+		private static bool IdNumericoDisponible(string id, IEnumerable<string> idsExistentes)
+		{
+			return int.TryParse(id, out int valor) &&
+				valor > 0 &&
+				!idsExistentes.Any(idExistente => int.TryParse(idExistente, out int existente) && existente == valor);
 		}
 
 		private static void AsegurarCategoriasDeProductos()
@@ -519,6 +617,11 @@ namespace Vinoteca.Services
 			}
 
 			usuario.Rol = RolesSistema.Normalizar(usuario.Rol);
+			if (!IdNumericoDisponible(usuario.Id, usuarios.Select(u => u.Id)))
+			{
+				usuario.Id = ObtenerSiguienteId(usuarios.Select(u => u.Id));
+			}
+
 			usuarios.Add(usuario);
 			GuardarJson(usuariosFile, usuarios);
 			return true;
@@ -617,6 +720,11 @@ namespace Vinoteca.Services
 			}
 			else
 			{
+				if (!IdNumericoDisponible(producto.Id, productos.Select(p => p.Id)))
+				{
+					producto.Id = ObtenerSiguienteId(productos.Select(p => p.Id));
+				}
+
 				productos.Add(producto);
 			}
 
@@ -661,18 +769,12 @@ namespace Vinoteca.Services
 				throw new InvalidOperationException("Solo empleados pueden registrar ventas");
 			}
 
-			if (string.IsNullOrWhiteSpace(nuevaVenta.Id))
-			{
-				nuevaVenta.Id = CrearIdVenta();
-			}
-
 			AsegurarDatosVentaPos(nuevaVenta);
 
 			var ventas = ObtenerVentas();
-			if (ventas.Any(v => !string.IsNullOrWhiteSpace(v.Id) &&
-				v.Id.Equals(nuevaVenta.Id, StringComparison.OrdinalIgnoreCase)))
+			if (!IdNumericoDisponible(nuevaVenta.Id, ventas.Select(v => v.Id)))
 			{
-				return;
+				nuevaVenta.Id = ObtenerSiguienteId(ventas.Select(v => v.Id));
 			}
 
 			ventas.Add(nuevaVenta);

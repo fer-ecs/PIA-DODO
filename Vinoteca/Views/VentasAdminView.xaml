@@ -68,7 +68,7 @@
 							</Grid.RowDefinitions>
 
 							<TextBlock Text="Metodo de pago" Foreground="{StaticResource WineLabelBrush}" FontWeight="SemiBold"/>
-							<TextBlock Grid.Column="1" Text="Monto recibido" Foreground="{StaticResource WineLabelBrush}" FontWeight="SemiBold"/>
+							<TextBlock x:Name="lblMontoPago" Grid.Column="1" Text="Monto recibido" Foreground="{StaticResource WineLabelBrush}" FontWeight="SemiBold"/>
 							<TextBlock Grid.Column="2" Text="Referencia" Foreground="{StaticResource WineLabelBrush}" FontWeight="SemiBold"/>
 
 							<ComboBox x:Name="cmbMetodoPago" Grid.Row="1" Style="{StaticResource WineComboBoxStyle}" SelectionChanged="cmbMetodoPago_SelectionChanged">
@@ -89,6 +89,7 @@
 
 						<StackPanel>
 							<TextBlock x:Name="txtPagoAyuda" Text="Ingresa el efectivo recibido para calcular el cambio" Foreground="{StaticResource WineMutedBrush}"/>
+							<TextBlock x:Name="txtPagoDetalle" Text="La caja registrara el pago al emitir el ticket" Foreground="{StaticResource WineMutedBrush}" TextWrapping="Wrap"/>
 							<TextBlock x:Name="txtCambio" Text="Cambio: $0.00" FontSize="20" FontWeight="SemiBold" Foreground="{StaticResource WineTextBrush}"/>
 						</StackPanel>
 

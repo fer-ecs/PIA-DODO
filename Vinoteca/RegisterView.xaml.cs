@@ -188,7 +188,6 @@ using Vinoteca.Services;
 
 			var nuevoUsuario = new Usuario
 			{
-				Id = Guid.NewGuid().ToString(),
 				Nombre = nombre,
 				Correo = correo,
 				Contrasena = password,

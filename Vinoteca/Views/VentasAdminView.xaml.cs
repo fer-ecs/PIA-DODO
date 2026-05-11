@@ -14,6 +14,7 @@ namespace Vinoteca.Views
 	public sealed partial class VentasAdminView : Page
 	{
 		public ObservableCollection<CarritoItem> ItemsCarrito { get; } = new();
+		private bool actualizandoPago;
 
 		public VentasAdminView()
 		{
@@ -116,7 +117,9 @@ namespace Vinoteca.Views
 
 			if (!pagoEfectivo && string.IsNullOrWhiteSpace(referenciaPago))
 			{
-				MostrarEstado("Ingresa la referencia o folio del pago");
+				MostrarEstado(metodoPago == "Tarjeta"
+					? "Ingresa el folio de autorizacion de la terminal"
+					: "Ingresa la referencia bancaria de la transferencia");
 				return;
 			}
 
@@ -194,6 +197,11 @@ namespace Vinoteca.Views
 
 		private void txtPago_TextChanged(object sender, TextChangedEventArgs e)
 		{
+			if (actualizandoPago)
+			{
+				return;
+			}
+
 			ActualizarPago();
 		}
 
@@ -210,12 +218,43 @@ namespace Vinoteca.Views
 			double recibido = pagoEfectivo ? ObtenerMontoRecibido() : total;
 			double cambio = pagoEfectivo ? Math.Max(0, recibido - total) : 0;
 
+			actualizandoPago = true;
 			txtMontoRecibido.IsEnabled = pagoEfectivo;
 			txtReferenciaPago.IsEnabled = !pagoEfectivo;
-			txtPagoAyuda.Text = pagoEfectivo
-				? "Ingresa el efectivo recibido para calcular el cambio"
-				: "Captura la referencia del pago aprobado";
-			txtCambio.Text = $"Cambio: {cambio.ToString("C")}";
+			lblMontoPago.Text = pagoEfectivo ? "Monto recibido" : "Monto cobrado";
+
+			if (!pagoEfectivo)
+			{
+				string totalTexto = total.ToString("0.00", CultureInfo.InvariantCulture);
+				if (txtMontoRecibido.Text != totalTexto)
+				{
+					txtMontoRecibido.Text = totalTexto;
+				}
+			}
+
+			if (pagoEfectivo)
+			{
+				txtReferenciaPago.PlaceholderText = "Opcional";
+				txtPagoAyuda.Text = "Efectivo";
+				txtPagoDetalle.Text = "Captura el dinero recibido. El sistema calcula el cambio y registra el ticket.";
+				txtCambio.Visibility = Visibility.Visible;
+				txtCambio.Text = $"Cambio: {cambio.ToString("C")}";
+			}
+			else if (metodoPago == "Tarjeta")
+			{
+				txtReferenciaPago.PlaceholderText = "Folio de autorizacion";
+				txtPagoAyuda.Text = "Tarjeta";
+				txtPagoDetalle.Text = "Primero cobra en la terminal externa. Si el pago fue aprobado, captura el folio y emite el ticket.";
+				txtCambio.Visibility = Visibility.Collapsed;
+			}
+			else
+			{
+				txtReferenciaPago.PlaceholderText = "Referencia bancaria";
+				txtPagoAyuda.Text = "Transferencia";
+				txtPagoDetalle.Text = "Confirma el deposito en la cuenta del negocio. Captura la referencia bancaria antes de emitir el ticket.";
+				txtCambio.Visibility = Visibility.Collapsed;
+			}
+			actualizandoPago = false;
 		}
 
 		private string ObtenerMetodoPago()

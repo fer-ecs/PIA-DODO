@@ -23,6 +23,7 @@ namespace Vinoteca.Views
 				txtEstado.Text = "Solo empleados pueden operar el punto de venta";
 				txtEstado.Visibility = Visibility.Visible;
 				txtBuscar.IsEnabled = false;
+				txtCodigoEscaneo.IsEnabled = false;
 				gvTienda.IsEnabled = false;
 				lvCarritoRapido.IsEnabled = false;
 				return;
@@ -30,6 +31,7 @@ namespace Vinoteca.Views
 
 			InputRestrictionsHelper.AplicarSinEspaciosNiEnter(this);
 			InputRestrictionsHelper.AplicarTextoLibreSinEnter(txtBuscar);
+			InputRestrictionsHelper.AplicarSinEspacios(txtCodigoEscaneo);
 			CargarCatalogo();
 			RefrescarCarritoVisual();
 			CarritoService.CarritoActualizado += RefrescarCarritoVisual;
@@ -103,22 +105,37 @@ namespace Vinoteca.Views
 				return;
 			}
 
-			string busqueda = txtBuscar.Text?.Trim().ToLowerInvariant() ?? string.Empty;
-			var producto = todosLosProductos.FirstOrDefault(p =>
-				!string.IsNullOrWhiteSpace(busqueda) &&
-				((p.Id?.ToLowerInvariant().StartsWith(busqueda) ?? false) ||
-				(p.Nombre?.ToLowerInvariant().Contains(busqueda) ?? false) ||
-				(p.Marca?.ToLowerInvariant().Contains(busqueda) ?? false))) ??
-				ProductosCatalogo.FirstOrDefault();
-
-			if (producto == null)
+			string codigo = txtCodigoEscaneo.Text?.Trim().ToLowerInvariant() ?? string.Empty;
+			if (string.IsNullOrWhiteSpace(codigo))
 			{
-				txtEstado.Text = "No se encontro un producto disponible para escanear";
+				txtEstado.Text = "Captura el ID corto del producto para simular el escaneo";
 				txtEstado.Visibility = Visibility.Visible;
 				return;
 			}
 
+			var coincidencias = todosLosProductos.Where(p =>
+				(!string.IsNullOrWhiteSpace(p.CodigoCorto) && p.CodigoCorto.ToLowerInvariant() == codigo) ||
+				(!string.IsNullOrWhiteSpace(p.Id) && p.Id.ToLowerInvariant().Replace("-", string.Empty).StartsWith(codigo)))
+				.ToList();
+
+			if (coincidencias.Count == 0)
+			{
+				txtEstado.Text = "No se encontro un producto activo con ese ID";
+				txtEstado.Visibility = Visibility.Visible;
+				return;
+			}
+
+			if (coincidencias.Count > 1)
+			{
+				txtEstado.Text = "El ID capturado coincide con varios productos. Escribe mas caracteres";
+				txtEstado.Visibility = Visibility.Visible;
+				return;
+			}
+
+			var producto = coincidencias[0];
 			AgregarProducto(producto);
+			txtCodigoEscaneo.Text = string.Empty;
+			txtCodigoEscaneo.Focus(FocusState.Programmatic);
 		}
 
 		private void AgregarProducto(Producto producto)

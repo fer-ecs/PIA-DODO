@@ -204,7 +204,7 @@ namespace Vinoteca.Views
 			}
 
 			bool esNuevoUsuario = usuarioSeleccionado == null;
-			var usuario = usuarioSeleccionado ?? new Usuario { Id = Guid.NewGuid().ToString() };
+			var usuario = usuarioSeleccionado ?? new Usuario();
 
 			if (ExisteCorreoDuplicado(correo, usuario.Id))
 			{

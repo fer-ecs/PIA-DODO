@@ -4,7 +4,8 @@ namespace Vinoteca.Models
 {
 	public class Producto
 	{
-		public string Id { get; set; } = Guid.NewGuid().ToString();
+		public string Id { get; set; } = string.Empty;
+		public string CodigoCorto => Id ?? string.Empty;
 		public string? Nombre { get; set; }
 		public string? Marca { get; set; }
 		public string? Categoria { get; set; }
