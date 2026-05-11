@@ -87,7 +87,17 @@
 							</Grid.RowDefinitions>
 
 							<TextBlock Text="Ventas por categoria" FontSize="18" FontWeight="SemiBold" Foreground="{StaticResource WineTextBrush}" Margin="0,0,0,12"/>
-							<ListView Grid.Row="1" x:Name="lvCategorias" SelectionMode="None" Background="Transparent"/>
+							<ListView Grid.Row="1" x:Name="lvCategorias" SelectionMode="None" Background="Transparent" BorderThickness="0">
+								<ListView.ItemTemplate>
+									<DataTemplate>
+										<Border Background="{StaticResource WineBackgroundBrush}" CornerRadius="8" Padding="12" Margin="0,4" BorderBrush="{StaticResource WineBorderBrush}" BorderThickness="1">
+											<StackPanel Spacing="3">
+												<TextBlock x:Name="txtCategoria" Text="{Binding}" Foreground="{StaticResource WineTextBrush}" FontWeight="SemiBold"/>
+											</StackPanel>
+										</Border>
+									</DataTemplate>
+								</ListView.ItemTemplate>
+							</ListView>
 						</Grid>
 					</Border>
 				</Grid>
