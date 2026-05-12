@@ -20,8 +20,22 @@
 				</Grid.RowDefinitions>
 
 				<StackPanel Grid.Row="0" Margin="0,0,0,20">
-					<TextBlock x:Name="txtTitulo" Text="Panel de venta" FontSize="28" FontWeight="SemiBold" Foreground="{StaticResource WineTextBrush}"/>
-					<TextBlock x:Name="txtSubtitulo" Text="0 articulo(s) listos para procesar" Foreground="{StaticResource WineMutedBrush}"/>
+					<StackPanel Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
+						<Image Source="Assets/StoreLogo.png" Width="42" Height="42"/>
+						<StackPanel>
+							<TextBlock x:Name="txtTitulo" Text="Panel de venta DODO" FontSize="28" FontWeight="SemiBold" Foreground="{StaticResource WineTextBrush}"/>
+							<TextBlock x:Name="txtSubtitulo" Text="0 articulo(s) listos para procesar" Foreground="{StaticResource WineMutedBrush}"/>
+						</StackPanel>
+					</StackPanel>
+					<Border x:Name="bdAlertaPago" Visibility="Collapsed" Margin="0,14,0,0" Background="#FFF7ED" BorderBrush="#FDBA74" BorderThickness="1" CornerRadius="8" Padding="12">
+						<StackPanel Orientation="Horizontal" Spacing="10">
+							<FontIcon Glyph="&#xE7BA;" Foreground="#C2410C" FontSize="16"/>
+							<StackPanel>
+								<TextBlock Text="DODOAVISO" Foreground="#9A3412" FontWeight="SemiBold"/>
+								<TextBlock x:Name="txtAlertaPago" Foreground="#7C2D12" TextWrapping="Wrap"/>
+							</StackPanel>
+						</StackPanel>
+					</Border>
 					<TextBlock x:Name="txtEstado" Visibility="Collapsed" Margin="0,8,0,0" TextWrapping="Wrap"/>
 				</StackPanel>
 

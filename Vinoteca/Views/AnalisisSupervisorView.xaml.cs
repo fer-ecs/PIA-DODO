@@ -16,6 +16,7 @@ using WinRT.Interop;
 
 namespace Vinoteca.Views
 {
+	// esta seccion sirve para agrupar el analisis del supervisor y dejar esa responsabilidad en un solo archivo - AnalisisSupervisorView
 	public sealed partial class AnalisisSupervisorView : Page
 	{
 		private readonly ObservableCollection<AnalisisFila> productosTop = new();
@@ -29,6 +30,7 @@ namespace Vinoteca.Views
 		private List<Producto> productosBase = new();
 		private bool cargandoFiltros;
 
+		// esta seccion sirve para agrupar el analisis del supervisor y dejar esa responsabilidad en un solo archivo - AnalisisSupervisorView
 		public AnalisisSupervisorView()
 		{
 			InitializeComponent();
@@ -49,6 +51,7 @@ namespace Vinoteca.Views
 			CargarDatos();
 		}
 
+		// esta seccion sirve para cargar informacion de el analisis del supervisor y preparar lo que se muestra en pantalla - CargarDatos
 		private void CargarDatos()
 		{
 			ventasBase = DataService.ObtenerVentas();
@@ -57,6 +60,7 @@ namespace Vinoteca.Views
 			AplicarAnalisis();
 		}
 
+		// esta seccion sirve para cargar informacion de el analisis del supervisor y preparar lo que se muestra en pantalla - CargarCombos
 		private void CargarCombos()
 		{
 			cargandoFiltros = true;
@@ -96,6 +100,7 @@ namespace Vinoteca.Views
 			cargandoFiltros = false;
 		}
 
+		// esta seccion sirve para ordenar y ajustar datos de el analisis del supervisor para trabajar con valores limpios - AplicarAnalisis
 		private void AplicarAnalisis()
 		{
 			string busqueda = (txtBuscarAnalisis.Text ?? string.Empty).Trim().ToLowerInvariant();
@@ -144,6 +149,7 @@ namespace Vinoteca.Views
 			MostrarEstado("Analisis actualizado", true);
 		}
 
+		// esta seccion sirve para ordenar y ajustar datos de el analisis del supervisor para trabajar con valores limpios - FiltrarPorPeriodo
 		private static IEnumerable<Venta> FiltrarPorPeriodo(IEnumerable<Venta> ventas, string periodo)
 		{
 			DateTime hoy = DateTime.Now.Date;
@@ -158,6 +164,7 @@ namespace Vinoteca.Views
 			return desde == null ? ventas : ventas.Where(v => v.Fecha.Date >= desde.Value);
 		}
 
+		// esta seccion sirve para manejar el analisis del supervisor y concentrar aqui esta parte del flujo - CoincideBusqueda
 		private static bool CoincideBusqueda(VentaLinea linea, string busqueda)
 		{
 			if (string.IsNullOrWhiteSpace(busqueda))
@@ -180,6 +187,7 @@ namespace Vinoteca.Views
 			return texto.Contains(busqueda, StringComparison.OrdinalIgnoreCase);
 		}
 
+		// esta seccion sirve para cargar informacion de el analisis del supervisor y preparar lo que se muestra en pantalla - CargarProductosTop
 		private void CargarProductosTop(List<VentaLinea> lineas, string orden)
 		{
 			productosTop.Clear();
@@ -230,6 +238,7 @@ namespace Vinoteca.Views
 			}
 		}
 
+		// esta seccion sirve para cargar informacion de el analisis del supervisor y preparar lo que se muestra en pantalla - CargarCategorias
 		private void CargarCategorias(List<VentaLinea> lineas)
 		{
 			categoriasResumen.Clear();
@@ -260,6 +269,7 @@ namespace Vinoteca.Views
 			}
 		}
 
+		// esta seccion sirve para cargar informacion de el analisis del supervisor y preparar lo que se muestra en pantalla - CargarEmpleados
 		private void CargarEmpleados(List<VentaLinea> lineas)
 		{
 			empleadosResumen.Clear();
@@ -291,6 +301,7 @@ namespace Vinoteca.Views
 			}
 		}
 
+		// esta seccion sirve para cargar informacion de el analisis del supervisor y preparar lo que se muestra en pantalla - CargarPagos
 		private void CargarPagos(List<VentaLinea> lineas)
 		{
 			pagosResumen.Clear();
@@ -321,6 +332,7 @@ namespace Vinoteca.Views
 			}
 		}
 
+		// esta seccion sirve para cargar informacion de el analisis del supervisor y preparar lo que se muestra en pantalla - CargarInventario
 		private void CargarInventario()
 		{
 			inventarioAlertas.Clear();
@@ -361,6 +373,7 @@ namespace Vinoteca.Views
 			}
 		}
 
+		// esta seccion sirve para cargar informacion de el analisis del supervisor y preparar lo que se muestra en pantalla - CargarLecturasRapidas
 		private void CargarLecturasRapidas(List<VentaLinea> lineas, List<Venta> ventasAnalizadas)
 		{
 			var productoTop = lineas
@@ -396,6 +409,7 @@ namespace Vinoteca.Views
 				: $"Mejor dia: {diaTop.Fecha:dd/MM/yyyy} ({diaTop.Ventas} venta(s), {diaTop.Total.ToString("C", CultureInfo.CurrentCulture)})";
 		}
 
+		// esta seccion sirve para cargar informacion de el analisis del supervisor y preparar lo que se muestra en pantalla - CargarPredicciones
 		private void CargarPredicciones(List<VentaLinea> lineas, List<Venta> ventasAnalizadas, string periodo)
 		{
 			int dias = CalcularDiasAnalizados(ventasAnalizadas, periodo);
@@ -423,6 +437,7 @@ namespace Vinoteca.Views
 			}
 		}
 
+		// esta seccion sirve para manejar el analisis del supervisor y concentrar aqui esta parte del flujo - CalcularDiasAnalizados
 		private static int CalcularDiasAnalizados(List<Venta> ventas, string periodo)
 		{
 			return periodo switch
@@ -435,6 +450,7 @@ namespace Vinoteca.Views
 			};
 		}
 
+		// esta seccion sirve para responder a la accion del usuario en el analisis del supervisor y mover el flujo al siguiente paso - btnExportarExcel_Click
 		private async void btnExportarExcel_Click(object sender, RoutedEventArgs e)
 		{
 			if (!SessionService.PuedeVerAnalisisSupervisor)
@@ -478,6 +494,7 @@ namespace Vinoteca.Views
 			}
 		}
 
+		// esta seccion sirve para armar datos o contenido de el analisis del supervisor y devolverlo ya preparado - ConstruirExcelHtml
 		private string ConstruirExcelHtml()
 		{
 			var sb = new StringBuilder();
@@ -567,6 +584,7 @@ namespace Vinoteca.Views
 			return sb.ToString();
 		}
 
+		// esta seccion sirve para agregar informacion a el analisis del supervisor y recalcular lo necesario - AgregarTablaAnalisis
 		private static void AgregarTablaAnalisis(StringBuilder sb, string titulo, IEnumerable<AnalisisFila> filas)
 		{
 			sb.AppendLine($"<h2>{Celda(titulo)}</h2>");
@@ -584,6 +602,7 @@ namespace Vinoteca.Views
 			sb.AppendLine("</table>");
 		}
 
+		// esta seccion sirve para agregar informacion a el analisis del supervisor y recalcular lo necesario - AgregarFila
 		private static void AgregarFila(StringBuilder sb, string etiqueta, string valor)
 		{
 			sb.Append("<tr>");
@@ -592,17 +611,20 @@ namespace Vinoteca.Views
 			sb.AppendLine("</tr>");
 		}
 
+		// esta seccion sirve para agregar informacion a el analisis del supervisor y recalcular lo necesario - AgregarCelda
 		private static void AgregarCelda(StringBuilder sb, string valor, string clase = "")
 		{
 			string atributoClase = string.IsNullOrWhiteSpace(clase) ? string.Empty : $" class=\"{clase}\"";
 			sb.Append($"<td{atributoClase}>{Celda(valor)}</td>");
 		}
 
+		// esta seccion sirve para manejar el analisis del supervisor y concentrar aqui esta parte del flujo - Celda
 		private static string Celda(string valor)
 		{
 			return WebUtility.HtmlEncode(valor ?? string.Empty);
 		}
 
+		// esta seccion sirve para responder a la accion del usuario en el analisis del supervisor y mover el flujo al siguiente paso - btnLimpiarFiltros_Click
 		private void btnLimpiarFiltros_Click(object sender, RoutedEventArgs e)
 		{
 			cargandoFiltros = true;
@@ -615,6 +637,7 @@ namespace Vinoteca.Views
 			AplicarAnalisis();
 		}
 
+		// esta seccion sirve para responder a la accion del usuario en el analisis del supervisor y mover el flujo al siguiente paso - FiltroAnalisis_Changed
 		private void FiltroAnalisis_Changed(object sender, object e)
 		{
 			if (!cargandoFiltros && IsLoaded)
@@ -623,6 +646,7 @@ namespace Vinoteca.Views
 			}
 		}
 
+		// esta seccion sirve para mostrar mensajes o ventanas de el analisis del supervisor para que el usuario entienda el estado - MostrarEstado
 		private void MostrarEstado(string mensaje, bool correcto)
 		{
 			txtEstado.Text = mensaje;
@@ -630,6 +654,7 @@ namespace Vinoteca.Views
 			txtEstado.Visibility = Visibility.Visible;
 		}
 
+		// esta seccion sirve para leer informacion de el analisis del supervisor y regresarla lista para usarse - ObtenerTextoCombo
 		private static string ObtenerTextoCombo(ComboBox combo)
 		{
 			if (combo.SelectedItem is ComboBoxItem item)
@@ -640,11 +665,13 @@ namespace Vinoteca.Views
 			return combo.SelectedItem?.ToString() ?? string.Empty;
 		}
 
+		// esta seccion sirve para ordenar y ajustar datos de el analisis del supervisor para trabajar con valores limpios - NormalizarTexto
 		private static string NormalizarTexto(string? valor, string respaldo)
 		{
 			return string.IsNullOrWhiteSpace(valor) ? respaldo : valor.Trim();
 		}
 
+		// esta seccion sirve para manejar el analisis del supervisor y concentrar aqui esta parte del flujo - FilaVacia
 		private static AnalisisFila FilaVacia(string texto)
 		{
 			return new AnalisisFila
@@ -656,8 +683,10 @@ namespace Vinoteca.Views
 			};
 		}
 
+		// esta seccion sirve para manejar el analisis del supervisor y concentrar aqui esta parte del flujo - VentaLinea
 		private sealed class VentaLinea
 		{
+			// esta seccion sirve para manejar el analisis del supervisor y concentrar aqui esta parte del flujo - VentaLinea
 			public VentaLinea(Venta venta, CarritoItem item)
 			{
 				Venta = venta;
@@ -668,6 +697,7 @@ namespace Vinoteca.Views
 			public CarritoItem Item { get; }
 		}
 
+		// esta seccion sirve para manejar el analisis del supervisor y concentrar aqui esta parte del flujo - ProductoResumen
 		private sealed class ProductoResumen
 		{
 			public string Nombre { get; set; } = string.Empty;
@@ -677,6 +707,7 @@ namespace Vinoteca.Views
 			public int Stock { get; set; }
 		}
 
+		// esta seccion sirve para manejar el analisis del supervisor y concentrar aqui esta parte del flujo - AnalisisFila
 		private sealed class AnalisisFila
 		{
 			public string Titulo { get; set; } = string.Empty;

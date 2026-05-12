@@ -19,8 +19,11 @@
 				</Grid.RowDefinitions>
 
 				<StackPanel Grid.Row="0" Padding="10,18,10,24" Spacing="6">
-					<TextBlock Text="Vinoteca" FontSize="30" FontWeight="SemiBold" Foreground="White"/>
-					<TextBlock Text="Panel de administracion" Foreground="{StaticResource WineHeroSoftBrush}"/>
+					<StackPanel Orientation="Horizontal" Spacing="10">
+						<Image Source="Assets/StoreLogo.png" Width="38" Height="38"/>
+						<TextBlock Text="Vinoteca DODO" FontSize="26" FontWeight="SemiBold" Foreground="White" VerticalAlignment="Center"/>
+					</StackPanel>
+					<TextBlock Text="Bienvenido DODOADMIN" Foreground="{StaticResource WineHeroSoftBrush}"/>
 				</StackPanel>
 
 				<StackPanel Grid.Row="1" Padding="8,0">
@@ -31,7 +34,7 @@
 						</StackPanel>
 					</Border>
 
-					<Button Style="{StaticResource WineSidebarButtonStyle}" Click="btnNavInventario_Click">
+					<Button x:Name="btnNavInventario" Style="{StaticResource WineSidebarButtonStyle}" Click="btnNavInventario_Click">
 						<Button.Resources>
 							<SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="#2AFFFFFF"/>
 							<SolidColorBrush x:Key="ButtonBackgroundPressed" Color="#3AFFFFFF"/>
@@ -44,7 +47,7 @@
 						</StackPanel>
 					</Button>
 
-					<Button Style="{StaticResource WineSidebarButtonStyle}" Click="btnNavUsuarios_Click">
+					<Button x:Name="btnNavUsuarios" Style="{StaticResource WineSidebarButtonStyle}" Click="btnNavUsuarios_Click">
 						<Button.Resources>
 							<SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="#2AFFFFFF"/>
 							<SolidColorBrush x:Key="ButtonBackgroundPressed" Color="#3AFFFFFF"/>
@@ -57,7 +60,7 @@
 						</StackPanel>
 					</Button>
 
-					<Button Style="{StaticResource WineSidebarButtonStyle}" Click="btnNavReportes_Click">
+					<Button x:Name="btnNavReportes" Style="{StaticResource WineSidebarButtonStyle}" Click="btnNavReportes_Click">
 						<Button.Resources>
 							<SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="#2AFFFFFF"/>
 							<SolidColorBrush x:Key="ButtonBackgroundPressed" Color="#3AFFFFFF"/>

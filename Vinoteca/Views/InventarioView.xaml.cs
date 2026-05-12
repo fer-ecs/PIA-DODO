@@ -15,9 +15,20 @@ using WinRT.Interop;
 
 namespace Vinoteca.Views
 {
-	public sealed partial class InventarioView : Page, ICambiosPendientes
+	// esta seccion sirve para agrupar el inventario y dejar esa responsabilidad en un solo archivo - InventarioView
+	public sealed partial class InventarioView : Page, ICambiosPendientes, IDescartaCambiosPendientes
 	{
+		private const string CachePrefixProductoNuevo = "Inventario_Nuevo_";
+		private const string CacheNombre = "Inventario_Nuevo_Nombre";
+		private const string CacheMarca = "Inventario_Nuevo_Marca";
+		private const string CacheCategoria = "Inventario_Nuevo_Categoria";
+		private const string CacheNuevaCategoria = "Inventario_Nuevo_NuevaCategoria";
+		private const string CachePrecio = "Inventario_Nuevo_Precio";
+		private const string CacheStock = "Inventario_Nuevo_Stock";
+		private const string CacheImagen = "Inventario_Nuevo_Imagen";
+
 		public ObservableCollection<ProductoItemViewModel> ProductosMostrados { get; } = new();
+		// esta seccion sirve para manejar el inventario y concentrar aqui esta parte del flujo - HashSet<string>
 		private static readonly HashSet<string> ExtensionesImagenPermitidas = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
 		{
 			".jpg",
@@ -30,7 +41,9 @@ namespace Vinoteca.Views
 		private Producto? productoSeleccionado;
 		private bool ignorarCambioSeleccion;
 		private bool ignorarCambiosFiltro;
+		private bool cargandoCacheProducto;
 
+		// esta seccion sirve para agrupar el inventario y dejar esa responsabilidad en un solo archivo - InventarioView
 		public InventarioView()
 		{
 			InitializeComponent();
@@ -55,10 +68,15 @@ namespace Vinoteca.Views
 
 			CargarCategorias();
 			CargarDatos();
+			ConfigurarCacheFormulario();
+			CargarFormularioNuevoDesdeCache();
+			DataService.ProductosActualizados += ProductosActualizados;
+			Unloaded += InventarioView_Unloaded;
 		}
 
 		public bool TieneCambiosPendientes => SessionService.PuedeGestionarInventario && FormularioTieneCambios();
 
+		// esta seccion sirve para leer informacion de el inventario y regresarla lista para usarse - ObtenerMensajeCambiosPendientes
 		public string ObtenerMensajeCambiosPendientes()
 		{
 			return productoSeleccionado == null
@@ -66,6 +84,25 @@ namespace Vinoteca.Views
 				: "Hay cambios sin guardar en el producto seleccionado";
 		}
 
+		public void DescartarCambiosPendientes()
+		{
+			LimpiarCacheFormularioNuevo();
+		}
+
+		// esta seccion sirve para responder a la accion del usuario en el inventario y mover el flujo al siguiente paso - InventarioView_Unloaded
+		private void InventarioView_Unloaded(object sender, RoutedEventArgs e)
+		{
+			DataService.ProductosActualizados -= ProductosActualizados;
+			Unloaded -= InventarioView_Unloaded;
+		}
+
+		// esta seccion sirve para actualizar el inventario despues de un cambio y sincronizar la pantalla - ProductosActualizados
+		private void ProductosActualizados()
+		{
+			DispatcherQueue.TryEnqueue(CargarDatos);
+		}
+
+		// esta seccion sirve para manejar el inventario y concentrar aqui esta parte del flujo - BloquearAcceso
 		private void BloquearAcceso()
 		{
 			txtNombre.IsEnabled = false;
@@ -86,6 +123,7 @@ namespace Vinoteca.Views
 			MostrarMensaje("Solo un administrador puede gestionar inventario", false);
 		}
 
+		// esta seccion sirve para manejar el inventario y concentrar aqui esta parte del flujo - ConfigurarModoSoloLectura
 		private void ConfigurarModoSoloLectura()
 		{
 			txtNombre.IsEnabled = false;
@@ -104,12 +142,14 @@ namespace Vinoteca.Views
 			MostrarMensaje("Modo de solo lectura para supervision del inventario", true);
 		}
 
+		// esta seccion sirve para cargar informacion de el inventario y preparar lo que se muestra en pantalla - CargarDatos
 		private void CargarDatos()
 		{
 			todosLosProductos = DataService.ObtenerProductos().ToList();
 			AplicarFiltro();
 		}
 
+		// esta seccion sirve para cargar informacion de el inventario y preparar lo que se muestra en pantalla - CargarCategorias
 		private void CargarCategorias(string? categoriaSeleccionada = null, bool actualizarFiltro = true)
 		{
 			string categoriaFiltroActual = ObtenerCategoriaFiltro();
@@ -147,6 +187,7 @@ namespace Vinoteca.Views
 			}
 		}
 
+		// esta seccion sirve para ordenar y ajustar datos de el inventario para trabajar con valores limpios - AplicarFiltro
 		private void AplicarFiltro()
 		{
 			string busqueda = txtBuscar.Text?.Trim().ToLowerInvariant() ?? string.Empty;
@@ -183,22 +224,26 @@ namespace Vinoteca.Views
 			txtResumenProductos.Text = $"{ProductosMostrados.Count} de {todosLosProductos.Count} productos";
 		}
 
+		// esta seccion sirve para manejar el inventario y concentrar aqui esta parte del flujo - ConfigurarFiltros
 		private void ConfigurarFiltros()
 		{
 			cmbOrdenProductos.SelectedIndex = 0;
 		}
 
+		// esta seccion sirve para leer informacion de el inventario y regresarla lista para usarse - ObtenerCategoriaFiltro
 		private string ObtenerCategoriaFiltro()
 		{
 			string categoria = cmbFiltroCategoria.SelectedItem?.ToString() ?? string.Empty;
 			return categoria == "Todas" ? string.Empty : categoria;
 		}
 
+		// esta seccion sirve para leer informacion de el inventario y regresarla lista para usarse - ObtenerOrdenProductos
 		private string ObtenerOrdenProductos()
 		{
 			return (cmbOrdenProductos.SelectedItem as ComboBoxItem)?.Content?.ToString() ?? "Nombre A-Z";
 		}
 
+		// esta seccion sirve para responder a la accion del usuario en el inventario y mover el flujo al siguiente paso - btnGuardar_Click
 		private void btnGuardar_Click(object sender, RoutedEventArgs e)
 		{
 			if (!SessionService.PuedeGestionarInventario)
@@ -229,6 +274,7 @@ namespace Vinoteca.Views
 			MostrarMensaje(esNuevoProducto ? "Producto creado correctamente" : "Producto actualizado correctamente", true);
 		}
 
+		// esta seccion sirve para revisar reglas de el inventario y evitar que pase un dato incorrecto - ValidarFormulario
 		private bool ValidarFormulario(out string nombre, out string marca, out string categoria, out string imagen, out double precio, out int stock)
 		{
 			nombre = txtNombre.Text?.Trim() ?? string.Empty;
@@ -338,6 +384,7 @@ namespace Vinoteca.Views
 			return true;
 		}
 
+		// esta seccion sirve para responder a la accion del usuario en el inventario y mover el flujo al siguiente paso - lvProductos_SelectionChanged
 		private async void lvProductos_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
 			if (ignorarCambioSeleccion)
@@ -373,6 +420,7 @@ namespace Vinoteca.Views
 			OcultarMensaje();
 		}
 
+		// esta seccion sirve para responder a la accion del usuario en el inventario y mover el flujo al siguiente paso - btnEliminar_Click
 		private async void btnEliminar_Click(object sender, RoutedEventArgs e)
 		{
 			if (!SessionService.PuedeGestionarInventario)
@@ -403,6 +451,7 @@ namespace Vinoteca.Views
 			MostrarMensaje("Producto eliminado correctamente", true);
 		}
 
+		// esta seccion sirve para responder a la accion del usuario en el inventario y mover el flujo al siguiente paso - btnLimpiar_Click
 		private async void btnLimpiar_Click(object sender, RoutedEventArgs e)
 		{
 			if (TieneCambiosPendientes)
@@ -422,6 +471,7 @@ namespace Vinoteca.Views
 			OcultarMensaje();
 		}
 
+		// esta seccion sirve para quitar informacion de el inventario y dejar el estado consistente - LimpiarFormularioInterno
 		private void LimpiarFormularioInterno()
 		{
 			productoSeleccionado = null;
@@ -436,10 +486,13 @@ namespace Vinoteca.Views
 			ignorarCambioSeleccion = true;
 			lvProductos.SelectedItem = null;
 			ignorarCambioSeleccion = false;
+			LimpiarCacheFormularioNuevo();
 		}
 
+		// esta seccion sirve para cargar informacion de el inventario y preparar lo que se muestra en pantalla - CargarProductoEnFormulario
 		private void CargarProductoEnFormulario(Producto producto)
 		{
+			LimpiarCacheFormularioNuevo();
 			productoSeleccionado = producto;
 			txtNombre.Text = producto.Nombre ?? string.Empty;
 			txtMarca.Text = producto.Marca ?? string.Empty;
@@ -449,6 +502,7 @@ namespace Vinoteca.Views
 			CargarCategorias(producto.Categoria, actualizarFiltro: false);
 		}
 
+		// esta seccion sirve para manejar el inventario y concentrar aqui esta parte del flujo - RestaurarSeleccionAnterior
 		private void RestaurarSeleccionAnterior()
 		{
 			ignorarCambioSeleccion = true;
@@ -458,6 +512,7 @@ namespace Vinoteca.Views
 			ignorarCambioSeleccion = false;
 		}
 
+		// esta seccion sirve para manejar el inventario y concentrar aqui esta parte del flujo - FormularioTieneCambios
 		private bool FormularioTieneCambios()
 		{
 			if (productoSeleccionado == null)
@@ -468,6 +523,7 @@ namespace Vinoteca.Views
 			return !FormularioCoincideConProducto(productoSeleccionado);
 		}
 
+		// esta seccion sirve para manejar el inventario y concentrar aqui esta parte del flujo - FormularioVacio
 		private bool FormularioVacio()
 		{
 			return string.IsNullOrWhiteSpace(txtNombre.Text) &&
@@ -478,6 +534,7 @@ namespace Vinoteca.Views
 				string.IsNullOrWhiteSpace(txtImagen.Text);
 		}
 
+		// esta seccion sirve para manejar el inventario y concentrar aqui esta parte del flujo - FormularioCoincideConProducto
 		private bool FormularioCoincideConProducto(Producto producto)
 		{
 			return string.Equals((txtNombre.Text ?? string.Empty).Trim(), producto.Nombre ?? string.Empty, StringComparison.Ordinal) &&
@@ -488,26 +545,31 @@ namespace Vinoteca.Views
 				string.Equals((txtImagen.Text ?? string.Empty).Trim(), producto.ImagenPath ?? string.Empty, StringComparison.Ordinal);
 		}
 
+		// esta seccion sirve para leer informacion de el inventario y regresarla lista para usarse - ObtenerCategoriaActual
 		private string ObtenerCategoriaActual()
 		{
 			return cmbCategoria.SelectedItem?.ToString() ?? string.Empty;
 		}
 
+		// esta seccion sirve para leer informacion de el inventario y regresarla lista para usarse - ObtenerNumeroFormulario
 		private static int ObtenerNumeroFormulario(string? texto)
 		{
 			return int.TryParse(texto?.Trim(), out int valor) ? valor : -1;
 		}
 
+		// esta seccion sirve para leer informacion de el inventario y regresarla lista para usarse - ObtenerDecimalFormulario
 		private static double ObtenerDecimalFormulario(string? texto)
 		{
 			return double.TryParse(NormalizarDecimal(texto), NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double valor) ? valor : -1;
 		}
 
+		// esta seccion sirve para ordenar y ajustar datos de el inventario para trabajar con valores limpios - NormalizarDecimal
 		private static string NormalizarDecimal(string? texto)
 		{
 			return (texto ?? string.Empty).Trim().Replace(',', '.');
 		}
 
+		// esta seccion sirve para manejar el inventario y concentrar aqui esta parte del flujo - ContarDecimales
 		private static int ContarDecimales(string texto)
 		{
 			string normalizado = NormalizarDecimal(texto);
@@ -515,11 +577,13 @@ namespace Vinoteca.Views
 			return indiceDecimal < 0 ? 0 : normalizado.Length - indiceDecimal - 1;
 		}
 
+		// esta seccion sirve para leer informacion de el inventario y regresarla lista para usarse - ObtenerIdNumerico
 		private static int ObtenerIdNumerico(string? id)
 		{
 			return int.TryParse(id, out int valor) ? valor : int.MaxValue;
 		}
 
+		// esta seccion sirve para revisar reglas de el inventario y evitar que pase un dato incorrecto - EsArchivoImagenLocalValido
 		private static bool EsArchivoImagenLocalValido(string ruta)
 		{
 			if (string.IsNullOrWhiteSpace(ruta) || !Path.IsPathRooted(ruta) || !File.Exists(ruta))
@@ -531,6 +595,7 @@ namespace Vinoteca.Views
 			return ExtensionesImagenPermitidas.Contains(extension);
 		}
 
+		// esta seccion sirve para responder a la accion del usuario en el inventario y mover el flujo al siguiente paso - btnAgregarCategoria_Click
 		private void btnAgregarCategoria_Click(object sender, RoutedEventArgs e)
 		{
 			if (!SessionService.PuedeGestionarInventario)
@@ -569,6 +634,7 @@ namespace Vinoteca.Views
 			MostrarMensaje("Categoria creada correctamente", true);
 		}
 
+		// esta seccion sirve para responder a la accion del usuario en el inventario y mover el flujo al siguiente paso - btnEliminarCategoria_Click
 		private void btnEliminarCategoria_Click(object sender, RoutedEventArgs e)
 		{
 			if (!SessionService.PuedeGestionarInventario)
@@ -602,11 +668,98 @@ namespace Vinoteca.Views
 			MostrarMensaje("Categoria eliminada correctamente", true);
 		}
 
+		// esta seccion sirve para manejar el inventario y concentrar aqui esta parte del flujo - ConfigurarCacheFormulario
+		private void ConfigurarCacheFormulario()
+		{
+			txtNombre.TextChanged += (s, e) => GuardarFormularioNuevoEnCache();
+			txtMarca.TextChanged += (s, e) => GuardarFormularioNuevoEnCache();
+			cmbCategoria.SelectionChanged += (s, e) => GuardarFormularioNuevoEnCache();
+			txtNuevaCategoria.TextChanged += (s, e) => GuardarFormularioNuevoEnCache();
+			txtPrecioVenta.TextChanged += (s, e) => GuardarFormularioNuevoEnCache();
+			txtStock.TextChanged += (s, e) => GuardarFormularioNuevoEnCache();
+			txtImagen.TextChanged += (s, e) => GuardarFormularioNuevoEnCache();
+		}
+
+		// esta seccion sirve para cargar informacion de el inventario y preparar lo que se muestra en pantalla - CargarFormularioNuevoDesdeCache
+		private void CargarFormularioNuevoDesdeCache()
+		{
+			if (!SessionService.PuedeGestionarInventario || productoSeleccionado != null)
+			{
+				return;
+			}
+
+			cargandoCacheProducto = true;
+			txtNombre.Text = App.FormCacheService.GetValue(CacheNombre) ?? txtNombre.Text;
+			txtMarca.Text = App.FormCacheService.GetValue(CacheMarca) ?? txtMarca.Text;
+			SeleccionarCategoria(App.FormCacheService.GetValue(CacheCategoria));
+			txtNuevaCategoria.Text = App.FormCacheService.GetValue(CacheNuevaCategoria) ?? txtNuevaCategoria.Text;
+			txtPrecioVenta.Text = App.FormCacheService.GetValue(CachePrecio) ?? txtPrecioVenta.Text;
+			txtStock.Text = App.FormCacheService.GetValue(CacheStock) ?? txtStock.Text;
+			txtImagen.Text = App.FormCacheService.GetValue(CacheImagen) ?? txtImagen.Text;
+			cargandoCacheProducto = false;
+		}
+
+		// esta seccion sirve para guardar informacion de el inventario y mantener los datos persistidos - GuardarFormularioNuevoEnCache
+		private void GuardarFormularioNuevoEnCache()
+		{
+			if (cargandoCacheProducto || !SessionService.PuedeGestionarInventario || productoSeleccionado != null)
+			{
+				return;
+			}
+
+			if (FormularioVacio())
+			{
+				LimpiarCacheFormularioNuevo();
+				return;
+			}
+
+			GuardarValorCache(CacheNombre, txtNombre.Text);
+			GuardarValorCache(CacheMarca, txtMarca.Text);
+			GuardarValorCache(CacheCategoria, ObtenerCategoriaActual());
+			GuardarValorCache(CacheNuevaCategoria, txtNuevaCategoria.Text);
+			GuardarValorCache(CachePrecio, txtPrecioVenta.Text);
+			GuardarValorCache(CacheStock, txtStock.Text);
+			GuardarValorCache(CacheImagen, txtImagen.Text);
+		}
+
+		// esta seccion sirve para manejar el inventario y concentrar aqui esta parte del flujo - SeleccionarCategoria
+		private void SeleccionarCategoria(string? categoria)
+		{
+			if (string.IsNullOrWhiteSpace(categoria))
+			{
+				return;
+			}
+
+			cmbCategoria.SelectedItem = cmbCategoria.Items
+				.Cast<string>()
+				.FirstOrDefault(c => c.Equals(categoria, StringComparison.OrdinalIgnoreCase));
+		}
+
+		// esta seccion sirve para guardar informacion de el inventario y mantener los datos persistidos - GuardarValorCache
+		private static void GuardarValorCache(string clave, string valor)
+		{
+			if (string.IsNullOrEmpty(valor))
+			{
+				App.FormCacheService.RemoveValue(clave);
+				return;
+			}
+
+			App.FormCacheService.SetValue(clave, valor);
+		}
+
+		// esta seccion sirve para quitar informacion de el inventario y dejar el estado consistente - LimpiarCacheFormularioNuevo
+		private static void LimpiarCacheFormularioNuevo()
+		{
+			App.FormCacheService.ClearPrefix(CachePrefixProductoNuevo);
+		}
+
+		// esta seccion sirve para responder a la accion del usuario en el inventario y mover el flujo al siguiente paso - txtBuscar_TextChanged
 		private void txtBuscar_TextChanged(object sender, TextChangedEventArgs e)
 		{
 			AplicarFiltro();
 		}
 
+		// esta seccion sirve para responder a la accion del usuario en el inventario y mover el flujo al siguiente paso - FiltroProductos_Changed
 		private void FiltroProductos_Changed(object sender, object e)
 		{
 			if (ignorarCambiosFiltro)
@@ -617,6 +770,7 @@ namespace Vinoteca.Views
 			AplicarFiltro();
 		}
 
+		// esta seccion sirve para responder a la accion del usuario en el inventario y mover el flujo al siguiente paso - btnLimpiarFiltrosProductos_Click
 		private void btnLimpiarFiltrosProductos_Click(object sender, RoutedEventArgs e)
 		{
 			ignorarCambiosFiltro = true;
@@ -629,6 +783,7 @@ namespace Vinoteca.Views
 			AplicarFiltro();
 		}
 
+		// esta seccion sirve para responder a la accion del usuario en el inventario y mover el flujo al siguiente paso - btnSeleccionarImagen_Click
 		private async void btnSeleccionarImagen_Click(object sender, RoutedEventArgs e)
 		{
 			if (!SessionService.PuedeGestionarInventario)
@@ -683,6 +838,7 @@ namespace Vinoteca.Views
 			}
 		}
 
+		// esta seccion sirve para mostrar mensajes o ventanas de el inventario para que el usuario entienda el estado - MostrarMensaje
 		private void MostrarMensaje(string mensaje, bool esExito)
 		{
 			txtMensaje.Text = mensaje;
@@ -690,12 +846,14 @@ namespace Vinoteca.Views
 			txtMensaje.Visibility = Visibility.Visible;
 		}
 
+		// esta seccion sirve para manejar el inventario y concentrar aqui esta parte del flujo - OcultarMensaje
 		private void OcultarMensaje()
 		{
 			txtMensaje.Visibility = Visibility.Collapsed;
 		}
 	}
 
+	// esta seccion sirve para manejar el inventario y concentrar aqui esta parte del flujo - ProductoItemViewModel
 	public class ProductoItemViewModel
 	{
 		public Producto Producto { get; }
@@ -713,6 +871,7 @@ namespace Vinoteca.Views
 		public SolidColorBrush EstadoBrush => (SolidColorBrush)Application.Current.Resources[
 			Producto.Stock <= 0 || Producto.Stock < 5 ? "WineDangerBrush" : "WineMutedBrush"];
 
+		// esta seccion sirve para manejar el inventario y concentrar aqui esta parte del flujo - ProductoItemViewModel
 		public ProductoItemViewModel(Producto producto)
 		{
 			Producto = producto;

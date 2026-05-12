@@ -11,8 +11,8 @@
 
 		<Grid x:Name="AppTitleBar" Grid.Row="0" Height="40" Background="Transparent" Canvas.ZIndex="1">
 			<StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="16,0,0,0" Spacing="12">
-				<Image Source="Assets/StoreLogo.png" Width="18" Height="18"/>
-				<TextBlock Text="Vinoteca" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource WineTextBrush}" VerticalAlignment="Center"/>
+				<Image Source="Assets/StoreLogo.png" Width="22" Height="22"/>
+				<TextBlock Text="Vinoteca DODO" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource WineTextBrush}" VerticalAlignment="Center"/>
 			</StackPanel>
 		</Grid>
 

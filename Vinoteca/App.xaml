@@ -27,6 +27,7 @@
 			<SolidColorBrush x:Key="WineHeroBrush" Color="#8F2D3B"/>
 			<SolidColorBrush x:Key="WineAccentSoftBrush" Color="#F3E8E8"/>
 			<SolidColorBrush x:Key="WineHeroSoftBrush" Color="#E9D5D5"/>
+			<SolidColorBrush x:Key="WineSidebarActiveBrush" Color="#33FFFFFF"/>
 
 			<SolidColorBrush x:Key="WineDangerBrush" Color="#DC2626"/>
 			<SolidColorBrush x:Key="WineSuccessBrush" Color="#16A34A"/>

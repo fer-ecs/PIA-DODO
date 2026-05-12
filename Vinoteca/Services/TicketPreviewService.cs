@@ -10,8 +10,10 @@ using Windows.UI.Text;
 
 namespace Vinoteca.Services
 {
+	// esta seccion sirve para agrupar la vista previa del ticket y dejar esa responsabilidad en un solo archivo - TicketPreviewService
 	public static class TicketPreviewService
 	{
+		// esta seccion sirve para mostrar mensajes o ventanas de la vista previa del ticket para que el usuario entienda el estado - MostrarAsync
 		public static async Task MostrarAsync(Venta venta, XamlRoot xamlRoot)
 		{
 			var panel = new StackPanel
@@ -56,6 +58,7 @@ namespace Vinoteca.Services
 			await dialog.ShowAsync();
 		}
 
+		// esta seccion sirve para armar datos o contenido de la vista previa del ticket y devolverlo ya preparado - CrearEncabezado
 		private static UIElement CrearEncabezado(Venta venta)
 		{
 			var contenedor = new Border
@@ -124,6 +127,7 @@ namespace Vinoteca.Services
 			return contenedor;
 		}
 
+		// esta seccion sirve para armar datos o contenido de la vista previa del ticket y devolverlo ya preparado - CrearFilaProducto
 		private static UIElement CrearFilaProducto(string nombre, string marca, int cantidad, double subtotal)
 		{
 			var contenedor = new Border
@@ -159,6 +163,7 @@ namespace Vinoteca.Services
 			return contenedor;
 		}
 
+		// esta seccion sirve para armar datos o contenido de la vista previa del ticket y devolverlo ya preparado - CrearTotales
 		private static UIElement CrearTotales(Venta venta)
 		{
 			var totales = TicketPdfService.CalcularTotales(venta);
@@ -184,6 +189,7 @@ namespace Vinoteca.Services
 			};
 		}
 
+		// esta seccion sirve para armar datos o contenido de la vista previa del ticket y devolverlo ya preparado - CrearLineaTexto
 		private static UIElement CrearLineaTexto(string etiqueta, string valor)
 		{
 			var grid = new Grid();
@@ -201,6 +207,7 @@ namespace Vinoteca.Services
 			return grid;
 		}
 
+		// esta seccion sirve para armar datos o contenido de la vista previa del ticket y devolverlo ya preparado - CrearLineaTotal
 		private static UIElement CrearLineaTotal(string etiqueta, double valor, double tamano, string recurso)
 		{
 			var grid = new Grid();
@@ -218,6 +225,7 @@ namespace Vinoteca.Services
 			return grid;
 		}
 
+		// esta seccion sirve para armar datos o contenido de la vista previa del ticket y devolverlo ya preparado - CrearTexto
 		private static TextBlock CrearTexto(string texto, string recurso, double tamano, FontWeight? peso = null)
 		{
 			return new TextBlock
@@ -230,6 +238,7 @@ namespace Vinoteca.Services
 			};
 		}
 
+		// esta seccion sirve para armar datos o contenido de la vista previa del ticket y devolverlo ya preparado - CrearEtiqueta
 		private static Border CrearEtiqueta(string texto)
 		{
 			return new Border
@@ -241,6 +250,7 @@ namespace Vinoteca.Services
 			};
 		}
 
+		// esta seccion sirve para leer informacion de la vista previa del ticket y regresarla lista para usarse - ObtenerBrocha
 		private static Brush ObtenerBrocha(string recurso)
 		{
 			return (Brush)Application.Current.Resources[recurso];

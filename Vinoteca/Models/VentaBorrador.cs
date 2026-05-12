@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 namespace Vinoteca.Models
 {
+	// esta seccion sirve para manejar el modelo de datos y concentrar aqui esta parte del flujo - VentaBorrador
 	public class VentaBorrador
 	{
 		public string UsuarioId { get; set; } = string.Empty;

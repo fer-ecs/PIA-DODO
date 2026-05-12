@@ -19,8 +19,11 @@
 				</Grid.RowDefinitions>
 
 				<StackPanel Grid.Row="0" Padding="10,18,10,24" Spacing="6">
-					<TextBlock Text="Vinoteca" FontSize="30" FontWeight="SemiBold" Foreground="#FFFFFF"/>
-					<TextBlock Text="Punto de venta" Foreground="#E5D5CC"/>
+					<StackPanel Orientation="Horizontal" Spacing="10">
+						<Image Source="Assets/StoreLogo.png" Width="38" Height="38"/>
+						<TextBlock Text="Vinoteca DODO" FontSize="26" FontWeight="SemiBold" Foreground="#FFFFFF" VerticalAlignment="Center"/>
+					</StackPanel>
+					<TextBlock Text="Bienvenido DODOAMIGO" Foreground="#E5D5CC"/>
 				</StackPanel>
 
 				<StackPanel Grid.Row="1" Padding="8,0">
@@ -83,8 +86,8 @@
 					</Grid.ColumnDefinitions>
 
 					<StackPanel>
-						<TextBlock Text="Caja de venta" FontSize="28" FontWeight="SemiBold" Foreground="{StaticResource WineTextBrush}"/>
-						<TextBlock Text="Selecciona productos, ajusta cantidades, cobra y genera tickets desde el flujo de empleado" Foreground="{StaticResource WineMutedBrush}" Margin="0,6,0,0"/>
+						<TextBlock Text="Caja DODO" FontSize="28" FontWeight="SemiBold" Foreground="{StaticResource WineTextBrush}"/>
+						<TextBlock Text="Selecciona productos, ajusta cantidades, cobra y genera tickets como DODOAMIGO" Foreground="{StaticResource WineMutedBrush}" Margin="0,6,0,0"/>
 					</StackPanel>
 
 					<Border Grid.Column="1" Background="{StaticResource WineAccentSoftBrush}" CornerRadius="16" Padding="16,10" VerticalAlignment="Center">

@@ -8,20 +8,29 @@ using Vinoteca.Models;
 
 namespace Vinoteca.Services
 {
+	// esta seccion sirve para manejar la parte del sistema y concentrar aqui esta parte del flujo - ICambiosPendientes
 	public interface ICambiosPendientes
 	{
 		bool TieneCambiosPendientes { get; }
 		string ObtenerMensajeCambiosPendientes();
 	}
 
+	public interface IDescartaCambiosPendientes
+	{
+		void DescartarCambiosPendientes();
+	}
+
+	// esta seccion sirve para manejar la parte del sistema y concentrar aqui esta parte del flujo - IVentaTemporal
 	public interface IVentaTemporal
 	{
 		bool TieneVentaTemporal { get; }
 		VentaBorrador CrearVentaBorrador();
 	}
 
+	// esta seccion sirve para agrupar la parte del sistema y dejar esa responsabilidad en un solo archivo - CambiosPendientesService
 	public static class CambiosPendientesService
 	{
+		// esta seccion sirve para manejar la parte del sistema y concentrar aqui esta parte del flujo - ConfirmarAccionSiHayCambiosAsync
 		public static async Task<bool> ConfirmarAccionSiHayCambiosAsync(
 			XamlRoot? xamlRoot,
 			DependencyObject? contexto,
@@ -44,13 +53,20 @@ namespace Vinoteca.Services
 				return true;
 			}
 
-			return await MostrarConfirmacionAsync(
+			bool confirmar = await MostrarConfirmacionAsync(
 				xamlRoot,
 				"Cambios pendientes",
 				$"{mensaje} Si deseas {accion}, se perdera la informacion no guardada. Deseas continuar?",
 				"Continuar");
+			if (confirmar)
+			{
+				DescartarCambios(contexto);
+			}
+
+			return confirmar;
 		}
 
+		// esta seccion sirve para manejar la parte del sistema y concentrar aqui esta parte del flujo - ConfirmarSalidaAsync
 		public static async Task<bool> ConfirmarSalidaAsync(
 			XamlRoot? xamlRoot,
 			DependencyObject? contexto,
@@ -81,13 +97,20 @@ namespace Vinoteca.Services
 					"Continuar");
 			}
 
-			return await MostrarConfirmacionAsync(
+			bool confirmar = await MostrarConfirmacionAsync(
 				xamlRoot,
 				"Cambios pendientes",
 				$"{mensaje} Si deseas {accion}, se perdera la informacion no guardada. Deseas continuar?",
 				"Continuar");
+			if (confirmar)
+			{
+				DescartarCambios(contexto);
+			}
+
+			return confirmar;
 		}
 
+		// esta seccion sirve para mostrar mensajes o ventanas de la parte del sistema para que el usuario entienda el estado - MostrarConfirmacionAsync
 		public static async Task<bool> MostrarConfirmacionAsync(
 			XamlRoot? xamlRoot,
 			string titulo,
@@ -113,6 +136,7 @@ namespace Vinoteca.Services
 			return await dialog.ShowAsync() == ContentDialogResult.Primary;
 		}
 
+		// esta seccion sirve para leer informacion de la parte del sistema y regresarla lista para usarse - ObtenerMensajeCambios
 		public static string? ObtenerMensajeCambios(DependencyObject? contexto, bool incluirCarrito = true)
 		{
 			var fuente = BuscarFuenteCambios(contexto);
@@ -129,6 +153,7 @@ namespace Vinoteca.Services
 			return null;
 		}
 
+		// esta seccion sirve para manejar la parte del sistema y concentrar aqui esta parte del flujo - HayVentaTemporal
 		private static bool HayVentaTemporal(DependencyObject? contexto, bool incluirCarrito)
 		{
 			var ventaTemporal = BuscarFuenteVentaTemporal(contexto);
@@ -136,6 +161,7 @@ namespace Vinoteca.Services
 				(incluirCarrito && CarritoService.ObtenerCarrito().Count > 0);
 		}
 
+		// esta seccion sirve para manejar la parte del sistema y concentrar aqui esta parte del flujo - ResolverVentaTemporalAsync
 		private static async Task<bool> ResolverVentaTemporalAsync(
 			XamlRoot? xamlRoot,
 			DependencyObject? contexto,
@@ -179,6 +205,7 @@ namespace Vinoteca.Services
 			return true;
 		}
 
+		// esta seccion sirve para armar datos o contenido de la parte del sistema y devolverlo ya preparado - CrearBorradorBasico
 		private static VentaBorrador CrearBorradorBasico(string usuarioId)
 		{
 			return new VentaBorrador
@@ -188,6 +215,7 @@ namespace Vinoteca.Services
 			};
 		}
 
+		// esta seccion sirve para manejar la parte del sistema y concentrar aqui esta parte del flujo - BuscarFuenteCambios
 		private static ICambiosPendientes? BuscarFuenteCambios(DependencyObject? raiz)
 		{
 			if (raiz == null)
@@ -222,6 +250,15 @@ namespace Vinoteca.Services
 			return null;
 		}
 
+		private static void DescartarCambios(DependencyObject? contexto)
+		{
+			if (BuscarFuenteCambios(contexto) is IDescartaCambiosPendientes fuente)
+			{
+				fuente.DescartarCambiosPendientes();
+			}
+		}
+
+		// esta seccion sirve para manejar la parte del sistema y concentrar aqui esta parte del flujo - BuscarFuenteVentaTemporal
 		private static IVentaTemporal? BuscarFuenteVentaTemporal(DependencyObject? raiz)
 		{
 			if (raiz == null)

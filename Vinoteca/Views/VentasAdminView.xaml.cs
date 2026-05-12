@@ -1,8 +1,10 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System;
 using System.Globalization;
 using System.Linq;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Vinoteca.Helpers;
@@ -11,12 +13,18 @@ using Vinoteca.Services;
 
 namespace Vinoteca.Views
 {
+	// esta seccion sirve para agrupar el cobro de ventas y dejar esa responsabilidad en un solo archivo - VentasAdminView
 	public sealed partial class VentasAdminView : Page, IVentaTemporal
 	{
 		public ObservableCollection<CarritoItem> ItemsCarrito { get; } = new();
+		private const double LimiteCambioEfectivo = 10000;
+		private const string MensajeEfectivoExcedeLimite = "El efectivo recibido supera el limite permitido";
+		private const string MensajeFolioInvalido = "El folio solo puede contener letras y numeros";
 		private bool actualizandoPago;
 		private bool pagoVerificado;
+		private bool cargandoBorrador;
 
+		// esta seccion sirve para agrupar el cobro de ventas y dejar esa responsabilidad en un solo archivo - VentasAdminView
 		public VentasAdminView()
 		{
 			InitializeComponent();
@@ -32,7 +40,7 @@ namespace Vinoteca.Views
 			}
 
 			InputRestrictionsHelper.AplicarSoloDecimal(txtMontoRecibido);
-			InputRestrictionsHelper.AplicarTextoLibreSinEnter(txtReferenciaPago);
+			InputRestrictionsHelper.AplicarSoloLetrasNumeros(txtReferenciaPago);
 			cmbMetodoPago.SelectedIndex = 0;
 			ActualizarInterfaz();
 			CarritoService.CarritoActualizado += ActualizarInterfaz;
@@ -42,6 +50,7 @@ namespace Vinoteca.Views
 
 		public bool TieneVentaTemporal => CarritoService.ObtenerCarrito().Count > 0;
 
+		// esta seccion sirve para armar datos o contenido de el cobro de ventas y devolverlo ya preparado - CrearVentaBorrador
 		public VentaBorrador CrearVentaBorrador()
 		{
 			return new VentaBorrador
@@ -55,6 +64,7 @@ namespace Vinoteca.Views
 			};
 		}
 
+		// esta seccion sirve para responder a la accion del usuario en el cobro de ventas y mover el flujo al siguiente paso - VentasAdminView_Loaded
 		private async void VentasAdminView_Loaded(object sender, RoutedEventArgs e)
 		{
 			string usuarioId = SessionService.UsuarioActivo?.Id ?? string.Empty;
@@ -83,15 +93,18 @@ namespace Vinoteca.Views
 			var resultado = await dialog.ShowAsync();
 			if (resultado == ContentDialogResult.Primary)
 			{
+				cargandoBorrador = true;
 				CarritoService.ReemplazarCarrito(borrador.Productos);
 				SeleccionarMetodoPago(borrador.MetodoPago);
 				txtMontoRecibido.Text = borrador.MontoRecibido > 0
 					? borrador.MontoRecibido.ToString("0.00", CultureInfo.InvariantCulture)
 					: string.Empty;
 				txtReferenciaPago.Text = borrador.ReferenciaPago ?? string.Empty;
+				cargandoBorrador = false;
 				pagoVerificado = false;
 				MostrarEstado("Venta recuperada, verifica el pago antes de cobrar");
 				ActualizarPago();
+				GuardarBorradorVentaActual();
 			}
 			else if (resultado == ContentDialogResult.Secondary)
 			{
@@ -100,13 +113,16 @@ namespace Vinoteca.Views
 			}
 		}
 
+		// esta seccion sirve para responder a la accion del usuario en el cobro de ventas y mover el flujo al siguiente paso - VentasAdminView_Unloaded
 		private void VentasAdminView_Unloaded(object sender, RoutedEventArgs e)
 		{
+			GuardarBorradorVentaActual();
 			CarritoService.CarritoActualizado -= ActualizarInterfaz;
 			Loaded -= VentasAdminView_Loaded;
 			Unloaded -= VentasAdminView_Unloaded;
 		}
 
+		// esta seccion sirve para actualizar el cobro de ventas despues de un cambio y sincronizar la pantalla - ActualizarInterfaz
 		private void ActualizarInterfaz()
 		{
 			pagoVerificado = false;
@@ -124,8 +140,10 @@ namespace Vinoteca.Views
 			txtSubtitulo.Text = $"{CarritoService.ObtenerCantidadTotalArticulos()} articulo(s) listos para cobrar";
 			txtVacio.Visibility = carrito.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
 			ActualizarPago();
+			GuardarBorradorVentaActual();
 		}
 
+		// esta seccion sirve para responder a la accion del usuario en el cobro de ventas y mover el flujo al siguiente paso - btnVaciar_Click
 		private async void btnVaciar_Click(object sender, RoutedEventArgs e)
 		{
 			if (!SessionService.PuedeComprar)
@@ -150,30 +168,51 @@ namespace Vinoteca.Views
 			}
 
 			CarritoService.LimpiarCarrito();
+			GuardarBorradorVentaActual();
 		}
 
+		// esta seccion sirve para responder a la accion del usuario en el cobro de ventas y mover el flujo al siguiente paso - btnFinalizarVenta_Click
 		private async void btnFinalizarVenta_Click(object sender, RoutedEventArgs e)
 		{
 			if (!SessionService.PuedeComprar)
 			{
-				MostrarEstado("Solo empleados pueden cobrar ventas");
+				await MostrarAlertaPagoAsync("DODOAVISO", "Solo empleados pueden cobrar ventas");
+				return;
+			}
+
+			if (CarritoService.ObtenerCarrito().Count == 0)
+			{
+				await MostrarAlertaPagoAsync("DODOAVISO", "No hay productos para procesar");
+				return;
+			}
+
+			bool pagoEstabaVerificado = pagoVerificado;
+			double totalAntesDeSincronizar = CarritoService.ObtenerTotal();
+			if (!CarritoService.SincronizarConInventario(out string mensajeStock))
+			{
+				pagoVerificado = false;
+				await MostrarAlertaPagoAsync("DODOAVISO", mensajeStock);
+				ActualizarPago();
+				return;
+			}
+
+			double totalActual = CarritoService.ObtenerTotal();
+			if (Math.Abs(totalActual - totalAntesDeSincronizar) > 0.01)
+			{
+				pagoVerificado = false;
+				await MostrarAlertaPagoAsync("DODOAVISO", "El precio o inventario cambio, verifica el pago de nuevo");
+				ActualizarPago();
+				return;
+			}
+
+			if (!pagoEstabaVerificado)
+			{
+				await MostrarAlertaPagoAsync("DODOAVISO", "Verifica el pago antes de cobrar");
 				return;
 			}
 
 			var items = CarritoService.ObtenerCarrito();
-			if (items.Count == 0)
-			{
-				MostrarEstado("No hay productos para procesar");
-				return;
-			}
-
-			if (!pagoVerificado)
-			{
-				MostrarEstado("Verifica el pago antes de cobrar");
-				return;
-			}
-
-			double total = CarritoService.ObtenerTotal();
+			double total = totalActual;
 			string metodoPago = ObtenerMetodoPago();
 			bool pagoEfectivo = metodoPago == "Efectivo";
 			double montoRecibido = pagoEfectivo ? ObtenerMontoRecibido() : total;
@@ -181,38 +220,34 @@ namespace Vinoteca.Views
 
 			if (montoRecibido <= 0)
 			{
-				MostrarEstado("Ingresa un monto mayor a 0");
+				await MostrarAlertaPagoAsync("DODOAVISO", "Ingresa un monto mayor a 0");
 				return;
 			}
 
 			if (pagoEfectivo && montoRecibido < total)
 			{
-				MostrarEstado("El efectivo recibido no cubre el total de la venta");
+				await MostrarAlertaPagoAsync("DODOAVISO", "El efectivo recibido no cubre el total de la venta");
+				return;
+			}
+
+			if (pagoEfectivo && EfectivoSuperaLimite(montoRecibido, total))
+			{
+				await MostrarAlertaPagoAsync("DODOAVISO", MensajeEfectivoExcedeLimite);
 				return;
 			}
 
 			if (!pagoEfectivo && string.IsNullOrWhiteSpace(referenciaPago))
 			{
-				MostrarEstado(metodoPago == "Tarjeta"
+				await MostrarAlertaPagoAsync("DODOAVISO", metodoPago == "Tarjeta"
 					? "Ingresa el folio de autorizacion de la terminal"
 					: "Ingresa la referencia bancaria de la transferencia");
 				return;
 			}
 
-			foreach (var item in items)
+			if (!pagoEfectivo && !EsFolioValido(referenciaPago))
 			{
-				var productoActual = DataService.ObtenerProductos().FirstOrDefault(p => p.Id == item.Producto.Id && p.Activo);
-				if (productoActual == null)
-				{
-					MostrarEstado($"El producto {item.Producto.Nombre} ya no esta disponible");
-					return;
-				}
-
-				if (item.Cantidad > productoActual.Stock)
-				{
-					MostrarEstado($"Stock insuficiente para {item.Producto.Nombre}");
-					return;
-				}
+				await MostrarAlertaPagoAsync("DODOAVISO", MensajeFolioInvalido);
+				return;
 			}
 
 			bool confirmarVenta = await CambiosPendientesService.MostrarConfirmacionAsync(
@@ -246,28 +281,17 @@ namespace Vinoteca.Views
 				Total = total
 			};
 
-			DataService.GuardarVenta(nuevaVenta);
-
-			var alertasStock = new List<string>();
-			foreach (var item in items)
+			List<string> alertasStock;
+			try
 			{
-				var productoActual = DataService.ObtenerProductos().First(p => p.Id == item.Producto.Id);
-				productoActual.Stock -= item.Cantidad;
-				if (productoActual.Stock < 0)
-				{
-					productoActual.Stock = 0;
-				}
-
-				DataService.GuardarProducto(productoActual);
-
-				if (productoActual.Stock <= 0)
-				{
-					alertasStock.Add($"{productoActual.Nombre}: sin stock disponible");
-				}
-				else if (productoActual.Stock < 5)
-				{
-					alertasStock.Add($"{productoActual.Nombre}: stock bajo ({productoActual.Stock})");
-				}
+				alertasStock = DataService.RegistrarVentaConInventario(nuevaVenta);
+			}
+			catch (InvalidOperationException ex)
+			{
+				pagoVerificado = false;
+				await MostrarAlertaPagoAsync("DODOAVISO", ex.Message);
+				ActualizarPago();
+				return;
 			}
 
 			CarritoService.LimpiarCarrito();
@@ -282,12 +306,15 @@ namespace Vinoteca.Views
 			Frame.Navigate(typeof(MisTicketsView));
 		}
 
+		// esta seccion sirve para responder a la accion del usuario en el cobro de ventas y mover el flujo al siguiente paso - cmbMetodoPago_SelectionChanged
 		private void cmbMetodoPago_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
 			ResetearVerificacion();
 			ActualizarPago();
+			GuardarBorradorVentaActual();
 		}
 
+		// esta seccion sirve para responder a la accion del usuario en el cobro de ventas y mover el flujo al siguiente paso - txtPago_TextChanged
 		private void txtPago_TextChanged(object sender, TextChangedEventArgs e)
 		{
 			if (actualizandoPago)
@@ -297,14 +324,16 @@ namespace Vinoteca.Views
 
 			ResetearVerificacion();
 			ActualizarPago();
+			GuardarBorradorVentaActual();
 		}
 
-		private void btnVerificarPago_Click(object sender, RoutedEventArgs e)
+		// esta seccion sirve para responder a la accion del usuario en el cobro de ventas y mover el flujo al siguiente paso - btnVerificarPago_Click
+		private async void btnVerificarPago_Click(object sender, RoutedEventArgs e)
 		{
 			if (ValidarPago(out string mensaje))
 			{
 				pagoVerificado = true;
-				MostrarEstado("Pago verificado, ya puedes confirmar la venta");
+				MostrarEstado("DODOAVISO: pago verificado, ya puedes confirmar la venta");
 				ActualizarPago();
 				return;
 			}
@@ -312,8 +341,10 @@ namespace Vinoteca.Views
 			pagoVerificado = false;
 			MostrarEstado(mensaje);
 			ActualizarPago();
+			await MostrarAlertaPagoAsync("Revisa el pago", mensaje);
 		}
 
+		// esta seccion sirve para actualizar el cobro de ventas despues de un cambio y sincronizar la pantalla - ActualizarPago
 		private void ActualizarPago()
 		{
 			if (txtCambio == null || txtMontoRecibido == null || cmbMetodoPago == null)
@@ -370,12 +401,41 @@ namespace Vinoteca.Views
 			actualizandoPago = false;
 		}
 
+		// esta seccion sirve para guardar informacion de el cobro de ventas y mantener los datos persistidos - GuardarBorradorVentaActual
+		private void GuardarBorradorVentaActual()
+		{
+			if (cargandoBorrador || !SessionService.PuedeComprar)
+			{
+				return;
+			}
+
+			string usuarioId = SessionService.UsuarioActivo?.Id ?? string.Empty;
+			if (string.IsNullOrWhiteSpace(usuarioId))
+			{
+				return;
+			}
+
+			if (CarritoService.ObtenerCarrito().Count == 0)
+			{
+				DataService.EliminarVentaBorrador(usuarioId);
+				return;
+			}
+
+			DataService.GuardarVentaBorrador(CrearVentaBorrador());
+		}
+
+		// esta seccion sirve para revisar reglas de el cobro de ventas y evitar que pase un dato incorrecto - ValidarPago
 		private bool ValidarPago(out string mensaje)
 		{
 			mensaje = string.Empty;
 			if (CarritoService.ObtenerCarrito().Count == 0)
 			{
 				mensaje = "No hay productos para procesar";
+				return false;
+			}
+
+			if (!CarritoService.ValidarDisponibilidad(out mensaje))
+			{
 				return false;
 			}
 
@@ -409,6 +469,12 @@ namespace Vinoteca.Views
 				return false;
 			}
 
+			if (pagoEfectivo && EfectivoSuperaLimite(montoRecibido, total))
+			{
+				mensaje = MensajeEfectivoExcedeLimite;
+				return false;
+			}
+
 			if (!pagoEfectivo && string.IsNullOrWhiteSpace(referenciaPago))
 			{
 				mensaje = metodoPago == "Tarjeta"
@@ -417,19 +483,40 @@ namespace Vinoteca.Views
 				return false;
 			}
 
+			if (!pagoEfectivo && !EsFolioValido(referenciaPago))
+			{
+				mensaje = MensajeFolioInvalido;
+				return false;
+			}
+
 			return true;
 		}
 
+		// esta seccion sirve para revisar reglas de el cobro de ventas y evitar que pase un dato incorrecto - EsFolioValido
+		private static bool EsFolioValido(string folio)
+		{
+			return Regex.IsMatch(folio, "^[A-Za-z0-9]+$");
+		}
+
+		// esta seccion sirve para manejar el cobro de ventas y concentrar aqui esta parte del flujo - EfectivoSuperaLimite
+		private static bool EfectivoSuperaLimite(double montoRecibido, double total)
+		{
+			return montoRecibido > total + LimiteCambioEfectivo;
+		}
+
+		// esta seccion sirve para manejar el cobro de ventas y concentrar aqui esta parte del flujo - ResetearVerificacion
 		private void ResetearVerificacion()
 		{
 			pagoVerificado = false;
 		}
 
+		// esta seccion sirve para leer informacion de el cobro de ventas y regresarla lista para usarse - ObtenerMetodoPago
 		private string ObtenerMetodoPago()
 		{
 			return (cmbMetodoPago.SelectedItem as ComboBoxItem)?.Content?.ToString() ?? "Efectivo";
 		}
 
+		// esta seccion sirve para leer informacion de el cobro de ventas y regresarla lista para usarse - ObtenerMontoRecibido
 		private double ObtenerMontoRecibido()
 		{
 			string texto = (txtMontoRecibido.Text ?? string.Empty).Replace(",", ".");
@@ -438,12 +525,34 @@ namespace Vinoteca.Views
 				: 0;
 		}
 
+		// esta seccion sirve para mostrar mensajes o ventanas de el cobro de ventas para que el usuario entienda el estado - MostrarEstado
 		private void MostrarEstado(string mensaje)
 		{
 			txtEstado.Text = mensaje;
 			txtEstado.Visibility = Visibility.Visible;
+			if (bdAlertaPago != null && txtAlertaPago != null)
+			{
+				txtAlertaPago.Text = mensaje;
+				bdAlertaPago.Visibility = Visibility.Visible;
+			}
 		}
 
+		// esta seccion muestra una alerta clara cuando falta un paso del cobro
+		private async Task MostrarAlertaPagoAsync(string titulo, string mensaje)
+		{
+			MostrarEstado(mensaje);
+			var dialog = new ContentDialog
+			{
+				Title = titulo,
+				Content = mensaje,
+				CloseButtonText = "Entendido",
+				DefaultButton = ContentDialogButton.Close,
+				XamlRoot = XamlRoot
+			};
+			await dialog.ShowAsync();
+		}
+
+		// esta seccion sirve para manejar el cobro de ventas y concentrar aqui esta parte del flujo - SeleccionarMetodoPago
 		private void SeleccionarMetodoPago(string metodoPago)
 		{
 			foreach (ComboBoxItem item in cmbMetodoPago.Items)
@@ -459,3 +568,4 @@ namespace Vinoteca.Views
 		}
 	}
 }
+

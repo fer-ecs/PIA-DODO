@@ -10,10 +10,12 @@ using Vinoteca.Services;
 
 namespace Vinoteca.Views
 {
+	// esta seccion sirve para agrupar la parte del sistema y dejar esa responsabilidad en un solo archivo - MisTicketsView
 	public sealed partial class MisTicketsView : Page
 	{
 		private List<Venta> ticketsUsuario = new();
 
+		// esta seccion sirve para agrupar la parte del sistema y dejar esa responsabilidad en un solo archivo - MisTicketsView
 		public MisTicketsView()
 		{
 			InitializeComponent();
@@ -22,6 +24,7 @@ namespace Vinoteca.Views
 			CargarTickets();
 		}
 
+		// esta seccion sirve para cargar informacion de la parte del sistema y preparar lo que se muestra en pantalla - CargarTickets
 		private void CargarTickets()
 		{
 			if (!SessionService.PuedeComprar || SessionService.UsuarioActivo == null)
@@ -32,10 +35,11 @@ namespace Vinoteca.Views
 				return;
 			}
 
-			ticketsUsuario = DataService.ObtenerVentasPorUsuario(SessionService.UsuarioActivo.Id);
+			ticketsUsuario = TicketService.ObtenerTicketsPorEmpleado(SessionService.UsuarioActivo.Id);
 			AplicarFiltroTickets();
 		}
 
+		// esta seccion sirve para ordenar y ajustar datos de la parte del sistema para trabajar con valores limpios - AplicarFiltroTickets
 		private void AplicarFiltroTickets()
 		{
 			string busqueda = txtBuscarTicket.Text?.Trim().ToLowerInvariant() ?? string.Empty;
@@ -67,21 +71,24 @@ namespace Vinoteca.Views
 
 			txtResumenTickets.Text = ticketsUsuario.Count == 0
 				? "Todavia no tienes tickets emitidos"
-				: $"{ticketsFiltrados.Count} de {ticketsUsuario.Count} ticket(s)";
+				: $"{ticketsFiltrados.Count} de {ticketsUsuario.Count} ticket(s), ligados a ventas cobradas";
 			txtConteoTickets.Text = $"{ticketsFiltrados.Count} tickets";
 			txtSinTickets.Visibility = ticketsFiltrados.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
 		}
 
+		// esta seccion sirve para leer informacion de la parte del sistema y regresarla lista para usarse - ObtenerOrdenTickets
 		private string ObtenerOrdenTickets()
 		{
 			return (cmbOrdenTickets.SelectedItem as ComboBoxItem)?.Content?.ToString() ?? "Fecha reciente";
 		}
 
+		// esta seccion sirve para responder a la accion del usuario en la parte del sistema y mover el flujo al siguiente paso - FiltroTickets_Changed
 		private void FiltroTickets_Changed(object sender, object e)
 		{
 			AplicarFiltroTickets();
 		}
 
+		// esta seccion sirve para responder a la accion del usuario en la parte del sistema y mover el flujo al siguiente paso - btnLimpiarTickets_Click
 		private void btnLimpiarTickets_Click(object sender, RoutedEventArgs e)
 		{
 			txtBuscarTicket.Text = string.Empty;
@@ -89,6 +96,7 @@ namespace Vinoteca.Views
 			AplicarFiltroTickets();
 		}
 
+		// esta seccion sirve para responder a la accion del usuario en la parte del sistema y mover el flujo al siguiente paso - btnDescargarPdf_Click
 		private async void btnDescargarPdf_Click(object sender, RoutedEventArgs e)
 		{
 			if (!SessionService.PuedeComprar)
@@ -125,6 +133,7 @@ namespace Vinoteca.Views
 			txtEstado.Visibility = Visibility.Visible;
 		}
 
+		// esta seccion sirve para responder a la accion del usuario en la parte del sistema y mover el flujo al siguiente paso - btnPrevisualizar_Click
 		private async void btnPrevisualizar_Click(object sender, RoutedEventArgs e)
 		{
 			if (sender is not Button button || button.Tag is not Venta venta)

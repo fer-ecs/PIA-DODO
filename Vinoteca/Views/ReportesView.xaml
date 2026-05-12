@@ -18,11 +18,11 @@
 			</Grid.RowDefinitions>
 
 			<StackPanel Grid.Row="0" Margin="0,0,0,24" Spacing="12">
-				<TextBlock Text="Historial de ventas" FontSize="28" FontWeight="SemiBold" Foreground="{StaticResource WineTextBrush}"/>
+				<TextBlock Text="Historial de ventas y tickets" FontSize="28" FontWeight="SemiBold" Foreground="{StaticResource WineTextBrush}"/>
 
 				<StackPanel Orientation="Horizontal" Spacing="16" Margin="0,8,0,0">
 					<TextBlock x:Name="txtGananciasTotales" Text="Ganancias: $0.00" FontSize="18" Foreground="{StaticResource WineSuccessBrush}" FontWeight="SemiBold"/>
-					<TextBlock x:Name="txtResumenVentas" Text="Ventas: 0 | Lineas: 0" Foreground="{StaticResource WineMutedBrush}" VerticalAlignment="Bottom"/>
+					<TextBlock x:Name="txtResumenVentas" Text="Ventas: 0 | Tickets: 0 | Lineas: 0" Foreground="{StaticResource WineMutedBrush}" VerticalAlignment="Bottom"/>
 				</StackPanel>
 
 				<Border Style="{StaticResource WineFilterPillStyle}">
@@ -38,12 +38,12 @@
 							<RowDefinition Height="Auto"/>
 						</Grid.RowDefinitions>
 
-						<TextBlock Grid.Column="0" Text="Buscar venta" Style="{StaticResource WineFieldLabelStyle}"/>
+						<TextBlock Grid.Column="0" Text="Buscar venta o ticket" Style="{StaticResource WineFieldLabelStyle}"/>
 						<TextBlock Grid.Column="1" Text="Total min" Style="{StaticResource WineFieldLabelStyle}"/>
 						<TextBlock Grid.Column="2" Text="Total max" Style="{StaticResource WineFieldLabelStyle}"/>
 						<TextBlock Grid.Column="3" Text="Orden" Style="{StaticResource WineFieldLabelStyle}"/>
 
-						<TextBox x:Name="txtBuscarReporte" Grid.Row="1" Grid.Column="0" Style="{StaticResource WineTextBoxStyle}" PlaceholderText="ID, empleado, pago o producto" MaxLength="80" TextChanged="FiltroReportes_Changed"/>
+						<TextBox x:Name="txtBuscarReporte" Grid.Row="1" Grid.Column="0" Style="{StaticResource WineTextBoxStyle}" PlaceholderText="Folio, empleado, pago o producto" MaxLength="80" TextChanged="FiltroReportes_Changed"/>
 						<TextBox x:Name="txtTotalMin" Grid.Row="1" Grid.Column="1" Style="{StaticResource WineTextBoxStyle}" PlaceholderText="0" MaxLength="9" InputScope="Number" TextChanged="FiltroReportes_Changed"/>
 						<TextBox x:Name="txtTotalMax" Grid.Row="1" Grid.Column="2" Style="{StaticResource WineTextBoxStyle}" PlaceholderText="99999" MaxLength="9" InputScope="Number" TextChanged="FiltroReportes_Changed"/>
 						<ComboBox x:Name="cmbOrdenReportes" Grid.Row="1" Grid.Column="3" Style="{StaticResource WineComboBoxStyle}" HorizontalAlignment="Stretch" SelectionChanged="FiltroReportes_Changed">
@@ -77,7 +77,7 @@
 											<ColumnDefinition Width="Auto"/>
 										</Grid.ColumnDefinitions>
 										<StackPanel>
-											<TextBlock Text="{x:Bind Id, Converter={StaticResource LocalStringConverter}, ConverterParameter='{}Ticket #{0}'}" FontWeight="SemiBold" Foreground="{StaticResource WineTextBrush}" FontSize="16"/>
+											<TextBlock Text="{x:Bind Id, Converter={StaticResource LocalStringConverter}, ConverterParameter='{}Venta / Ticket #{0}'}" FontWeight="SemiBold" Foreground="{StaticResource WineTextBrush}" FontSize="16"/>
 											<TextBlock Text="{x:Bind Fecha}" FontSize="13" Foreground="{StaticResource WineMutedBrush}"/>
 											<TextBlock Text="{x:Bind NombreEmpleado}" Foreground="{StaticResource WineLabelBrush}" Margin="0,4,0,0"/>
 										</StackPanel>

@@ -4,11 +4,13 @@ using System.Linq;
 
 namespace Vinoteca.Services
 {
+	// esta seccion sirve para agrupar la parte del sistema y dejar esa responsabilidad en un solo archivo - ImageAssetService
 	public static class ImageAssetService
 	{
 		private const string AssetsFolder = "Assets";
 		private const string ProductImagesFolder = "productos";
 
+		// esta seccion sirve para manejar la parte del sistema y concentrar aqui esta parte del flujo - CopiarImagenAProyecto
 		public static string CopiarImagenAProyecto(string rutaOrigen)
 		{
 			if (string.IsNullOrWhiteSpace(rutaOrigen) || !File.Exists(rutaOrigen))
@@ -33,6 +35,7 @@ namespace Vinoteca.Services
 			return Path.Combine(AssetsFolder, ProductImagesFolder, nombreArchivo);
 		}
 
+		// esta seccion sirve para revisar reglas de la parte del sistema y evitar que pase un dato incorrecto - EsImagenDelProyectoValida
 		public static bool EsImagenDelProyectoValida(string ruta)
 		{
 			string? rutaCompleta = ResolverRutaAbsoluta(ruta);
@@ -41,6 +44,7 @@ namespace Vinoteca.Services
 				EstaDentroDeCarpeta(rutaCompleta, ObtenerCarpetaImagenesProducto());
 		}
 
+		// esta seccion sirve para manejar la parte del sistema y concentrar aqui esta parte del flujo - ResolverRutaAbsoluta
 		public static string? ResolverRutaAbsoluta(string? ruta)
 		{
 			if (string.IsNullOrWhiteSpace(ruta))
@@ -57,11 +61,13 @@ namespace Vinoteca.Services
 			return File.Exists(rutaProyecto) ? rutaProyecto : null;
 		}
 
+		// esta seccion sirve para leer informacion de la parte del sistema y regresarla lista para usarse - ObtenerCarpetaImagenesProducto
 		private static string ObtenerCarpetaImagenesProducto()
 		{
 			return Path.Combine(ObtenerRaizProyecto(), AssetsFolder, ProductImagesFolder);
 		}
 
+		// esta seccion sirve para leer informacion de la parte del sistema y regresarla lista para usarse - ObtenerRaizProyecto
 		private static string ObtenerRaizProyecto()
 		{
 			var directorio = new DirectoryInfo(AppContext.BaseDirectory);
@@ -78,6 +84,7 @@ namespace Vinoteca.Services
 			return Directory.GetCurrentDirectory();
 		}
 
+		// esta seccion sirve para revisar reglas de la parte del sistema y evitar que pase un dato incorrecto - EstaDentroDeCarpeta
 		private static bool EstaDentroDeCarpeta(string archivo, string carpeta)
 		{
 			string archivoCompleto = Path.GetFullPath(archivo);
@@ -85,6 +92,7 @@ namespace Vinoteca.Services
 			return archivoCompleto.StartsWith(carpetaCompleta, StringComparison.OrdinalIgnoreCase);
 		}
 
+		// esta seccion sirve para quitar informacion de la parte del sistema y dejar el estado consistente - LimpiarNombreArchivo
 		private static string LimpiarNombreArchivo(string nombre)
 		{
 			var invalidos = Path.GetInvalidFileNameChars();

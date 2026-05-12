@@ -7,6 +7,7 @@ using Vinoteca.Services;
 
 namespace Vinoteca
 {
+	// esta seccion sirve para agrupar la parte del sistema y dejar esa responsabilidad en un solo archivo - App
 	public partial class App : Application
 	{
 		private Window? _window;
@@ -15,12 +16,14 @@ namespace Vinoteca
 		public static FormCacheService FormCacheService => _formCacheService ??= new FormCacheService();
 		public static Window? VentanaPrincipal { get; private set; }
 
+		// esta seccion sirve para agrupar la parte del sistema y dejar esa responsabilidad en un solo archivo - App
 		public App()
 		{
 			InitializeComponent();
 			UnhandledException += App_UnhandledException;
 		}
 
+		// esta seccion sirve para manejar la parte del sistema y concentrar aqui esta parte del flujo - App_UnhandledException
 		private void App_UnhandledException(object sender, Microsoft.UI.Xaml.UnhandledExceptionEventArgs e)
 		{
 			// Deja rastro del error para poder revisarlo despues
@@ -29,6 +32,7 @@ namespace Vinoteca
 			RegistrarError("UNHANDLED", detalle);
 		}
 
+		// esta seccion sirve para manejar la parte del sistema y concentrar aqui esta parte del flujo - RegistrarError
 		public static void RegistrarError(string origen, string detalle)
 		{
 			try
@@ -48,6 +52,7 @@ namespace Vinoteca
 			}
 		}
 
+		// esta seccion sirve para manejar la parte del sistema y concentrar aqui esta parte del flujo - OnLaunched
 		protected override void OnLaunched(LaunchActivatedEventArgs args)
 		{
 			_window = new MainWindow();

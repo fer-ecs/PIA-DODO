@@ -8,18 +8,22 @@ using Vinoteca.Services;
 
 namespace Vinoteca.Views
 {
+	// esta seccion sirve para agrupar el inicio de sesion y dejar esa responsabilidad en un solo archivo - LoginView
 	public sealed partial class LoginView : Page
 	{
 		private const int MaxIntentos = 3;
 		private const int MinutosBloqueo = 5;
 
+		// esta seccion sirve para agrupar el inicio de sesion y dejar esa responsabilidad en un solo archivo - LoginView
 		public LoginView()
 		{
 			InitializeComponent();
 			InputRestrictionsHelper.AplicarSinEspaciosNiEnter(this);
+			InputRestrictionsHelper.AplicarCorreoCompleto(txtCorreo);
 			txtCorreo.Focus(FocusState.Programmatic);
 		}
 
+		// esta seccion sirve para responder a la accion del usuario en el inicio de sesion y mover el flujo al siguiente paso - BtnLogin_Click
 		private void BtnLogin_Click(object sender, RoutedEventArgs e)
 		{
 			try
@@ -135,12 +139,14 @@ namespace Vinoteca.Views
 			}
 		}
 
+		// esta seccion sirve para revisar reglas de el inicio de sesion y evitar que pase un dato incorrecto - EsContrasenaFuerte
 		private bool EsContrasenaFuerte(string password)
 		{
 			string patron = @"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z\d\s])[^\s]{6,}$";
 			return Regex.IsMatch(password, patron);
 		}
 
+		// esta seccion sirve para manejar el inicio de sesion y concentrar aqui esta parte del flujo - RegistrarIntentoFallido
 		private void RegistrarIntentoFallido(Models.Usuario? usuario)
 		{
 			if (usuario == null)
@@ -175,6 +181,7 @@ namespace Vinoteca.Views
 			MostrarError($"Credenciales incorrectas intento {usuario.IntentosFallidosLogin}/{MaxIntentos}");
 		}
 
+		// esta seccion sirve para quitar informacion de el inicio de sesion y dejar el estado consistente - LimpiarBloqueo
 		private void LimpiarBloqueo(Models.Usuario usuario)
 		{
 			if (usuario.IntentosFallidosLogin == 0 && usuario.BloqueadoHasta == null)
@@ -187,12 +194,14 @@ namespace Vinoteca.Views
 			DataService.ActualizarUsuario(usuario);
 		}
 
+		// esta seccion sirve para mostrar mensajes o ventanas de el inicio de sesion para que el usuario entienda el estado - MostrarError
 		private void MostrarError(string mensaje)
 		{
 			txtError.Text = mensaje;
 			txtError.Visibility = Visibility.Visible;
 		}
 
+		// esta seccion sirve para responder a la accion del usuario en el inicio de sesion y mover el flujo al siguiente paso - BtnIrRegistro_Click
 		private void BtnIrRegistro_Click(object sender, RoutedEventArgs e)
 		{
 			Frame.Navigate(typeof(RegisterView));

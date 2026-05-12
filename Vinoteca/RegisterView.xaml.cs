@@ -10,8 +10,10 @@ using Vinoteca.Services;
 
 	namespace Vinoteca.Views
 	{
-	public sealed partial class RegisterView : Page, ICambiosPendientes
+	// esta seccion sirve para agrupar el registro de usuarios y dejar esa responsabilidad en un solo archivo - RegisterView
+	public sealed partial class RegisterView : Page, ICambiosPendientes, IDescartaCambiosPendientes
 	{
+		private const string CACHE_PREFIX = "Register_";
 		private const string CACHE_KEY_NOMBRE = "Register_Nombre";
 		private const string CACHE_KEY_CORREO = "Register_Correo";
 		private const string CACHE_KEY_DOMINIO = "Register_DominioCorreo";
@@ -19,6 +21,7 @@ using Vinoteca.Services;
 		private const string CACHE_KEY_CONFIRMAR = "Register_ConfirmarPassword";
 		private List<string> dominiosCorreoPermitidos = new();
 
+		// esta seccion sirve para agrupar el registro de usuarios y dejar esa responsabilidad en un solo archivo - RegisterView
 		public RegisterView()
 		{
 			this.InitializeComponent();
@@ -40,6 +43,7 @@ using Vinoteca.Services;
 			txtNombre.Focus(FocusState.Programmatic);
 		}
 
+		// esta seccion sirve para cargar informacion de el registro de usuarios y preparar lo que se muestra en pantalla - CargarValoresDelCache
 		private void CargarValoresDelCache()
 		{
 			var nombre = App.FormCacheService.GetValue(CACHE_KEY_NOMBRE);
@@ -67,15 +71,23 @@ using Vinoteca.Services;
 				txtConfirmarPassword.Password = confirmar;
 		}
 
+		// esta seccion sirve para guardar informacion de el registro de usuarios y mantener los datos persistidos - GuardarEnCache
 		private void GuardarEnCache(string clave, string valor)
 		{
 			if (!string.IsNullOrEmpty(valor))
+			{
 				App.FormCacheService.SetValue(clave, valor);
+			}
+			else
+			{
+				App.FormCacheService.RemoveValue(clave);
+			}
 		}
 
+		// esta seccion sirve para quitar informacion de el registro de usuarios y dejar el estado consistente - LimpiarCache
 		private void LimpiarCache()
 		{
-			App.FormCacheService.ClearAll();
+			App.FormCacheService.ClearPrefix(CACHE_PREFIX);
 			txtNombre.Text = string.Empty;
 			txtCorreo.Text = string.Empty;
 			cmbDominioCorreo.SelectedIndex = 0;
@@ -84,6 +96,12 @@ using Vinoteca.Services;
 			OcultarMensajes();
 		}
 
+		public void DescartarCambiosPendientes()
+		{
+			LimpiarCache();
+		}
+
+		// esta seccion sirve para responder a la accion del usuario en el registro de usuarios y mover el flujo al siguiente paso - BtnRegistrar_Click
 		private void BtnRegistrar_Click(object sender, RoutedEventArgs e)
 		{
 			OcultarMensajes();
@@ -161,7 +179,7 @@ using Vinoteca.Services;
 				return;
 			}
 
-			if (!Regex.IsMatch(correoLocal, @"^[A-Za-z0-9](?:[A-Za-z0-9._-]{0,38}[A-Za-z0-9])?$") || correoLocal.Contains(".."))
+			if (!EsNombreCorreoValido(correoLocal))
 			{
 				MostrarError("El nombre del correo solo permite letras, numeros, punto, guion y guion bajo");
 				return;
@@ -247,12 +265,22 @@ using Vinoteca.Services;
 			Frame.Navigate(typeof(LoginView));
 		}
 
+		// esta seccion sirve para revisar reglas de el registro de usuarios y evitar que pase un dato incorrecto - EsContrasenaFuerte
 		private bool EsContrasenaFuerte(string password)
 		{
 			string patron = @"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z\d\s])[^\s]{6,}$";
 			return Regex.IsMatch(password, patron);
 		}
 
+		// esta seccion sirve para revisar reglas de el registro de usuarios y evitar que pase un dato incorrecto - EsNombreCorreoValido
+		private static bool EsNombreCorreoValido(string correoLocal)
+		{
+			string nombre = correoLocal.Trim();
+			return !nombre.Contains("..") &&
+				Regex.IsMatch(nombre, @"^[A-Za-z0-9](?:[A-Za-z0-9._-]{0,38}[A-Za-z0-9])?$");
+		}
+
+		// esta seccion sirve para manejar el registro de usuarios y concentrar aqui esta parte del flujo - ConfigurarDominiosCorreo
 		private void ConfigurarDominiosCorreo()
 		{
 			dominiosCorreoPermitidos = DataService.ObtenerDominiosCorreo();
@@ -265,6 +293,7 @@ using Vinoteca.Services;
 			cmbDominioCorreo.SelectedIndex = cmbDominioCorreo.Items.Count > 0 ? 0 : -1;
 		}
 
+		// esta seccion sirve para leer informacion de el registro de usuarios y regresarla lista para usarse - ObtenerDominioCorreoActual
 		private string ObtenerDominioCorreoActual()
 		{
 			string dominioDefault = dominiosCorreoPermitidos.FirstOrDefault() ?? "gmail.com";
@@ -272,11 +301,13 @@ using Vinoteca.Services;
 			return seleccionado.TrimStart('@');
 		}
 
+		// esta seccion sirve para armar datos o contenido de el registro de usuarios y devolverlo ya preparado - ConstruirCorreo
 		private string ConstruirCorreo(string correoLocal, string dominioCorreo)
 		{
 			return $"{correoLocal.Trim()}@{dominioCorreo}";
 		}
 
+		// esta seccion sirve para manejar el registro de usuarios y concentrar aqui esta parte del flujo - SeleccionarDominioCorreo
 		private void SeleccionarDominioCorreo(string dominioCorreo)
 		{
 			if (string.IsNullOrWhiteSpace(dominioCorreo))
@@ -290,6 +321,7 @@ using Vinoteca.Services;
 			cmbDominioCorreo.SelectedIndex = indice >= 0 ? indice : 0;
 		}
 
+		// esta seccion sirve para manejar el registro de usuarios y concentrar aqui esta parte del flujo - SepararCorreo
 		private void SepararCorreo(string correo, out string correoLocal, out string dominioCorreo)
 		{
 			correoLocal = correo;
@@ -317,11 +349,13 @@ using Vinoteca.Services;
 			!string.IsNullOrWhiteSpace(txtPassword.Password) ||
 			!string.IsNullOrWhiteSpace(txtConfirmarPassword.Password);
 
+		// esta seccion sirve para leer informacion de el registro de usuarios y regresarla lista para usarse - ObtenerMensajeCambiosPendientes
 		public string ObtenerMensajeCambiosPendientes()
 		{
 			return "Hay datos del registro sin terminar";
 		}
 
+		// esta seccion sirve para responder a la accion del usuario en el registro de usuarios y mover el flujo al siguiente paso - BtnVolverLogin_Click
 		private async void BtnVolverLogin_Click(object sender, RoutedEventArgs e)
 		{
 			bool puedeSalir = await CambiosPendientesService.ConfirmarAccionSiHayCambiosAsync(
@@ -337,6 +371,7 @@ using Vinoteca.Services;
 			Frame.Navigate(typeof(LoginView));
 		}
 
+		// esta seccion sirve para mostrar mensajes o ventanas de el registro de usuarios para que el usuario entienda el estado - MostrarError
 		private void MostrarError(string mensaje)
 		{
 			txtError.Text = mensaje;
@@ -346,6 +381,7 @@ using Vinoteca.Services;
             btnRegistrar.IsEnabled = true;
         }
 
+        // esta seccion sirve para manejar el registro de usuarios y concentrar aqui esta parte del flujo - OcultarMensajes
         private void OcultarMensajes()
 		{
 			txtError.Visibility = Visibility.Collapsed;
@@ -354,30 +390,35 @@ using Vinoteca.Services;
             btnRegistrar.IsEnabled = true;
         }
 
+        // esta seccion sirve para responder a la accion del usuario en el registro de usuarios y mover el flujo al siguiente paso - BtnVerPassword_Checked
         private void BtnVerPassword_Checked(object sender, RoutedEventArgs e)
         {
             txtPassword.PasswordRevealMode = PasswordRevealMode.Visible;
             iconoOjoPassword.Glyph = "\uED1A";
         }
 
+        // esta seccion sirve para responder a la accion del usuario en el registro de usuarios y mover el flujo al siguiente paso - BtnVerPassword_Unchecked
         private void BtnVerPassword_Unchecked(object sender, RoutedEventArgs e)
         {
             txtPassword.PasswordRevealMode = PasswordRevealMode.Hidden;
             iconoOjoPassword.Glyph = "\uE7B3";
         }
 
+        // esta seccion sirve para responder a la accion del usuario en el registro de usuarios y mover el flujo al siguiente paso - BtnVerConfirmar_Checked
         private void BtnVerConfirmar_Checked(object sender, RoutedEventArgs e)
         {
             txtConfirmarPassword.PasswordRevealMode = PasswordRevealMode.Visible;
             iconoOjoConfirmar.Glyph = "\uED1A";
         }
 
+        // esta seccion sirve para responder a la accion del usuario en el registro de usuarios y mover el flujo al siguiente paso - BtnVerConfirmar_Unchecked
         private void BtnVerConfirmar_Unchecked(object sender, RoutedEventArgs e)
         {
             txtConfirmarPassword.PasswordRevealMode = PasswordRevealMode.Hidden;
             iconoOjoConfirmar.Glyph = "\uE7B3";
         }
 
+        // esta seccion sirve para responder a la accion del usuario en el registro de usuarios y mover el flujo al siguiente paso - BtnLimpiarCache_Click
         private void BtnLimpiarCache_Click(object sender, RoutedEventArgs e)
         {
             LimpiarCache();

@@ -1,8 +1,9 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace Vinoteca.Models
 {
+	// esta seccion sirve para manejar el modelo de datos y concentrar aqui esta parte del flujo - Venta
 	public class Venta
 	{
 		public string Id { get; set; } = string.Empty;
@@ -18,6 +19,7 @@ namespace Vinoteca.Models
 		public double MontoRecibido { get; set; }
 		public double Cambio { get; set; }
 		public string ReferenciaPago { get; set; } = string.Empty;
+		// esta seccion sirve para manejar el modelo de datos y concentrar aqui esta parte del flujo - List<CarritoItem>
 		public List<CarritoItem> Productos { get; set; } = new List<CarritoItem>();
 		public double Total { get; set; }
 	}

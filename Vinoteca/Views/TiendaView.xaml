@@ -94,20 +94,6 @@
 
 								<Button Grid.Column="4" Content="Limpiar filtros" MinWidth="138" VerticalAlignment="Bottom" Style="{StaticResource WineSecondaryButtonStyle}" Click="btnLimpiarFiltros_Click"/>
 							</Grid>
-
-							<Grid Grid.Row="1" ColumnSpacing="12">
-								<Grid.ColumnDefinitions>
-									<ColumnDefinition Width="*"/>
-									<ColumnDefinition Width="Auto"/>
-								</Grid.ColumnDefinitions>
-
-								<StackPanel Spacing="5">
-									<TextBlock Text="Escaner simulado" Foreground="{StaticResource WineLabelBrush}" FontWeight="SemiBold"/>
-									<TextBox x:Name="txtCodigoEscaneo" Style="{StaticResource WineTextBoxStyle}" PlaceholderText="ID corto del producto" MaxLength="12"/>
-								</StackPanel>
-
-								<Button Grid.Column="1" Content="Agregar por ID" MinWidth="142" VerticalAlignment="Bottom" Style="{StaticResource WineSecondaryButtonStyle}" Click="btnEscanear_Click"/>
-							</Grid>
 						</Grid>
 					</Border>
 

@@ -12,8 +12,10 @@ using WinRT.Interop;
 
 namespace Vinoteca.Services
 {
+	// esta seccion sirve para agrupar la exportacion del ticket y dejar esa responsabilidad en un solo archivo - TicketPdfService
 	public static class TicketPdfService
 	{
+		// esta seccion sirve para manejar la exportacion del ticket y concentrar aqui esta parte del flujo - ExportarVentaPdfAsync
 		public static async Task<string?> ExportarVentaPdfAsync(Venta venta, Window ventana)
 		{
 			var picker = new FileSavePicker
@@ -35,6 +37,7 @@ namespace Vinoteca.Services
 			return archivo.Path;
 		}
 
+		// esta seccion sirve para manejar la exportacion del ticket y concentrar aqui esta parte del flujo - ExportarVentaPdf
 		public static void ExportarVentaPdf(Venta venta, string ruta)
 		{
 			string contenido = ConstruirContenido(venta);
@@ -53,6 +56,7 @@ namespace Vinoteca.Services
 			EscribirPdf(ruta, objetos);
 		}
 
+		// esta seccion sirve para manejar la exportacion del ticket y concentrar aqui esta parte del flujo - static
 		public static (double Subtotal, double Iva, double Total) CalcularTotales(Venta venta)
 		{
 			double total = venta.Total > 0 ? venta.Total : venta.Productos.Sum(p => p.Subtotal);
@@ -62,6 +66,7 @@ namespace Vinoteca.Services
 			return (subtotal, iva, total);
 		}
 
+		// esta seccion sirve para armar datos o contenido de la exportacion del ticket y devolverlo ya preparado - ConstruirContenido
 		private static string ConstruirContenido(Venta venta)
 		{
 			var totales = CalcularTotales(venta);
@@ -199,6 +204,7 @@ namespace Vinoteca.Services
 			return string.Join("\n", lineas);
 		}
 
+		// esta seccion sirve para revisar reglas de la exportacion del ticket y evitar que pase un dato incorrecto - EscribirPdf
 		private static void EscribirPdf(string ruta, List<string> objetos)
 		{
 			string? carpeta = Path.GetDirectoryName(ruta);
@@ -233,6 +239,7 @@ namespace Vinoteca.Services
 			writer.Write($"startxref\n{inicioXref}\n%%EOF");
 		}
 
+		// esta seccion sirve para revisar reglas de la exportacion del ticket y evitar que pase un dato incorrecto - EscaparTextoPdf
 		private static string EscaparTextoPdf(string? texto)
 		{
 			if (string.IsNullOrWhiteSpace(texto))
@@ -247,11 +254,13 @@ namespace Vinoteca.Services
 				.Replace(")", "\\)");
 		}
 
+		// esta seccion sirve para manejar la exportacion del ticket y concentrar aqui esta parte del flujo - FormatearNumero
 		private static string FormatearNumero(double valor)
 		{
 			return valor.ToString("0.##", CultureInfo.InvariantCulture);
 		}
 
+		// esta seccion sirve para leer informacion de la exportacion del ticket y regresarla lista para usarse - ObtenerNombreTicket
 		private static string ObtenerNombreTicket(Venta venta)
 		{
 			string nombreSeguro = string.IsNullOrWhiteSpace(venta.Id) ? Guid.NewGuid().ToString("N") : venta.Id;

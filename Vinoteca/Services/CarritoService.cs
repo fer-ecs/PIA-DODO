@@ -5,12 +5,14 @@ using Vinoteca.Models;
 
 namespace Vinoteca.Services
 {
+	// esta seccion sirve para agrupar el carrito de venta y dejar esa responsabilidad en un solo archivo - CarritoService
 	public static class CarritoService
 	{
 		private static readonly List<CarritoItem> carrito = new();
 
 		public static event Action? CarritoActualizado;
 
+		// esta seccion sirve para agregar informacion a el carrito de venta y recalcular lo necesario - AgregarAlCarrito
 		public static bool AgregarAlCarrito(Producto producto, out string mensaje)
 		{
 			mensaje = string.Empty;
@@ -74,6 +76,7 @@ namespace Vinoteca.Services
 			return true;
 		}
 
+		// esta seccion sirve para manejar el carrito de venta y concentrar aqui esta parte del flujo - CambiarCantidad
 		public static bool CambiarCantidad(string productoId, int nuevaCantidad, out string mensaje)
 		{
 			mensaje = string.Empty;
@@ -134,6 +137,7 @@ namespace Vinoteca.Services
 			return true;
 		}
 
+		// esta seccion sirve para quitar informacion de el carrito de venta y dejar el estado consistente - QuitarDelCarrito
 		public static bool QuitarDelCarrito(string productoId)
 		{
 			if (!SessionService.PuedeComprar)
@@ -152,6 +156,7 @@ namespace Vinoteca.Services
 			return true;
 		}
 
+		// esta seccion sirve para leer informacion de el carrito de venta y regresarla lista para usarse - ObtenerCarrito
 		public static List<CarritoItem> ObtenerCarrito()
 		{
 			return carrito
@@ -163,12 +168,14 @@ namespace Vinoteca.Services
 				.ToList();
 		}
 
+		// esta seccion sirve para quitar informacion de el carrito de venta y dejar el estado consistente - LimpiarCarrito
 		public static void LimpiarCarrito()
 		{
 			carrito.Clear();
 			NotificarCambio();
 		}
 
+		// esta seccion sirve para manejar el carrito de venta y concentrar aqui esta parte del flujo - ReemplazarCarrito
 		public static void ReemplazarCarrito(IEnumerable<CarritoItem> items)
 		{
 			carrito.Clear();
@@ -187,26 +194,138 @@ namespace Vinoteca.Services
 					continue;
 				}
 
+				if (productoActual.Stock <= 0)
+				{
+					continue;
+				}
+
+				int cantidadPermitida = Math.Min(item.Cantidad, productoActual.Stock);
+				if (cantidadPermitida <= 0)
+				{
+					continue;
+				}
+
 				carrito.Add(new CarritoItem
 				{
 					Producto = productoActual,
-					Cantidad = Math.Min(item.Cantidad, productoActual.Stock)
+					Cantidad = cantidadPermitida
 				});
 			}
 
 			NotificarCambio();
 		}
 
+		// esta seccion sirve para actualizar el carrito de venta despues de un cambio y sincronizar la pantalla - SincronizarConInventario
+		public static bool SincronizarConInventario(out string mensaje)
+		{
+			mensaje = string.Empty;
+			bool carritoActualizado = false;
+			bool ventaValida = true;
+			var alertas = new List<string>();
+			var productosActuales = DataService.ObtenerProductos();
+
+			for (int i = carrito.Count - 1; i >= 0; i--)
+			{
+				var item = carrito[i];
+				if (item?.Producto == null || string.IsNullOrWhiteSpace(item.Producto.Id) || item.Cantidad <= 0)
+				{
+					carrito.RemoveAt(i);
+					carritoActualizado = true;
+					ventaValida = false;
+					alertas.Add("Se quitaron productos sin cantidad valida");
+					continue;
+				}
+
+				var productoActual = productosActuales.FirstOrDefault(p => p.Id == item.Producto.Id && p.Activo);
+				if (productoActual == null || productoActual.Stock <= 0)
+				{
+					carrito.RemoveAt(i);
+					carritoActualizado = true;
+					ventaValida = false;
+					alertas.Add($"{item.Producto.Nombre} ya no esta disponible");
+					continue;
+				}
+
+				if (item.Cantidad > productoActual.Stock)
+				{
+					item.Cantidad = productoActual.Stock;
+					carritoActualizado = true;
+					ventaValida = false;
+					alertas.Add($"Se ajusto la cantidad de {productoActual.Nombre} al stock disponible");
+				}
+
+				if (!ReferenceEquals(item.Producto, productoActual))
+				{
+					item.Producto = productoActual;
+				}
+			}
+
+			if (carritoActualizado)
+			{
+				NotificarCambio();
+			}
+
+			mensaje = string.Join(" | ", alertas.Distinct());
+			return ventaValida;
+		}
+
+		// esta seccion sirve para revisar reglas de el carrito de venta y evitar que pase un dato incorrecto - ValidarDisponibilidad
+		public static bool ValidarDisponibilidad(out string mensaje)
+		{
+			mensaje = string.Empty;
+			if (!SincronizarConInventario(out mensaje))
+			{
+				return false;
+			}
+
+			var productosActuales = DataService.ObtenerProductos();
+
+			foreach (var item in carrito)
+			{
+				if (item?.Producto == null || string.IsNullOrWhiteSpace(item.Producto.Id) || item.Cantidad <= 0)
+				{
+					mensaje = "Quita productos sin cantidad valida antes de cobrar";
+					return false;
+				}
+
+				var productoActual = productosActuales
+					.FirstOrDefault(p => p.Id == item.Producto.Id && p.Activo);
+
+				if (productoActual == null)
+				{
+					mensaje = $"El producto {item.Producto.Nombre} ya no esta disponible";
+					return false;
+				}
+
+				if (productoActual.Stock <= 0)
+				{
+					mensaje = $"No hay stock disponible para {productoActual.Nombre}";
+					return false;
+				}
+
+				if (item.Cantidad > productoActual.Stock)
+				{
+					mensaje = $"Stock insuficiente para {productoActual.Nombre}";
+					return false;
+				}
+			}
+
+			return true;
+		}
+
+		// esta seccion sirve para leer informacion de el carrito de venta y regresarla lista para usarse - ObtenerTotal
 		public static double ObtenerTotal()
 		{
 			return carrito.Sum(c => c.Subtotal);
 		}
 
+		// esta seccion sirve para leer informacion de el carrito de venta y regresarla lista para usarse - ObtenerCantidadTotalArticulos
 		public static int ObtenerCantidadTotalArticulos()
 		{
 			return carrito.Sum(c => c.Cantidad);
 		}
 
+		// esta seccion sirve para manejar el carrito de venta y concentrar aqui esta parte del flujo - NotificarCambio
 		private static void NotificarCambio()
 		{
 			CarritoActualizado?.Invoke();

@@ -1,7 +1,8 @@
-﻿using System;
+using System;
 
 namespace Vinoteca.Models
 {
+	// esta seccion sirve para manejar el modelo de datos y concentrar aqui esta parte del flujo - Producto
 	public class Producto
 	{
 		public string Id { get; set; } = string.Empty;

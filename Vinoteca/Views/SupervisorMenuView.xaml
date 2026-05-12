@@ -19,13 +19,16 @@
 				</Grid.RowDefinitions>
 
 				<StackPanel Grid.Row="0" Padding="10,18,10,24" Spacing="6">
-					<TextBlock Text="Vinoteca" FontSize="30" FontWeight="SemiBold" Foreground="#FFFFFF"/>
-					<TextBlock Text="Panel de supervision" Foreground="#E5D5CC"/>
+					<StackPanel Orientation="Horizontal" Spacing="10">
+						<Image Source="Assets/StoreLogo.png" Width="38" Height="38"/>
+						<TextBlock Text="Vinoteca DODO" FontSize="26" FontWeight="SemiBold" Foreground="#FFFFFF" VerticalAlignment="Center"/>
+					</StackPanel>
+					<TextBlock Text="Bienvenido DODOSUPERVISOR" Foreground="#E5D5CC"/>
 				</StackPanel>
 
 				<StackPanel Grid.Row="1" Padding="8,0">
 
-					<Button Style="{StaticResource WineSidebarButtonStyle}" Click="btnNavAnalisis_Click">
+					<Button x:Name="btnNavAnalisis" Style="{StaticResource WineSidebarButtonStyle}" Click="btnNavAnalisis_Click">
 						<StackPanel Orientation="Horizontal" Spacing="12">
 							<SymbolIcon Symbol="ViewAll"/>
 							<TextBlock Text="Analisis de datos" VerticalAlignment="Center"/>

@@ -9,11 +9,13 @@ using WinRT.Interop;
 
 namespace Vinoteca
 {
+	// esta seccion sirve para agrupar la parte del sistema y dejar esa responsabilidad en un solo archivo - MainWindow
 	public sealed partial class MainWindow : Window
 	{
 		private readonly AppWindow _appWindow;
 		private bool _isDialogOpen;
 
+		// esta seccion sirve para agrupar la parte del sistema y dejar esa responsabilidad en un solo archivo - MainWindow
 		public MainWindow()
 		{
 			InitializeComponent();
@@ -38,6 +40,7 @@ namespace Vinoteca
 			_appWindow.Closing += AppWindowClosing;
 		}
 
+		// esta seccion sirve para manejar la parte del sistema y concentrar aqui esta parte del flujo - AbrirVentanaCompleta
 		private void AbrirVentanaCompleta()
 		{
 			if (_appWindow.Presenter is OverlappedPresenter presenter)
@@ -46,6 +49,7 @@ namespace Vinoteca
 			}
 		}
 
+		// esta seccion sirve para responder a la accion del usuario en la parte del sistema y mover el flujo al siguiente paso - AppWindowClosing
 		private async void AppWindowClosing(AppWindow sender, AppWindowClosingEventArgs args)
 		{
 			if (_isDialogOpen)

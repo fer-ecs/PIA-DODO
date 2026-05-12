@@ -12,17 +12,28 @@ using Vinoteca.Services;
 
 namespace Vinoteca.Views
 {
-	public sealed partial class UsuariosView : Page, ICambiosPendientes
+	// esta seccion sirve para agrupar la administracion de cuentas y dejar esa responsabilidad en un solo archivo - UsuariosView
+	public sealed partial class UsuariosView : Page, ICambiosPendientes, IDescartaCambiosPendientes
 	{
 		private const string CorreoAdminPrincipal = "admin@vinoteca.com";
+		private const string CachePrefixUsuarioNuevo = "Usuarios_Nuevo_";
+		private const string CacheNombre = "Usuarios_Nuevo_Nombre";
+		private const string CacheCorreo = "Usuarios_Nuevo_Correo";
+		private const string CacheDominio = "Usuarios_Nuevo_Dominio";
+		private const string CachePassword = "Usuarios_Nuevo_Password";
+		private const string CacheConfirmar = "Usuarios_Nuevo_Confirmar";
+		private const string CacheRol = "Usuarios_Nuevo_Rol";
+		private const string CacheActivo = "Usuarios_Nuevo_Activo";
 
 		private Usuario? usuarioSeleccionado;
 		private bool ignorarCambioSeleccion;
+		private bool cargandoCacheUsuario;
 		private List<Usuario> todosLosUsuarios = new();
 		private List<string> dominiosCorreoPermitidos = new();
 
 		public ObservableCollection<UsuarioItemViewModel> Usuarios { get; } = new();
 
+		// esta seccion sirve para agrupar la administracion de cuentas y dejar esa responsabilidad en un solo archivo - UsuariosView
 		public UsuariosView()
 		{
 			InitializeComponent();
@@ -49,10 +60,13 @@ namespace Vinoteca.Views
 
 			CargarUsuarios();
 			ActualizarModoFormulario();
+			ConfigurarCacheFormulario();
+			CargarFormularioNuevoDesdeCache();
 		}
 
 		public bool TieneCambiosPendientes => SessionService.PuedeGestionarUsuarios && FormularioTieneCambios();
 
+		// esta seccion sirve para leer informacion de la administracion de cuentas y regresarla lista para usarse - ObtenerMensajeCambiosPendientes
 		public string ObtenerMensajeCambiosPendientes()
 		{
 			return usuarioSeleccionado == null
@@ -60,12 +74,19 @@ namespace Vinoteca.Views
 				: "Hay cambios sin guardar en el usuario seleccionado";
 		}
 
+		public void DescartarCambiosPendientes()
+		{
+			LimpiarCacheFormularioNuevo();
+		}
+
+		// esta seccion sirve para manejar la administracion de cuentas y concentrar aqui esta parte del flujo - ConfigurarRoles
 		private void ConfigurarRoles()
 		{
 			cmbRol.SelectedIndex = 2;
 			chkActivo.IsChecked = true;
 		}
 
+		// esta seccion sirve para manejar la administracion de cuentas y concentrar aqui esta parte del flujo - BloquearAccesoNoOperativo
 		private void BloquearAccesoNoOperativo()
 		{
 			txtNombre.IsEnabled = false;
@@ -89,6 +110,7 @@ namespace Vinoteca.Views
 			MostrarError("Solo personal autorizado puede revisar usuarios");
 		}
 
+		// esta seccion sirve para manejar la administracion de cuentas y concentrar aqui esta parte del flujo - ConfigurarModoSoloLectura
 		private void ConfigurarModoSoloLectura()
 		{
 			txtDescripcionFormulario.Text = "Vista de solo lectura para supervision de cuentas";
@@ -108,12 +130,14 @@ namespace Vinoteca.Views
 			btnEliminarUsuario.IsEnabled = false;
 		}
 
+		// esta seccion sirve para cargar informacion de la administracion de cuentas y preparar lo que se muestra en pantalla - CargarUsuarios
 		private void CargarUsuarios()
 		{
 			todosLosUsuarios = DataService.ObtenerUsuarios().ToList();
 			AplicarFiltroUsuarios();
 		}
 
+		// esta seccion sirve para manejar la administracion de cuentas y concentrar aqui esta parte del flujo - ConfigurarFiltros
 		private void ConfigurarFiltros()
 		{
 			cmbFiltroRol.SelectedIndex = 0;
@@ -121,6 +145,7 @@ namespace Vinoteca.Views
 			cmbOrdenUsuarios.SelectedIndex = 0;
 		}
 
+		// esta seccion sirve para manejar la administracion de cuentas y concentrar aqui esta parte del flujo - ConfigurarDominiosCorreo
 		private void ConfigurarDominiosCorreo()
 		{
 			dominiosCorreoPermitidos = DataService.ObtenerDominiosCorreo();
@@ -133,6 +158,7 @@ namespace Vinoteca.Views
 			cmbDominioCorreo.SelectedIndex = cmbDominioCorreo.Items.Count > 0 ? 0 : -1;
 		}
 
+		// esta seccion sirve para ordenar y ajustar datos de la administracion de cuentas para trabajar con valores limpios - AplicarFiltroUsuarios
 		private void AplicarFiltroUsuarios()
 		{
 			string busqueda = txtBuscarUsuario.Text?.Trim().ToLowerInvariant() ?? string.Empty;
@@ -165,16 +191,19 @@ namespace Vinoteca.Views
 			txtResumenUsuarios.Text = $"{Usuarios.Count} de {todosLosUsuarios.Count} cuentas";
 		}
 
+		// esta seccion sirve para leer informacion de la administracion de cuentas y regresarla lista para usarse - ObtenerContenidoCombo
 		private static string ObtenerContenidoCombo(ComboBox combo)
 		{
 			return (combo.SelectedItem as ComboBoxItem)?.Content?.ToString() ?? string.Empty;
 		}
 
+		// esta seccion sirve para leer informacion de la administracion de cuentas y regresarla lista para usarse - ObtenerIdNumerico
 		private static int ObtenerIdNumerico(string? id)
 		{
 			return int.TryParse(id, out int valor) ? valor : int.MaxValue;
 		}
 
+		// esta seccion sirve para responder a la accion del usuario en la administracion de cuentas y mover el flujo al siguiente paso - lvUsuarios_SelectionChanged
 		private async void lvUsuarios_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
 			if (ignorarCambioSeleccion)
@@ -211,6 +240,7 @@ namespace Vinoteca.Views
 			OcultarMensaje();
 		}
 
+		// esta seccion sirve para responder a la accion del usuario en la administracion de cuentas y mover el flujo al siguiente paso - btnGuardarUsuario_Click
 		private void btnGuardarUsuario_Click(object sender, RoutedEventArgs e)
 		{
 			if (!SessionService.PuedeGestionarUsuarios)
@@ -224,17 +254,19 @@ namespace Vinoteca.Views
 			string nombre = txtNombre.Text;
 			string correoLocal = txtCorreo.Text;
 			string dominioCorreo = ObtenerDominioCorreoActual();
-			string correo = ConstruirCorreo(correoLocal, dominioCorreo);
 			string password = txtPassword.Password;
 			string confirmarPassword = txtConfirmarPassword.Password;
 			string rol = ObtenerRolActual();
+			bool esNuevoUsuario = usuarioSeleccionado == null;
+			string correo = esNuevoUsuario
+				? ConstruirCorreo(correoLocal, dominioCorreo)
+				: usuarioSeleccionado?.Correo ?? string.Empty;
 
-			if (!ValidarFormulario(nombre, correoLocal, dominioCorreo, correo, password, confirmarPassword, rol))
+			if (!ValidarFormulario(nombre, correoLocal, dominioCorreo, correo, password, confirmarPassword, rol, esNuevoUsuario))
 			{
 				return;
 			}
 
-			bool esNuevoUsuario = usuarioSeleccionado == null;
 			var usuario = usuarioSeleccionado ?? new Usuario();
 
 			if (ExisteCorreoDuplicado(correo, usuario.Id))
@@ -256,7 +288,11 @@ namespace Vinoteca.Views
 			}
 
 			usuario.Nombre = nombre.Trim();
-			usuario.Correo = correo.Trim();
+			if (esNuevoUsuario)
+			{
+				usuario.Correo = correo.Trim();
+			}
+
 			usuario.Contrasena = password;
 			usuario.Rol = RolesSistema.Normalizar(rol);
 			usuario.Activo = chkActivo.IsChecked == true;
@@ -287,7 +323,8 @@ namespace Vinoteca.Views
 			CargarUsuarios();
 		}
 
-		private bool ValidarFormulario(string nombre, string correoLocal, string dominioCorreo, string correo, string password, string confirmarPassword, string rol)
+		// esta seccion sirve para revisar reglas de la administracion de cuentas y evitar que pase un dato incorrecto - ValidarFormulario
+		private bool ValidarFormulario(string nombre, string correoLocal, string dominioCorreo, string correo, string password, string confirmarPassword, string rol, bool validarCorreo)
 		{
 			if (string.IsNullOrWhiteSpace(nombre))
 			{
@@ -325,45 +362,51 @@ namespace Vinoteca.Views
 				return false;
 			}
 
-			if (string.IsNullOrWhiteSpace(correoLocal))
+			if (validarCorreo && string.IsNullOrWhiteSpace(correoLocal))
 			{
 				MostrarError("El nombre del correo es obligatorio");
 				return false;
 			}
 
-			if (correoLocal != correoLocal.Trim())
+			if (validarCorreo && correoLocal != correoLocal.Trim())
 			{
 				MostrarError("El nombre del correo no debe tener espacios al inicio o al final");
 				return false;
 			}
 
-			if (correoLocal.Contains('@'))
+			if (validarCorreo && correoLocal.Contains('@'))
 			{
 				MostrarError("Escribe solo el nombre del correo, sin @");
 				return false;
 			}
 
-			if (correoLocal.Length > 40 || correoLocal.Any(char.IsWhiteSpace))
+			if (validarCorreo && (correoLocal.Length > 40 || correoLocal.Any(char.IsWhiteSpace)))
 			{
 				MostrarError("El nombre del correo no debe tener espacios y debe ser maximo 40 caracteres");
 				return false;
 			}
 
-			if (!EsNombreCorreoValido(correoLocal))
+			if (validarCorreo && !EsNombreCorreoValido(correoLocal))
 			{
 				MostrarError("El nombre del correo solo permite letras, numeros, punto, guion y guion bajo");
 				return false;
 			}
 
-			if (!dominiosCorreoPermitidos.Any(d => d.Equals(dominioCorreo, StringComparison.OrdinalIgnoreCase)))
+			if (validarCorreo && !dominiosCorreoPermitidos.Any(d => d.Equals(dominioCorreo, StringComparison.OrdinalIgnoreCase)))
 			{
 				MostrarError("Selecciona un dominio de correo valido");
 				return false;
 			}
 
-			if (correo.Length > 80 || !FormValidationHelper.EsCorreoValido(correo))
+			if (validarCorreo && (correo.Length > 80 || !FormValidationHelper.EsCorreoValido(correo)))
 			{
 				MostrarError("Ingresa un correo valido");
+				return false;
+			}
+
+			if (!validarCorreo && string.IsNullOrWhiteSpace(correo))
+			{
+				MostrarError("El usuario seleccionado no tiene un correo valido");
 				return false;
 			}
 
@@ -412,6 +455,7 @@ namespace Vinoteca.Views
 			return true;
 		}
 
+		// esta seccion sirve para manejar la administracion de cuentas y concentrar aqui esta parte del flujo - ExisteCorreoDuplicado
 		private bool ExisteCorreoDuplicado(string correo, string idActual)
 		{
 			return DataService.ObtenerUsuarios().Any(u =>
@@ -420,6 +464,7 @@ namespace Vinoteca.Views
 				u.Correo.Equals(correo, StringComparison.OrdinalIgnoreCase));
 		}
 
+		// esta seccion sirve para responder a la accion del usuario en la administracion de cuentas y mover el flujo al siguiente paso - btnEliminarUsuario_Click
 		private async void btnEliminarUsuario_Click(object sender, RoutedEventArgs e)
 		{
 			if (!SessionService.PuedeGestionarUsuarios)
@@ -473,6 +518,7 @@ namespace Vinoteca.Views
 			CargarUsuarios();
 		}
 
+		// esta seccion sirve para responder a la accion del usuario en la administracion de cuentas y mover el flujo al siguiente paso - btnCambiarEstado_Click
 		private void btnCambiarEstado_Click(object sender, RoutedEventArgs e)
 		{
 			if (!SessionService.PuedeGestionarUsuarios)
@@ -517,24 +563,28 @@ namespace Vinoteca.Views
 			CargarUsuarios();
 		}
 
+		// esta seccion sirve para revisar reglas de la administracion de cuentas y evitar que pase un dato incorrecto - EsContrasenaFuerte
 		private static bool EsContrasenaFuerte(string password)
 		{
 			string patron = @"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z\d\s])[^\s]{8,20}$";
 			return Regex.IsMatch(password, patron);
 		}
 
+		// esta seccion sirve para revisar reglas de la administracion de cuentas y evitar que pase un dato incorrecto - EsAdminPrincipal
 		private bool EsAdminPrincipal(Usuario usuario)
 		{
 			return !string.IsNullOrWhiteSpace(usuario.Correo) &&
 				usuario.Correo.Equals(CorreoAdminPrincipal, StringComparison.OrdinalIgnoreCase);
 		}
 
+		// esta seccion sirve para revisar reglas de la administracion de cuentas y evitar que pase un dato incorrecto - EsUsuarioActual
 		private bool EsUsuarioActual(Usuario usuario)
 		{
 			return SessionService.UsuarioActivo != null &&
 				usuario.Id == SessionService.UsuarioActivo.Id;
 		}
 
+		// esta seccion sirve para responder a la accion del usuario en la administracion de cuentas y mover el flujo al siguiente paso - btnLimpiarUsuario_Click
 		private async void btnLimpiarUsuario_Click(object sender, RoutedEventArgs e)
 		{
 			if (TieneCambiosPendientes)
@@ -554,6 +604,7 @@ namespace Vinoteca.Views
 			OcultarMensaje();
 		}
 
+		// esta seccion sirve para quitar informacion de la administracion de cuentas y dejar el estado consistente - LimpiarFormularioInterno
 		private void LimpiarFormularioInterno()
 		{
 			usuarioSeleccionado = null;
@@ -570,10 +621,13 @@ namespace Vinoteca.Views
 			ignorarCambioSeleccion = false;
 
 			ActualizarModoFormulario();
+			LimpiarCacheFormularioNuevo();
 		}
 
+		// esta seccion sirve para cargar informacion de la administracion de cuentas y preparar lo que se muestra en pantalla - CargarUsuarioEnFormulario
 		private void CargarUsuarioEnFormulario(Usuario usuario)
 		{
+			LimpiarCacheFormularioNuevo();
 			usuarioSeleccionado = usuario;
 			txtNombre.Text = usuario.Nombre ?? string.Empty;
 			SepararCorreo(usuario.Correo ?? string.Empty, out string nombreCorreo, out string dominioCorreo);
@@ -585,6 +639,7 @@ namespace Vinoteca.Views
 			chkActivo.IsChecked = usuario.Activo;
 		}
 
+		// esta seccion sirve para manejar la administracion de cuentas y concentrar aqui esta parte del flujo - RestaurarSeleccionAnterior
 		private void RestaurarSeleccionAnterior()
 		{
 			ignorarCambioSeleccion = true;
@@ -594,6 +649,7 @@ namespace Vinoteca.Views
 			ignorarCambioSeleccion = false;
 		}
 
+		// esta seccion sirve para manejar la administracion de cuentas y concentrar aqui esta parte del flujo - FormularioTieneCambios
 		private bool FormularioTieneCambios()
 		{
 			if (usuarioSeleccionado == null)
@@ -604,6 +660,7 @@ namespace Vinoteca.Views
 			return !FormularioCoincideConUsuario(usuarioSeleccionado);
 		}
 
+		// esta seccion sirve para manejar la administracion de cuentas y concentrar aqui esta parte del flujo - FormularioVacio
 		private bool FormularioVacio()
 		{
 			return string.IsNullOrWhiteSpace(txtNombre.Text) &&
@@ -614,6 +671,7 @@ namespace Vinoteca.Views
 				chkActivo.IsChecked == true;
 		}
 
+		// esta seccion sirve para manejar la administracion de cuentas y concentrar aqui esta parte del flujo - FormularioCoincideConUsuario
 		private bool FormularioCoincideConUsuario(Usuario usuario)
 		{
 			return string.Equals((txtNombre.Text ?? string.Empty).Trim(), usuario.Nombre ?? string.Empty, StringComparison.Ordinal) &&
@@ -624,11 +682,13 @@ namespace Vinoteca.Views
 				chkActivo.IsChecked == usuario.Activo;
 		}
 
+		// esta seccion sirve para leer informacion de la administracion de cuentas y regresarla lista para usarse - ObtenerRolActual
 		private string ObtenerRolActual()
 		{
 			return (cmbRol.SelectedItem as ComboBoxItem)?.Content?.ToString() ?? RolesSistema.Empleado;
 		}
 
+		// esta seccion sirve para manejar la administracion de cuentas y concentrar aqui esta parte del flujo - SeleccionarRol
 		private void SeleccionarRol(string rol)
 		{
 			string rolNormalizado = RolesSistema.Normalizar(rol);
@@ -644,16 +704,19 @@ namespace Vinoteca.Views
 			cmbRol.SelectedIndex = 2;
 		}
 
+		// esta seccion sirve para leer informacion de la administracion de cuentas y regresarla lista para usarse - ObtenerDominioCorreoActual
 		private string ObtenerDominioCorreoActual()
 		{
 			return cmbDominioCorreo.SelectedItem?.ToString() ?? dominiosCorreoPermitidos.FirstOrDefault() ?? "gmail.com";
 		}
 
+		// esta seccion sirve para armar datos o contenido de la administracion de cuentas y devolverlo ya preparado - ConstruirCorreo
 		private static string ConstruirCorreo(string correoLocal, string dominioCorreo)
 		{
 			return $"{(correoLocal ?? string.Empty).Trim()}@{(dominioCorreo ?? string.Empty).Trim()}";
 		}
 
+		// esta seccion sirve para revisar reglas de la administracion de cuentas y evitar que pase un dato incorrecto - EsNombreCorreoValido
 		private static bool EsNombreCorreoValido(string correoLocal)
 		{
 			string nombre = correoLocal.Trim();
@@ -661,6 +724,7 @@ namespace Vinoteca.Views
 				Regex.IsMatch(nombre, @"^[A-Za-z0-9](?:[A-Za-z0-9._-]{0,38}[A-Za-z0-9])?$");
 		}
 
+		// esta seccion sirve para manejar la administracion de cuentas y concentrar aqui esta parte del flujo - SepararCorreo
 		private void SepararCorreo(string correo, out string correoLocal, out string dominioCorreo)
 		{
 			correoLocal = string.Empty;
@@ -676,6 +740,7 @@ namespace Vinoteca.Views
 			dominioCorreo = correo[(indiceArroba + 1)..];
 		}
 
+		// esta seccion sirve para manejar la administracion de cuentas y concentrar aqui esta parte del flujo - SeleccionarDominioCorreo
 		private void SeleccionarDominioCorreo(string dominio)
 		{
 			string dominioNormalizado = dominiosCorreoPermitidos
@@ -683,6 +748,7 @@ namespace Vinoteca.Views
 			cmbDominioCorreo.SelectedItem = dominioNormalizado;
 		}
 
+		// esta seccion sirve para responder a la accion del usuario en la administracion de cuentas y mover el flujo al siguiente paso - btnAgregarDominio_Click
 		private void btnAgregarDominio_Click(object sender, RoutedEventArgs e)
 		{
 			if (!SessionService.PuedeGestionarUsuarios)
@@ -694,13 +760,15 @@ namespace Vinoteca.Views
 			string dominio = txtNuevoDominio.Text?.Trim().TrimStart('@').ToLowerInvariant() ?? string.Empty;
 			if (!DataService.EsDominioCorreoValido(dominio))
 			{
-				MostrarError("Ingresa un dominio valido, por ejemplo empresa.com");
+				MostrarError("Ingresa un dominio aceptado, sin repetir extensiones, por ejemplo empresa.com o empresa.com.mx");
+				ReiniciarEntradaDominioPersonalizado();
 				return;
 			}
 
 			if (!DataService.GuardarDominioCorreo(dominio))
 			{
-				MostrarError("No se pudo agregar el dominio");
+				MostrarError("Ese dominio ya existe o no esta permitido");
+				ReiniciarEntradaDominioPersonalizado();
 				return;
 			}
 
@@ -710,6 +778,14 @@ namespace Vinoteca.Views
 			MostrarExito("Dominio agregado correctamente");
 		}
 
+		// esta seccion sirve para manejar la administracion de cuentas y concentrar aqui esta parte del flujo - ReiniciarEntradaDominioPersonalizado
+		private void ReiniciarEntradaDominioPersonalizado()
+		{
+			txtNuevoDominio.Text = string.Empty;
+			txtNuevoDominio.Focus(FocusState.Programmatic);
+		}
+
+		// esta seccion sirve para responder a la accion del usuario en la administracion de cuentas y mover el flujo al siguiente paso - btnEliminarDominio_Click
 		private void btnEliminarDominio_Click(object sender, RoutedEventArgs e)
 		{
 			if (!SessionService.PuedeGestionarUsuarios)
@@ -735,19 +811,103 @@ namespace Vinoteca.Views
 			MostrarExito("Dominio eliminado correctamente");
 		}
 
+		// esta seccion sirve para actualizar la administracion de cuentas despues de un cambio y sincronizar la pantalla - ActualizarModoFormulario
 		private void ActualizarModoFormulario()
 		{
 			bool edicion = usuarioSeleccionado != null;
 			txtModoFormulario.Text = edicion ? "Editar usuario seleccionado" : "Nuevo usuario";
 			btnGuardarUsuario.Content = edicion ? "Guardar cambios" : "Guardar usuario";
 			btnEliminarUsuario.IsEnabled = edicion && SessionService.PuedeGestionarUsuarios;
+			if (SessionService.PuedeGestionarUsuarios)
+			{
+				txtCorreo.IsEnabled = !edicion;
+				cmbDominioCorreo.IsEnabled = !edicion;
+			}
 		}
 
+		// esta seccion sirve para manejar la administracion de cuentas y concentrar aqui esta parte del flujo - ConfigurarCacheFormulario
+		private void ConfigurarCacheFormulario()
+		{
+			txtNombre.TextChanged += (s, e) => GuardarFormularioNuevoEnCache();
+			txtCorreo.TextChanged += (s, e) => GuardarFormularioNuevoEnCache();
+			cmbDominioCorreo.SelectionChanged += (s, e) => GuardarFormularioNuevoEnCache();
+			txtPassword.PasswordChanged += (s, e) => GuardarFormularioNuevoEnCache();
+			txtConfirmarPassword.PasswordChanged += (s, e) => GuardarFormularioNuevoEnCache();
+			cmbRol.SelectionChanged += (s, e) => GuardarFormularioNuevoEnCache();
+			chkActivo.Checked += (s, e) => GuardarFormularioNuevoEnCache();
+			chkActivo.Unchecked += (s, e) => GuardarFormularioNuevoEnCache();
+		}
+
+		// esta seccion sirve para cargar informacion de la administracion de cuentas y preparar lo que se muestra en pantalla - CargarFormularioNuevoDesdeCache
+		private void CargarFormularioNuevoDesdeCache()
+		{
+			if (!SessionService.PuedeGestionarUsuarios || usuarioSeleccionado != null)
+			{
+				return;
+			}
+
+			cargandoCacheUsuario = true;
+			txtNombre.Text = App.FormCacheService.GetValue(CacheNombre) ?? txtNombre.Text;
+			txtCorreo.Text = App.FormCacheService.GetValue(CacheCorreo) ?? txtCorreo.Text;
+			SeleccionarDominioCorreo(App.FormCacheService.GetValue(CacheDominio) ?? ObtenerDominioCorreoActual());
+			txtPassword.Password = App.FormCacheService.GetValue(CachePassword) ?? txtPassword.Password;
+			txtConfirmarPassword.Password = App.FormCacheService.GetValue(CacheConfirmar) ?? txtConfirmarPassword.Password;
+			SeleccionarRol(App.FormCacheService.GetValue(CacheRol) ?? ObtenerRolActual());
+			if (bool.TryParse(App.FormCacheService.GetValue(CacheActivo), out bool activo))
+			{
+				chkActivo.IsChecked = activo;
+			}
+			cargandoCacheUsuario = false;
+		}
+
+		// esta seccion sirve para guardar informacion de la administracion de cuentas y mantener los datos persistidos - GuardarFormularioNuevoEnCache
+		private void GuardarFormularioNuevoEnCache()
+		{
+			if (cargandoCacheUsuario || !SessionService.PuedeGestionarUsuarios || usuarioSeleccionado != null)
+			{
+				return;
+			}
+
+			if (FormularioVacio())
+			{
+				LimpiarCacheFormularioNuevo();
+				return;
+			}
+
+			GuardarValorCache(CacheNombre, txtNombre.Text);
+			GuardarValorCache(CacheCorreo, txtCorreo.Text);
+			GuardarValorCache(CacheDominio, ObtenerDominioCorreoActual());
+			GuardarValorCache(CachePassword, txtPassword.Password);
+			GuardarValorCache(CacheConfirmar, txtConfirmarPassword.Password);
+			GuardarValorCache(CacheRol, ObtenerRolActual());
+			GuardarValorCache(CacheActivo, (chkActivo.IsChecked == true).ToString());
+		}
+
+		// esta seccion sirve para guardar informacion de la administracion de cuentas y mantener los datos persistidos - GuardarValorCache
+		private static void GuardarValorCache(string clave, string valor)
+		{
+			if (string.IsNullOrEmpty(valor))
+			{
+				App.FormCacheService.RemoveValue(clave);
+				return;
+			}
+
+			App.FormCacheService.SetValue(clave, valor);
+		}
+
+		// esta seccion sirve para quitar informacion de la administracion de cuentas y dejar el estado consistente - LimpiarCacheFormularioNuevo
+		private static void LimpiarCacheFormularioNuevo()
+		{
+			App.FormCacheService.ClearPrefix(CachePrefixUsuarioNuevo);
+		}
+
+		// esta seccion sirve para responder a la accion del usuario en la administracion de cuentas y mover el flujo al siguiente paso - FiltroUsuarios_Changed
 		private void FiltroUsuarios_Changed(object sender, object e)
 		{
 			AplicarFiltroUsuarios();
 		}
 
+		// esta seccion sirve para mostrar mensajes o ventanas de la administracion de cuentas para que el usuario entienda el estado - MostrarError
 		private void MostrarError(string mensaje)
 		{
 			txtMensaje.Text = mensaje;
@@ -755,6 +915,7 @@ namespace Vinoteca.Views
 			txtMensaje.Visibility = Visibility.Visible;
 		}
 
+		// esta seccion sirve para mostrar mensajes o ventanas de la administracion de cuentas para que el usuario entienda el estado - MostrarExito
 		private void MostrarExito(string mensaje)
 		{
 			txtMensaje.Text = mensaje;
@@ -762,12 +923,14 @@ namespace Vinoteca.Views
 			txtMensaje.Visibility = Visibility.Visible;
 		}
 
+		// esta seccion sirve para manejar la administracion de cuentas y concentrar aqui esta parte del flujo - OcultarMensaje
 		private void OcultarMensaje()
 		{
 			txtMensaje.Visibility = Visibility.Collapsed;
 		}
 	}
 
+	// esta seccion sirve para manejar la administracion de cuentas y concentrar aqui esta parte del flujo - UsuarioItemViewModel
 	public class UsuarioItemViewModel
 	{
 		public Usuario Usuario { get; }
@@ -778,6 +941,7 @@ namespace Vinoteca.Views
 		public string EstadoTexto => Usuario.Activo ? "Activo" : "Inactivo";
 		public string AccionEstadoTexto => Usuario.Activo ? "Desactivar" : "Activar";
 
+		// esta seccion sirve para manejar la administracion de cuentas y concentrar aqui esta parte del flujo - UsuarioItemViewModel
 		public UsuarioItemViewModel(Usuario usuario)
 		{
 			Usuario = usuario;

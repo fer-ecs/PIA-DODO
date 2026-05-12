@@ -7,10 +7,12 @@ using Vinoteca.Services;
 
 namespace Vinoteca.Views
 {
+	// esta seccion sirve para agrupar la pantalla del carrito y dejar esa responsabilidad en un solo archivo - CarritoView
 	public sealed partial class CarritoView : Page
 	{
 		public ObservableCollection<CarritoItem> ItemsCarrito { get; } = new();
 
+		// esta seccion sirve para agrupar la pantalla del carrito y dejar esa responsabilidad en un solo archivo - CarritoView
 		public CarritoView()
 		{
 			InitializeComponent();
@@ -29,12 +31,14 @@ namespace Vinoteca.Views
 			Unloaded += CarritoView_Unloaded;
 		}
 
+		// esta seccion sirve para responder a la accion del usuario en la pantalla del carrito y mover el flujo al siguiente paso - CarritoView_Unloaded
 		private void CarritoView_Unloaded(object sender, RoutedEventArgs e)
 		{
 			CarritoService.CarritoActualizado -= CargarCarrito;
 			Unloaded -= CarritoView_Unloaded;
 		}
 
+		// esta seccion sirve para cargar informacion de la pantalla del carrito y preparar lo que se muestra en pantalla - CargarCarrito
 		private void CargarCarrito()
 		{
 			var items = CarritoService.ObtenerCarrito().OrderBy(i => i.Producto.Nombre).ToList();
@@ -51,6 +55,7 @@ namespace Vinoteca.Views
 			txtVacio.Visibility = ItemsCarrito.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
 		}
 
+		// esta seccion sirve para responder a la accion del usuario en la pantalla del carrito y mover el flujo al siguiente paso - btnAumentar_Click
 		private void btnAumentar_Click(object sender, RoutedEventArgs e)
 		{
 			if (!SessionService.PuedeComprar)
@@ -71,6 +76,7 @@ namespace Vinoteca.Views
 			}
 		}
 
+		// esta seccion sirve para responder a la accion del usuario en la pantalla del carrito y mover el flujo al siguiente paso - btnDisminuir_Click
 		private async void btnDisminuir_Click(object sender, RoutedEventArgs e)
 		{
 			if (!SessionService.PuedeComprar)
@@ -100,6 +106,7 @@ namespace Vinoteca.Views
 			CarritoService.CambiarCantidad(item.Producto.Id, item.Cantidad - 1, out _);
 		}
 
+		// esta seccion sirve para responder a la accion del usuario en la pantalla del carrito y mover el flujo al siguiente paso - btnEliminar_Click
 		private async void btnEliminar_Click(object sender, RoutedEventArgs e)
 		{
 			if (!SessionService.PuedeComprar)
@@ -126,6 +133,7 @@ namespace Vinoteca.Views
 			CarritoService.QuitarDelCarrito(item.Producto.Id);
 		}
 
+		// esta seccion sirve para responder a la accion del usuario en la pantalla del carrito y mover el flujo al siguiente paso - btnVaciar_Click
 		private async void btnVaciar_Click(object sender, RoutedEventArgs e)
 		{
 			if (!SessionService.PuedeComprar)
@@ -152,6 +160,7 @@ namespace Vinoteca.Views
 			CarritoService.LimpiarCarrito();
 		}
 
+		// esta seccion sirve para responder a la accion del usuario en la pantalla del carrito y mover el flujo al siguiente paso - btnFinalizarCompra_Click
 		private void btnFinalizarCompra_Click(object sender, RoutedEventArgs e)
 		{
 			if (!SessionService.PuedeComprar)
@@ -169,6 +178,7 @@ namespace Vinoteca.Views
 			Frame.Navigate(typeof(VentasAdminView));
 		}
 
+		// esta seccion sirve para mostrar mensajes o ventanas de la pantalla del carrito para que el usuario entienda el estado - MostrarEstado
 		private void MostrarEstado(string mensaje)
 		{
 			txtEstado.Text = mensaje;

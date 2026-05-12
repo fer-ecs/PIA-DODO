@@ -11,11 +11,13 @@ using Vinoteca.Services;
 
 namespace Vinoteca.Views
 {
+	// esta seccion sirve para agrupar la tienda y dejar esa responsabilidad en un solo archivo - TiendaView
 	public sealed partial class TiendaView : Page
 	{
 		public ObservableCollection<ProductoVentaViewModel> ProductosCatalogo { get; } = new();
 		private List<Producto> todosLosProductos = new();
 
+		// esta seccion sirve para agrupar la tienda y dejar esa responsabilidad en un solo archivo - TiendaView
 		public TiendaView()
 		{
 			InitializeComponent();
@@ -25,7 +27,6 @@ namespace Vinoteca.Views
 				txtEstado.Text = "Solo empleados pueden operar el punto de venta";
 				txtEstado.Visibility = Visibility.Visible;
 				txtBuscar.IsEnabled = false;
-				txtCodigoEscaneo.IsEnabled = false;
 				gvTienda.IsEnabled = false;
 				lvCarritoRapido.IsEnabled = false;
 				return;
@@ -33,21 +34,41 @@ namespace Vinoteca.Views
 
 			InputRestrictionsHelper.AplicarSinEspaciosNiEnter(this);
 			InputRestrictionsHelper.AplicarTextoLibreSinEnter(txtBuscar);
-			InputRestrictionsHelper.AplicarSinEspacios(txtCodigoEscaneo);
 			gvTienda.ItemsSource = ProductosCatalogo;
 			ConfigurarFiltros();
 			CargarCatalogo();
 			RefrescarCarritoVisual();
 			CarritoService.CarritoActualizado += RefrescarCarritoVisual;
+			DataService.ProductosActualizados += ProductosActualizados;
 			Unloaded += TiendaView_Unloaded;
 		}
 
+		// esta seccion sirve para responder a la accion del usuario en la tienda y mover el flujo al siguiente paso - TiendaView_Unloaded
 		private void TiendaView_Unloaded(object sender, RoutedEventArgs e)
 		{
 			CarritoService.CarritoActualizado -= RefrescarCarritoVisual;
+			DataService.ProductosActualizados -= ProductosActualizados;
 			Unloaded -= TiendaView_Unloaded;
 		}
 
+		// esta seccion sirve para actualizar la tienda despues de un cambio y sincronizar la pantalla - ProductosActualizados
+		private void ProductosActualizados()
+		{
+			DispatcherQueue.TryEnqueue(() =>
+			{
+				bool ventaValida = CarritoService.SincronizarConInventario(out string mensaje);
+				CargarCatalogo();
+				RefrescarCarritoVisual();
+
+				if (!ventaValida && !string.IsNullOrWhiteSpace(mensaje))
+				{
+					txtEstado.Text = mensaje;
+					txtEstado.Visibility = Visibility.Visible;
+				}
+			});
+		}
+
+		// esta seccion sirve para cargar informacion de la tienda y preparar lo que se muestra en pantalla - CargarCatalogo
 		private void CargarCatalogo()
 		{
 			todosLosProductos = DataService.ObtenerProductos()
@@ -59,12 +80,14 @@ namespace Vinoteca.Views
 			AplicarFiltro();
 		}
 
+		// esta seccion sirve para manejar la tienda y concentrar aqui esta parte del flujo - ConfigurarFiltros
 		private void ConfigurarFiltros()
 		{
 			cmbFiltroStock.SelectedIndex = 0;
 			cmbOrdenCatalogo.SelectedIndex = 0;
 		}
 
+		// esta seccion sirve para cargar informacion de la tienda y preparar lo que se muestra en pantalla - CargarCategorias
 		private void CargarCategorias()
 		{
 			string seleccionActual = cmbFiltroCategoria.SelectedItem?.ToString() ?? "Todas";
@@ -87,11 +110,13 @@ namespace Vinoteca.Views
 			cmbFiltroCategoria.SelectionChanged += Filtros_Changed;
 		}
 
+		// esta seccion sirve para responder a la accion del usuario en la tienda y mover el flujo al siguiente paso - txtBuscar_TextChanged
 		private void txtBuscar_TextChanged(object sender, TextChangedEventArgs e)
 		{
 			AplicarFiltro();
 		}
 
+		// esta seccion sirve para ordenar y ajustar datos de la tienda para trabajar con valores limpios - AplicarFiltro
 		private void AplicarFiltro(bool conservarDesplazamiento = false)
 		{
 			double? desplazamientoActual = null;
@@ -170,6 +195,7 @@ namespace Vinoteca.Views
 			}
 		}
 
+		// esta seccion sirve para leer informacion de la tienda y regresarla lista para usarse - ObtenerContenidoCombo
 		private static string ObtenerContenidoCombo(ComboBox combo)
 		{
 			return (combo.SelectedItem as ComboBoxItem)?.Content?.ToString()
@@ -177,11 +203,13 @@ namespace Vinoteca.Views
 				?? string.Empty;
 		}
 
+		// esta seccion sirve para leer informacion de la tienda y regresarla lista para usarse - ObtenerIdNumerico
 		private static int ObtenerIdNumerico(string? id)
 		{
 			return int.TryParse(id, out int valor) ? valor : int.MaxValue;
 		}
 
+		// esta seccion sirve para manejar la tienda y concentrar aqui esta parte del flujo - BuscarScrollViewer
 		private static ScrollViewer? BuscarScrollViewer(DependencyObject? origen)
 		{
 			if (origen is null)
@@ -206,15 +234,16 @@ namespace Vinoteca.Views
 			return null;
 		}
 
+		// esta seccion sirve para responder a la accion del usuario en la tienda y mover el flujo al siguiente paso - Filtros_Changed
 		private void Filtros_Changed(object sender, object e)
 		{
 			AplicarFiltro();
 		}
 
+		// esta seccion sirve para responder a la accion del usuario en la tienda y mover el flujo al siguiente paso - btnLimpiarFiltros_Click
 		private void btnLimpiarFiltros_Click(object sender, RoutedEventArgs e)
 		{
 			txtBuscar.Text = string.Empty;
-			txtCodigoEscaneo.Text = string.Empty;
 			cmbFiltroCategoria.SelectedItem = "Todas";
 			cmbFiltroStock.SelectedIndex = 0;
 			cmbOrdenCatalogo.SelectedIndex = 0;
@@ -222,6 +251,7 @@ namespace Vinoteca.Views
 			AplicarFiltro();
 		}
 
+		// esta seccion sirve para responder a la accion del usuario en la tienda y mover el flujo al siguiente paso - btnAgregar_Click
 		private void btnAgregar_Click(object sender, RoutedEventArgs e)
 		{
 			if (!SessionService.PuedeComprar)
@@ -239,48 +269,7 @@ namespace Vinoteca.Views
 			AgregarProducto(producto);
 		}
 
-		private void btnEscanear_Click(object sender, RoutedEventArgs e)
-		{
-			if (!SessionService.PuedeComprar)
-			{
-				txtEstado.Text = "Solo empleados pueden escanear productos";
-				txtEstado.Visibility = Visibility.Visible;
-				return;
-			}
-
-			string codigo = txtCodigoEscaneo.Text?.Trim().ToLowerInvariant() ?? string.Empty;
-			if (string.IsNullOrWhiteSpace(codigo))
-			{
-				txtEstado.Text = "Captura el ID corto del producto para simular el escaneo";
-				txtEstado.Visibility = Visibility.Visible;
-				return;
-			}
-
-			var coincidencias = todosLosProductos.Where(p =>
-				(!string.IsNullOrWhiteSpace(p.CodigoCorto) && p.CodigoCorto.ToLowerInvariant() == codigo) ||
-				(!string.IsNullOrWhiteSpace(p.Id) && p.Id.ToLowerInvariant().Replace("-", string.Empty).StartsWith(codigo)))
-				.ToList();
-
-			if (coincidencias.Count == 0)
-			{
-				txtEstado.Text = "No se encontro un producto activo con ese ID";
-				txtEstado.Visibility = Visibility.Visible;
-				return;
-			}
-
-			if (coincidencias.Count > 1)
-			{
-				txtEstado.Text = "El ID capturado coincide con varios productos. Escribe mas caracteres";
-				txtEstado.Visibility = Visibility.Visible;
-				return;
-			}
-
-			var producto = coincidencias[0];
-			AgregarProducto(producto);
-			txtCodigoEscaneo.Text = string.Empty;
-			txtCodigoEscaneo.Focus(FocusState.Programmatic);
-		}
-
+		// esta seccion sirve para agregar informacion a la tienda y recalcular lo necesario - AgregarProducto
 		private void AgregarProducto(Producto producto)
 		{
 			if (CarritoService.AgregarAlCarrito(producto, out string mensaje))
@@ -295,6 +284,7 @@ namespace Vinoteca.Views
 			txtEstado.Visibility = Visibility.Visible;
 		}
 
+		// esta seccion sirve para actualizar la tienda despues de un cambio y sincronizar la pantalla - RefrescarCarritoVisual
 		private void RefrescarCarritoVisual()
 		{
 			var items = CarritoService.ObtenerCarrito();
@@ -307,6 +297,7 @@ namespace Vinoteca.Views
 			}
 		}
 
+		// esta seccion sirve para responder a la accion del usuario en la tienda y mover el flujo al siguiente paso - btnIrAPagar_Click
 		private void btnIrAPagar_Click(object sender, RoutedEventArgs e)
 		{
 			if (!SessionService.PuedeComprar)
@@ -323,10 +314,18 @@ namespace Vinoteca.Views
 				return;
 			}
 
+			if (!CarritoService.ValidarDisponibilidad(out string mensaje))
+			{
+				txtEstado.Text = mensaje;
+				txtEstado.Visibility = Visibility.Visible;
+				return;
+			}
+
 			Frame.Navigate(typeof(CarritoView));
 		}
 	}
 
+	// esta seccion sirve para manejar la tienda y concentrar aqui esta parte del flujo - ProductoVentaViewModel
 	public sealed class ProductoVentaViewModel
 	{
 		public Producto Producto { get; }
@@ -345,6 +344,7 @@ namespace Vinoteca.Views
 			? "No hay stock disponible"
 			: $"Stock bajo: quedan {StockDisponible}";
 
+		// esta seccion sirve para manejar la tienda y concentrar aqui esta parte del flujo - ProductoVentaViewModel
 		public ProductoVentaViewModel(Producto producto, int reservado)
 		{
 			Producto = producto;

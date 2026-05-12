@@ -11,12 +11,14 @@ using Vinoteca.Services;
 
 namespace Vinoteca.Views
 {
+	// esta seccion sirve para agrupar los reportes y dejar esa responsabilidad en un solo archivo - ReportesView
 	public sealed partial class ReportesView : Page
 	{
 		private readonly ObservableCollection<Venta> ventasMostradas = new();
 		private List<Venta> todasLasVentas = new();
 		private bool exportandoPdf;
 
+		// esta seccion sirve para agrupar los reportes y dejar esa responsabilidad en un solo archivo - ReportesView
 		public ReportesView()
 		{
 			InitializeComponent();
@@ -40,12 +42,14 @@ namespace Vinoteca.Views
 			CargarDatos();
 		}
 
+		// esta seccion sirve para cargar informacion de los reportes y preparar lo que se muestra en pantalla - CargarDatos
 		private void CargarDatos()
 		{
-			todasLasVentas = DataService.ObtenerVentas().ToList();
+			todasLasVentas = TicketService.ObtenerTicketsEmitidos();
 			AplicarFiltroReportes();
 		}
 
+		// esta seccion sirve para ordenar y ajustar datos de los reportes para trabajar con valores limpios - AplicarFiltroReportes
 		private void AplicarFiltroReportes()
 		{
 			string busqueda = txtBuscarReporte.Text?.Trim().ToLowerInvariant() ?? string.Empty;
@@ -86,30 +90,35 @@ namespace Vinoteca.Views
 
 			double totalGlobal = ventasMostradas.Sum(v => v.Total);
 			int totalVentas = ventasMostradas.Count;
+			int totalTickets = TicketService.ContarTicketsEmitidos(ventasMostradas);
 			int totalProductos = ventasMostradas.Sum(v => v.Productos.Count);
 
 			txtGananciasTotales.Text = $"Ganancias totales: {totalGlobal:C}";
-			txtResumenVentas.Text = $"Ventas registradas: {totalVentas} | Lineas vendidas: {totalProductos}";
-			txtResumenFiltrado.Text = $"{totalVentas} de {todasLasVentas.Count} ventas visibles";
+			txtResumenVentas.Text = $"Ventas registradas: {totalVentas} | Tickets emitidos: {totalTickets} | Lineas vendidas: {totalProductos}";
+			txtResumenFiltrado.Text = $"{totalVentas} de {todasLasVentas.Count} ventas/tickets visibles";
 			txtSinVentas.Visibility = totalVentas == 0 ? Visibility.Visible : Visibility.Collapsed;
 		}
 
+		// esta seccion sirve para leer informacion de los reportes y regresarla lista para usarse - ObtenerTotalFiltro
 		private static double? ObtenerTotalFiltro(string? texto)
 		{
 			string normalizado = (texto ?? string.Empty).Trim().Replace(',', '.');
 			return double.TryParse(normalizado, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double valor) ? valor : null;
 		}
 
+		// esta seccion sirve para leer informacion de los reportes y regresarla lista para usarse - ObtenerIdNumerico
 		private static int ObtenerIdNumerico(string? id)
 		{
 			return int.TryParse(id, out int valor) ? valor : int.MaxValue;
 		}
 
+		// esta seccion sirve para leer informacion de los reportes y regresarla lista para usarse - ObtenerOrdenReportes
 		private string ObtenerOrdenReportes()
 		{
 			return (cmbOrdenReportes.SelectedItem as ComboBoxItem)?.Content?.ToString() ?? "Fecha reciente";
 		}
 
+		// esta seccion sirve para responder a la accion del usuario en los reportes y mover el flujo al siguiente paso - btnExportarPdf_Click
 		private async void btnExportarPdf_Click(object sender, RoutedEventArgs e)
 		{
 			if (exportandoPdf)
@@ -155,6 +164,7 @@ namespace Vinoteca.Views
 			}
 		}
 
+		// esta seccion sirve para responder a la accion del usuario en los reportes y mover el flujo al siguiente paso - btnPrevisualizar_Click
 		private async void btnPrevisualizar_Click(object sender, RoutedEventArgs e)
 		{
 			if (sender is not Button button || button.Tag is not Venta venta)
@@ -165,6 +175,7 @@ namespace Vinoteca.Views
 			await TicketPreviewService.MostrarAsync(venta, XamlRoot);
 		}
 
+		// esta seccion sirve para responder a la accion del usuario en los reportes y mover el flujo al siguiente paso - FiltroReportes_Changed
 		private void FiltroReportes_Changed(object sender, object e)
 		{
 			AplicarFiltroReportes();
